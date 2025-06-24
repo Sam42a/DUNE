@@ -10,7 +10,6 @@ import org.jellyfin.androidtv.preference.constant.NextUpBehavior
 import org.jellyfin.androidtv.preference.constant.RatingType
 import org.jellyfin.androidtv.preference.constant.RefreshRateSwitchingBehavior
 import org.jellyfin.androidtv.preference.constant.WatchedIndicatorBehavior
-import org.jellyfin.androidtv.preference.constant.SubtitleWeight
 import org.jellyfin.androidtv.preference.constant.ZoomMode
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentAction
 import org.jellyfin.androidtv.ui.playback.segment.toMediaSegmentActionsString
@@ -151,6 +150,16 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var ac3Enabled = booleanPreference("pref_bitstream_ac3", true)
 
+		/**
+		 * Enable libass.
+		 */
+		var assDirectPlay = booleanPreference("libass_enabled", false)
+
+		/**
+		 * Enable PGS subtitle direct-play.
+		 */
+		var pgsDirectPlay = booleanPreference("pgs_enabled", true)
+
 		/* Live TV */
 		/**
 		 * Use direct play
@@ -219,9 +228,9 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var subtitlesTextSize = floatPreference("subtitles_text_size", 1f)
 
         /**
-         * Subtitle text weight (Normal or Bold)
+         * Subtitles bold text
          */
-        var subtitlesTextWeight = enumPreference("subtitles_text_weight", SubtitleWeight.NORMAL)
+        var subtitlesTextWeightValue = intPreference("subtitles_text_weight_value", 400)
 
 
     /**
@@ -269,6 +278,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Enable TrickPlay in legacy player user interface while seeking.
 		 */
 		var trickPlayEnabled = booleanPreference("trick_play_enabled", false)
+
+		/**
+		 * Enable preloading of images for better performance
+		 */
+		var preloadImages = booleanPreference("preload_images", true)
 	}
 
 	init {

@@ -3,6 +3,7 @@ package org.jellyfin.androidtv.ui.playback;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.audiofx.DynamicsProcessing;
 import android.media.audiofx.DynamicsProcessing.Limiter;
 import android.media.audiofx.Equalizer;
@@ -40,6 +41,7 @@ import androidx.media3.extractor.ts.TsExtractor;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.CaptionStyleCompat;
 import androidx.media3.ui.PlayerView;
+import androidx.core.graphics.TypefaceCompat;
 
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.data.compat.StreamInfo;
@@ -104,13 +106,14 @@ public class VideoManager {
         mExoPlayerView = view.findViewById(R.id.exoPlayerView);
         mExoPlayerView.setPlayer(mExoPlayer);
         int strokeColor = userPreferences.get(UserPreferences.Companion.getSubtitleTextStrokeColor()).intValue();
+        int textWeight = userPreferences.get(UserPreferences.Companion.getSubtitlesTextWeightValue());
         CaptionStyleCompat subtitleStyle = new CaptionStyleCompat(
                 userPreferences.get(UserPreferences.Companion.getSubtitlesTextColor()).intValue(),
                 userPreferences.get(UserPreferences.Companion.getSubtitlesBackgroundColor()).intValue(),
                 Color.TRANSPARENT,
                 Color.alpha(strokeColor) == 0 ? CaptionStyleCompat.EDGE_TYPE_NONE : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
                 strokeColor,
-                null
+                TypefaceCompat.create(mActivity, Typeface.DEFAULT, textWeight, false)
         );
         mExoPlayerView.getSubtitleView().setFractionalTextSize(0.0533f * userPreferences.get(UserPreferences.Companion.getSubtitlesTextSize()));
         mExoPlayerView.getSubtitleView().setStyle(subtitleStyle);

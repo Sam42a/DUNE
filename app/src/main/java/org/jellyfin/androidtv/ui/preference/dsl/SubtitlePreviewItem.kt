@@ -39,12 +39,8 @@ class SubtitlePreviewItem(private val context: Context, private val userPreferen
                     val size = userPreferences[UserPreferences.subtitlesTextSize] * 24f
                     it.setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
                     // Weight
-                    val weight = userPreferences[UserPreferences.subtitlesTextWeight].name
-                    it.setTypeface(null, when (weight) {
-                        "BOLD" -> Typeface.BOLD
-                        "ITALIC" -> Typeface.ITALIC
-                        else -> Typeface.NORMAL
-                    })
+                    val weight = userPreferences[UserPreferences.subtitlesTextWeightValue]
+                    it.setTypeface(null, if (weight >= 600) Typeface.BOLD else Typeface.NORMAL)
                     // Stroke (outline) -- not natively supported, skip for now
                     
                 }

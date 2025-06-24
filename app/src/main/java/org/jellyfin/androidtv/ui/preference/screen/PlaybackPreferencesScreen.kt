@@ -10,7 +10,6 @@ import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
 import org.jellyfin.androidtv.preference.constant.NEXTUP_TIMER_DISABLED
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
-import org.jellyfin.androidtv.preference.constant.SubtitleWeight
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentAction
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentRepository
 import org.jellyfin.androidtv.ui.preference.custom.DurationSeekBarPreference
@@ -189,9 +188,15 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 
 			
 
-			enum<SubtitleWeight> {
-				setTitle(R.string.pref_subtitle_weight)
-				bind(userPreferences, UserPreferences.subtitlesTextWeight)
+			checkbox {
+				setTitle(R.string.pref_subtitles_bold)
+				bind {
+					val boldWeight = 700
+					val normalWeight = 400
+					get { userPreferences[UserPreferences.subtitlesTextWeightValue] == boldWeight }
+					set { checked -> userPreferences[UserPreferences.subtitlesTextWeightValue] = if (checked) boldWeight else normalWeight }
+					default { false }
+				}
 			}
 
 			colorList {
