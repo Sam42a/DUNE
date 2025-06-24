@@ -172,7 +172,8 @@
     <string name="lbl_ended"> ENDED </string>
     <string name="lbl_filters">Live TV filters</string>
     <string name="msg_subtitles_loading">Subtitles loading…</string>
-    <string name="msg_unable_load_subs">Unable to load subtitle</string>
+    <string name="pref_enable_libass">Enable Advanced SubStation Alpha subtitle client rendering</string>
+    <string name="preference_enable_pgs">Direct play PGS subtitles</string>
     <string name="msg_burn_sub_warning">Burning in subtitles. This may take a few seconds…</string>
     <string name="lbl_no_recordings">No recordings available</string>
     <string name="lbl_live_tv_guide">Live TV Guide</string>
@@ -181,7 +182,7 @@
     <string name="pref_live_tv_cat">Live TV</string>
     <string name="msg_error_live_stream">Error streaming live TV. Will re-try…</string>
     <string name="lbl_direct_stream_live">Direct stream live TV</string>
-    <string name="lbl_programs">Programs</string>
+    <string name="lbl_playlists_and_albums">Playlists &amp; Albums</string>
     <string name="lbl_albums">Albums</string>
     <string name="lbl_artists">Artists</string>
     <string name="lbl_song">Song</string>
@@ -191,6 +192,7 @@
     <string name="lbl_enable_cinema_mode">Cinema mode</string>
     <string name="sum_enable_cinema_mode">Play available intros and previews before starting a movie</string>
     <string name="lbl_playlists">Playlists</string>
+    <string name="lbl_programs">Programs</string>
     <string name="msg_items_added">" items added"</string>
     <string name="lbl_add_to_queue">Add to queue</string>
     <string name="lbl_open_artist">Open artist</string>
@@ -475,6 +477,7 @@
     <string name="color_pink">Pink</string>
     <string name="color_cyan">Cyan</string>
     <string name="pref_subtitles_size">Text size</string>
+    <string name="pref_subtitles_bold">Bold text</string>
     <string name="server_issue_unable_to_connect">Unable to connect</string>
     <string name="server_issue_invalid_product">Server software is incompatible</string>
     <string name="server_issue_missing_version">Could not determine server version</string>
@@ -674,6 +677,7 @@
     <string name="show_reality_row">Show Reality Row</string>
     <string name="show_thriller_row">Show Thriller Row</string>
     <string name="show_war_row">Show War Row</string>
+
 
     <!-- Live TV Button -->
     <string name="show_live_tv_button">Live TV Button</string>

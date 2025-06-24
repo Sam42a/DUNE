@@ -3,6 +3,9 @@ package org.jellyfin.androidtv.di
 import android.content.Context
 import android.os.Build
 import coil3.ImageLoader
+import coil3.disk.DiskCache
+import okio.Path.Companion.toOkioPath
+import java.io.File
 import coil3.annotation.ExperimentalCoilApi
 import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
@@ -96,10 +99,35 @@ val appModule = module {
 
 	// Coil (images)
 	single {
-		ImageLoader.Builder(androidContext()).apply {
+		val context = androidContext()
+		// Set fixed memory cache size to 700MB (700 * 1024 * 1024 bytes)
+		val memoryCacheSize = 700L * 1024 * 1024
+		// Set disk cache size to 1GB (1024 * 1024 * 1024 bytes)
+		val diskCacheSize = 1024L * 1024 * 1024
+
+		// Configure disk cache
+		val diskCacheDir = File(context.cacheDir, "image_cache")
+		diskCacheDir.mkdirs()
+		val diskCache = coil3.disk.DiskCache.Builder()
+			.directory(diskCacheDir.toOkioPath())
+			.maxSizeBytes(1024L * 1024 * 1024) // 1GB
+			.build()
+
+		ImageLoader.Builder(context).apply {
 			serviceLoaderEnabled(false)
 			logger(CoilTimberLogger(if (BuildConfig.DEBUG) Logger.Level.Warn else Logger.Level.Error))
+			
+			// Configure memory cache
+			memoryCache {
+				coil3.memory.MemoryCache.Builder()
+					.maxSizeBytes(memoryCacheSize)
+					.build()
+			}
+			
+			// Set disk cache
+			diskCache(diskCache)
 
+			// Coil 3.x configuration
 			components {
 				@OptIn(ExperimentalCoilApi::class)
 				add(OkHttpNetworkFetcherFactory(connectivityChecker = ::createCoilConnectivityChecker))
@@ -139,7 +167,7 @@ val appModule = module {
 	single { ItemLauncher() }
 	single { KeyProcessor() }
 	single { ReportingHelper(get(), get()) }
-	single<PlaybackHelper> { SdkPlaybackHelper(get(), get(), get(), get(), get(), get(), get()) }
+	single<PlaybackHelper> { SdkPlaybackHelper(get(), get(), get(), get()) }
 
 	factory { (context: Context) -> SearchFragmentDelegate(context, get(), get()) }
 }

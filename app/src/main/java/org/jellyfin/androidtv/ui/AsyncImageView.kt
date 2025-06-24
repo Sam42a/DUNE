@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.util.BlurHashDecoder
+import org.jellyfin.androidtv.util.applyQualityOptimizations
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.math.round
@@ -83,6 +84,7 @@ class AsyncImageView @JvmOverloads constructor(
 					target(this@AsyncImageView)
 					data(placeholder)
 					if (circleCrop) transformations(CircleCropTransformation())
+					applyQualityOptimizations()
 				}.build())
 			} else {
 				imageLoader.enqueue(ImageRequest.Builder(context).apply {
@@ -95,6 +97,7 @@ class AsyncImageView @JvmOverloads constructor(
 					placeholder(placeholderOrBlurHash?.asImage())
 					if (circleCrop) transformations(CircleCropTransformation())
 					error(placeholder?.asImage())
+					applyQualityOptimizations()
 				}.build())
 			}
 		}

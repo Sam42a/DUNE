@@ -13,7 +13,7 @@ fun OptionsScreen.aboutCategory() = category {
 	link {
 		// Hardcoded strings for troubleshooting purposes
 		title = "Dune app version"
-		content = "0.0.4"
+		content = "0.0.6"
 		icon = R.drawable.app_logo
 	}
 
