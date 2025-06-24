@@ -20,7 +20,7 @@
         <item name="cardImageBackground">@color/transparent</item>
         <item name="cardViewBackground">@color/transparent</item>
         <item name="defaultSearchColor">@color/white</item>
-        <item name="android:colorButtonNormal">@color/white_transparent</item>
+        <item name="android:colorButtonNormal">@color/white</item>
         <item name="buttonDefaultNormalBackground">@color/button_dark_transparent</item>
         <item name="buttonDefaultHighlightBackground">@color/white_transparent</item>
         <item name="inputDefaultStrokeWidth">2dp</item>

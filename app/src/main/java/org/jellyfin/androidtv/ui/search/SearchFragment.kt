@@ -88,20 +88,14 @@ class SearchFragment : Fragment() {
 			Timber.e(e, "Error clearing backdrops in SearchFragment")
 		}
 
-		// Focus border for icons
-		val focusBorder = requireContext().getDrawable(R.drawable.icon_focus_border)
-		val searchIconFrame = binding.root.findViewById<android.widget.FrameLayout>(R.id.search_icon_frame)
+		// Focus handling for voice search icon
 		val voiceIconFrame = binding.root.findViewById<android.widget.FrameLayout>(R.id.voice_search_icon_frame)
-
-		val focusListener = View.OnFocusChangeListener { v, hasFocus ->
-			v.foreground = if (hasFocus) focusBorder else null
+		val voiceSearchIcon = binding.voiceSearchIcon
+		
+		// Set up focus change listener for the microphone icon
+		voiceSearchIcon.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+			// The color will be handled by the color state list we defined in XML
 		}
-		searchIconFrame.onFocusChangeListener = focusListener
-		voiceIconFrame.onFocusChangeListener = focusListener
-		searchIconFrame.isFocusable = true
-		voiceIconFrame.isFocusable = true
-		searchIconFrame.isFocusableInTouchMode = true
-		voiceIconFrame.isFocusableInTouchMode = true
 
 		// Voice search launcher
 		val voiceSearchLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -128,8 +122,9 @@ class SearchFragment : Fragment() {
 			}
 		}
 
+		// Set up click listeners for voice search
 		binding.voiceSearchIcon.setOnClickListener { launchVoiceSearch() }
-		binding.root.findViewById<android.widget.FrameLayout>(R.id.voice_search_icon_frame).setOnClickListener { launchVoiceSearch() }
+		voiceIconFrame.setOnClickListener { launchVoiceSearch() }
 
 		viewModel.searchResultsFlow
 			.onEach { results: Collection<SearchResultGroup> ->

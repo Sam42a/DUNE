@@ -6,83 +6,63 @@
     android:layout_height="match_parent">
 
 
-    <!-- Fragment showing search results -->
-
+    <!-- Search bar row -->
     <EditText
         android:id="@+id/search_bar"
         style="@style/Input.BlackWithWhiteBorder"
         android:layout_width="456dp"
         android:layout_height="44dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="449dp"
         android:hint="@string/lbl_search_hint"
         android:imeOptions="actionSearch"
         android:importantForAutofill="no"
         android:inputType="text"
         android:privateImeOptions="horizontalAlignment=right"
         android:textColorLink="#0B0B0B"
-        app:layout_constraintBottom_toBottomOf="@id/logo"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toEndOf="@id/voice_search_icon_frame"
-        app:layout_constraintTop_toTopOf="@id/logo"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.65"
         tools:ignore="VisualLintTextFieldSize,VisualLintBounds,TouchTargetSizeCheck" />
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="39dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="476dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/app_name"
-        android:scaleType="centerCrop"
-        android:src="@drawable/app_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/search_icon_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/logo"
-        app:layout_constraintStart_toEndOf="@id/logo"
-        app:layout_constraintTop_toTopOf="@id/logo"
-        app:layout_constraintVertical_bias="1.0" />
-
     <FrameLayout
         android:id="@+id/voice_search_icon_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/logo"
-        app:layout_constraintStart_toEndOf="@id/search_icon_frame"
-        app:layout_constraintTop_toTopOf="@id/logo"
-        app:layout_constraintVertical_bias="1.0">
+        android:layout_width="48dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="909dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/voice_search_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="43dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
             android:contentDescription="@string/lbl_voice_search"
-            android:src="@drawable/ic_mic"
-            tools:layout_editor_absoluteX="87dp"
-            tools:layout_editor_absoluteY="41dp" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:src="@drawable/ic_mic2"
+            android:tint="@color/mic_icon_tint" />
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/results_frame"
-        android:layout_width="953dp"
-        android:layout_height="339dp"
+        android:layout_width="1005dp"
+        android:layout_height="347dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="27dp"
+        android:layout_marginEnd="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo"
         app:layout_constraintVertical_bias="1.0"
-        tools:ignore="VisualLintBounds" />
+        tools:ignore="VisualLintBounds">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
