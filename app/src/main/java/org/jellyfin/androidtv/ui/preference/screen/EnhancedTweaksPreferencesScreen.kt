@@ -43,6 +43,12 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
                 setContent(R.string.show_white_borders_summary)
                 bind(userPreferences, UserPreferences.showWhiteBorders)
             }
+
+            checkbox {
+                setTitle(R.string.lbl_use_series_thumbnails)
+                setContent(R.string.lbl_use_series_thumbnails_description)
+                bind(userPreferences, UserPreferences.seriesThumbnailsEnabled)
+            }
         }
 
         category {
