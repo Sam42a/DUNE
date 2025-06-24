@@ -229,13 +229,23 @@ object BrowsingUtils {
 
 	@JvmStatic
 	fun createFavoriteItemsRequest(parentId: UUID, itemType: BaseItemKind) = GetItemsRequest(
-		fields = ItemRepository.itemFields,
-		includeItemTypes = setOf(itemType),
-		recursive = true,
 		parentId = parentId,
-		imageTypeLimit = 1,
+		includeItemTypes = setOf(itemType),
 		filters = setOf(ItemFilter.IS_FAVORITE),
 		sortBy = setOf(ItemSortBy.SORT_NAME),
+		recursive = true,
+		limit = 100,
+		fields = ItemRepository.itemFields,
+	)
+
+	@JvmStatic
+	fun createFavoriteItemsRequest(itemType: BaseItemKind) = GetItemsRequest(
+		includeItemTypes = setOf(itemType),
+		filters = setOf(ItemFilter.IS_FAVORITE),
+		sortBy = setOf(ItemSortBy.SORT_NAME),
+		recursive = true,
+		limit = 100,
+		fields = ItemRepository.itemFields,
 	)
 
 	@JvmStatic

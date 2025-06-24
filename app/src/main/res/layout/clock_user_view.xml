@@ -27,14 +27,6 @@
         android:visibility="gone"
         app:tint="@color/button_text" />
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" />
-
     <org.jellyfin.androidtv.ui.AsyncImageView
         android:id="@+id/clock_user_image"
         android:layout_width="wrap_content"
@@ -47,12 +39,12 @@
         android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-thin"
         android:format12Hour="h:mm"
         android:format24Hour="k:mm"
-        android:paddingStart="24dp"
+        android:paddingStart="8dp"
         android:shadowColor="@color/black"
-        android:shadowRadius="4"
+        android:textAlignment="viewStart"
         android:textColor="@color/white"
         android:textSize="15sp"
         tools:ignore="RtlSymmetry"

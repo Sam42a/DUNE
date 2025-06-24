@@ -3,19 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/wholeRow"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?android:attr/listPreferredItemHeight"
     android:layout_marginStart="100dp"
     android:layout_marginEnd="100dp"
-    android:duplicateParentState="true"
-    android:foreground="@drawable/button_default_ripple"
     android:padding="10dp"
-    tools:ignore="UnusedAttribute">
+    android:background="@drawable/item_row_background"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:duplicateParentState="true">
 
     <TextView
         android:id="@+id/watchedMark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:duplicateParentState="true"
         android:textColor="@drawable/button_default_text"
         android:textSize="18sp" />
 
@@ -39,7 +40,6 @@
         android:layout_marginStart="20dp"
         android:layout_toStartOf="@+id/runTime"
         android:layout_toEndOf="@+id/indexNo"
-        android:duplicateParentState="true"
         android:orientation="vertical">
 
         <TextView

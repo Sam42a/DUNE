@@ -112,6 +112,9 @@ object Destinations {
 		"ParentId" to parent.toString(),
 	)
 
+	// Favorites
+	val favorites = fragmentDestination<org.jellyfin.androidtv.ui.browsing.FavoritesFragment>()
+
 	// Live TV
 	val liveTvGuide = fragmentDestination<LiveTvGuideFragment>()
 	val liveTvSchedule = fragmentDestination<BrowseScheduleFragment>()
