@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="48dp"
         android:backgroundTint="#787272"
         android:fontFamily="sans-serif-condensed"
@@ -44,7 +44,7 @@
         android:textSize="24sp"
         android:typeface="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/notification"
         app:layout_goneMarginTop="0dp" />
@@ -58,19 +58,53 @@
         android:text="@string/no_user_warning"
         android:textColorLink="#FAFAFA"
         app:layout_constraintBottom_toTopOf="@+id/actions_container"
-        app:layout_constraintEnd_toEndOf="@id/actions_container"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/actions_container"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/users"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         tools:visibility="invisible" />
+
+    <org.jellyfin.androidtv.ui.ExpandableTextView
+        android:id="@+id/login_disclaimer"
+        android:layout_width="344dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="308dp"
+        android:layout_marginTop="384dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="3"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="This is the login disclaimer." />
+
+    <androidx.leanback.widget.HorizontalGridView
+        android:id="@+id/users"
+        android:layout_width="464dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="232dp"
+        android:layout_marginTop="136dp"
+        android:layout_marginEnd="38dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rowHeight="wrap_content"
+        tools:itemCount="4"
+        tools:listitem="@layout/view_circular_user_profile" />
 
     <LinearLayout
         android:id="@+id/actions_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="48dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,62 +121,20 @@
             android:baselineAligned="false"
             android:drawableStart="@drawable/ic_user_add"
             android:text="@string/add_user"
-            tools:layout_editor_absoluteX="56dp"
-            tools:layout_editor_absoluteY="357dp" />
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="317dp" />
 
         <org.jellyfin.androidtv.ui.ServerButtonView
             android:id="@+id/server_button"
-            android:layout_width="751dp"
-            android:layout_height="match_parent"
+            android:layout_width="482dp"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:padding="0dp"
             android:foreground="@drawable/button_default_ripple"
-            tools:ignore="TextSizeCheck"
-            tools:layout_editor_absoluteX="215dp"
-            tools:layout_editor_absoluteY="357dp">
+            android:padding="0dp"
+            tools:ignore="TextSizeCheck">
 
         </org.jellyfin.androidtv.ui.ServerButtonView>
 
     </LinearLayout>
-
-    <org.jellyfin.androidtv.ui.ExpandableTextView
-        android:id="@+id/login_disclaimer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="3"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="@id/actions_container"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/actions_container"
-        app:layout_constraintTop_toBottomOf="@+id/actions_container"
-        tools:text="This is the login disclaimer." />
-
-    <androidx.leanback.widget.HorizontalGridView
-        android:id="@+id/users"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="260dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="250dp"
-        android:layout_marginBottom="32dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/actions_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="1.0"
-        app:rowHeight="wrap_content"
-        tools:itemCount="4"
-        tools:listitem="@layout/view_circular_user_profile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

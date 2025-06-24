@@ -8,6 +8,7 @@ import org.jellyfin.androidtv.constant.ChangeTriggerType
 import org.jellyfin.androidtv.constant.ImageType
 import org.jellyfin.androidtv.data.repository.ItemRepository
 import org.jellyfin.androidtv.auth.repository.UserRepository
+import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.ui.browsing.BrowseRowDef
 import androidx.leanback.widget.BaseCardView
 import org.jellyfin.androidtv.ui.card.LegacyImageCardView
@@ -25,7 +26,8 @@ import org.jellyfin.sdk.model.api.SortOrder
 
 class HomeFragmentHelper(
     private val context: Context,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userPreferences: UserPreferences
 ) {
     companion object {
         private const val ITEM_LIMIT = 40
@@ -66,15 +68,15 @@ class HomeFragmentHelper(
 				val collectionsCardPresenter = object : CardPresenter(
 					false,  // showInfo - set to false to hide rating
 					ImageType.THUMB,  // Use THUMB for collections to show thumbnails
-					150  // Match Next Up row height
+					147  // Reduced height by 8% (from 160)
 				) {
 					override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
 						super.onBindViewHolder(viewHolder, item)
 						// Set fixed dimensions for all cards in the row
 						(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.apply {
 							setCardType(BaseCardView.CARD_TYPE_MAIN_ONLY)  // Changed from CARD_TYPE_INFO_UNDER to hide all text
-							// Match the dimensions of Next Up cards (width: 260dp, height: 150dp)
-							setMainImageDimensions(290, 160)
+							// Reduce height by 8% (from 160 to 147) and adjust width proportionally (from 290 to 266)
+							setMainImageDimensions(266, 147)
 							// Clear any content text that might be set
 							contentText = ""
 						}
@@ -181,6 +183,9 @@ class HomeFragmentHelper(
             fields = ItemRepository.itemFields
         )
 
+        // Check if series thumbnails are enabled
+        val useSeriesThumbnails = userPreferences[UserPreferences.seriesThumbnailsEnabled]
+
         // Create a custom row that will handle episode cards with consistent sizing
         return object : HomeFragmentRow {
             override fun addToRowsAdapter(
@@ -188,16 +193,20 @@ class HomeFragmentHelper(
                 cardPresenter: org.jellyfin.androidtv.ui.presentation.CardPresenter,
                 rowsAdapter: org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter<androidx.leanback.widget.Row>
             ) {
-                // Use a custom card presenter to ensure consistent sizing with Continue Watching
-                val customCardPresenter = object : org.jellyfin.androidtv.ui.presentation.CardPresenter(true, 150) {
+                // Create a custom card presenter that hides info below cards
+                val customCardPresenter = object : CardPresenter(
+                    false,  // showInfo - set to false to hide info below cards
+                    if (useSeriesThumbnails) ImageType.THUMB else ImageType.POSTER,  // Use THUMB or POSTER based on preference
+                    195  // Standard height for no-info cards
+                ) {
                     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
                         super.onBindViewHolder(viewHolder, item)
 
-                        // Apply default card presentation
-                        (viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.apply {
-                            setCardType(BaseCardView.CARD_TYPE_INFO_UNDER)
-                            // Match the dimensions of Continue Watching cards (width: 260dp, height: 150dp)
-                            setMainImageDimensions(260, 150)
+                        // Set fixed dimensions for all cards in the row
+                        (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
+                            cardView.setMainImageDimensions(260, 150) // Standard card dimensions
+                            // Set card type to not show info below
+                            cardView.cardType = BaseCardView.CARD_TYPE_MAIN_ONLY
                         }
                     }
                 }.apply {
@@ -237,6 +246,9 @@ class HomeFragmentHelper(
             excludeItemTypes = listOf(BaseItemKind.AUDIO_BOOK)
         )
 
+        // Check if series thumbnails are enabled
+        val useSeriesThumbnails = userPreferences[UserPreferences.seriesThumbnailsEnabled]
+
         // Create a custom row that will handle movie and episode cards differently
         return object : HomeFragmentRow {
             override fun addToRowsAdapter(
@@ -244,20 +256,19 @@ class HomeFragmentHelper(
                 cardPresenter: CardPresenter,
                 rowsAdapter: MutableObjectAdapter<Row>
             ) {
-                // Create a custom card presenter that uses thumb posters for movies and shows info
+                // Create a custom card presenter that shows info below cards
                 val continueWatchingPresenter = object : CardPresenter(
                     true,  // showInfo - set to true to show info below cards
-                    ImageType.THUMB,  // Use THUMB image type
-                    260  // Increase height to accommodate info text
+                    if (useSeriesThumbnails) ImageType.THUMB else ImageType.POSTER,  // Use THUMB or POSTER based on preference
+                    260  // staticHeight
                 ) {
                     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
                         super.onBindViewHolder(viewHolder, item)
 
-
                         // Set fixed dimensions for all cards in the row
                         (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
-                            cardView.setMainImageDimensions(260, 150) // Match Next up card height
-                            // Ensure card type is set to show info below
+                            cardView.setMainImageDimensions(260, 150) // Standard card dimensions
+                            // Set card type to show info below
                             cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER
                         }
                     }
@@ -272,7 +283,7 @@ class HomeFragmentHelper(
                     title,
                     query,
                     0,
-                    false,
+                    useSeriesThumbnails, // Pass the series thumbnails preference to prefer series poster
                     true,
                     arrayOf(ChangeTriggerType.TvPlayback, ChangeTriggerType.MoviePlayback)
                 )).addToRowsAdapter(context, continueWatchingPresenter, rowsAdapter)

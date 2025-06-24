@@ -278,13 +278,14 @@ class MainActivity : FragmentActivity() {
 
 		alertDialog.show()
 
-		// Style the message with less vertical padding
+		// Style the message with proper spacing and larger text
 		val messageView = alertDialog.findViewById<android.widget.TextView>(android.R.id.message)
 		messageView?.apply {
 			gravity = android.view.Gravity.CENTER
 			setTextColor(android.graphics.Color.WHITE)
-			textSize = 14f  // Slightly smaller text
-			setPadding(24, 16, 24, 12)  // Reduced padding
+			textSize = 16f  // Increased from 14f to 16f for better readability
+			// Add more bottom padding to create space above buttons
+			setPadding(24, 24, 24, 32)
 		}
 
 		try {
@@ -296,11 +297,16 @@ class MainActivity : FragmentActivity() {
 			positiveButton?.setTextColor(whiteColor)
 			negativeButton?.setTextColor(whiteColor)
 
-			// Set compact padding for buttons
+			// Set padding for buttons with more vertical padding
 			val buttonPadding = (12 * resources.displayMetrics.density).toInt()
-			val buttonPaddingVertical = (6 * resources.displayMetrics.density).toInt()
+			val buttonPaddingVertical = (10 * resources.displayMetrics.density).toInt()
 			positiveButton?.setPadding(buttonPadding, buttonPaddingVertical, buttonPadding, buttonPaddingVertical)
 			negativeButton?.setPadding(buttonPadding, buttonPaddingVertical, buttonPadding, buttonPaddingVertical)
+			
+			// Add margin between buttons
+			val buttonMargin = (8 * resources.displayMetrics.density).toInt()
+			(positiveButton?.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.marginEnd = buttonMargin / 2
+			(negativeButton?.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.marginStart = buttonMargin / 2
 			
 			// Center the buttons in their container
 			(negativeButton?.parent as? android.widget.LinearLayout)?.apply {

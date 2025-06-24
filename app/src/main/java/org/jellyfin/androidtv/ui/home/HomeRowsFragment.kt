@@ -2,6 +2,7 @@ package org.jellyfin.androidtv.ui.home
 
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.ui.home.HomeFragmentViewsRow
+import org.jellyfin.androidtv.preference.UserPreferences
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -20,6 +21,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -77,7 +80,8 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 	private val keyProcessor by inject<KeyProcessor>()
 	private val genreRowPreferences by inject<GenreRowPreferences>()
 
-	private val helper by lazy { HomeFragmentHelper(requireContext(), userRepository) }
+	private val userPreferences by inject<UserPreferences>()
+	private val helper by lazy { HomeFragmentHelper(requireContext(), userRepository, userPreferences) }
 
 	// Data
 	private var currentItem: BaseRowItem? = null
@@ -160,28 +164,42 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 			// Add sections to layout
 			withContext(Dispatchers.Main) {
 				// Create the CardPresenter with the desired size
-				// Parameters: (showInfo, staticHeight)
-				// Using increased dimensions (30% larger) for both 'Recently Added' and genre rows
-                val cardPresenter = CardPresenter(true, 195).apply {
+				val cardPresenter = CardPresenter(true, 195).apply {
                     // Set home screen flag to adjust episode card sizes
                     setHomeScreen(true)
                 } // 150px * 1.3 = 195px height (30% increase)
 
-				// Add rows in order
 				val rowsAdapter = adapter as MutableObjectAdapter<Row>
+				
+				// Add notification and now playing rows first
 				notificationsRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
 				nowPlaying.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				for (row in rows) row.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				// Add My Collections row if enabled in preferences
-				if (userSettingPreferences.get(userSettingPreferences.showMyCollectionsRow)) {
-					helper.loadMyCollectionsRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+
+				// Add main content rows
+				rows.forEach { row ->
+					try {
+						row.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+					} catch (e: Exception) {
+						Timber.e(e, "Error adding row to adapter")
+					}
 				}
 
-                // Add Favorites row if enabled
-				                // Add Favorites row if enabled
+				// Additional rows can be added here if needed in the future
+
+                // Add Favorites and My Collections rows if enabled
                 if (userSettingPreferences.get(userSettingPreferences.showFavoritesRow)) {
                     Timber.d("Adding Favorites row")
                     helper.loadFavoritesRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+                }
+                
+                // Add My Collections row if enabled - placed right after Favorites
+                if (userSettingPreferences.get(userSettingPreferences.showMyCollectionsRow)) {
+                    try {
+                        Timber.d("Adding My Collections row")
+                        helper.loadMyCollectionsRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+                    } catch (e: Exception) {
+                        Timber.e(e, "Error loading collections row")
+                    }
                 }
 				if (userSettingPreferences.get(userSettingPreferences.showSciFiRow)) {
                     helper.loadSciFiRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
