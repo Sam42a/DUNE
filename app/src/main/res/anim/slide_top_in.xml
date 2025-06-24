@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
-        android:duration="75"
-        android:fromYDelta="-40%p"
+        android:duration="0"
+        android:fromYDelta="0"
         android:toYDelta="0"
         android:interpolator="@android:interpolator/linear_out_slow_in" />
 
     <alpha
-        android:duration="75"
-        android:fromAlpha="0.0"
+        android:duration="0"
+        android:fromAlpha="1.0"
         android:toAlpha="1.0"
         android:interpolator="@android:interpolator/linear_out_slow_in" />
 </set>

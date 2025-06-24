@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true">
-        <scale
-            android:duration="200"
-            android:fromXScale="1.0"
-            android:fromYScale="1.0"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toXScale="1.05"
-            android:toYScale="1.05" />
-    </item>
-    <item>
-        <scale
-            android:duration="200"
-            android:fromXScale="1.05"
-            android:fromYScale="1.05"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toXScale="1.0"
-            android:toYScale="1.0" />
-    </item>
+    <!-- Animation removed for better performance -->
+    <item android:state_focused="true" />
+    <item />
 </selector>
