@@ -1,89 +1,110 @@
-<h1 align="center">Jellyfin Android TV</h1>
-<h3 align="center">Part of the <a href="https://jellyfin.org">Jellyfin Project</a></h3>
+# DUNE - Jellyfin Android TV Client
 
----
+[![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue?style=for-the-badge)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![Latest Release](https://img.shields.io/github/v/release/Sam42a/DUNE?style=for-the-badge&label=Latest%20Release)](https://github.com/Sam42a/DUNE/releases/latest)
+[![GitHub Stars](https://img.shields.io/github/stars/Sam42a/DUNE?style=for-the-badge&label=Stars)](https://github.com/Sam42a/DUNE/stargazers)
+[![Support Me](https://img.shields.io/badge/Support_Me-Buy_a_Coffee-orange?style=for-the-badge)](https://coff.ee/sam42)
 
 <p align="center">
-<img alt="Logo banner" src="https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/banner-logo-solid.svg?sanitize=true"/>
-<br/><br/>
-<a href="https://github.com/jellyfin/jellyfin-androidtv">
-<img alt="GPL 2.0 License" src="https://img.shields.io/github/license/jellyfin/jellyfin-androidtv.svg"/>
-</a>
-<a href="https://github.com/jellyfin/jellyfin-androidtv/releases">
-<img alt="Current Release" src="https://img.shields.io/github/release/jellyfin/jellyfin-androidtv.svg"/>
-</a>
-<a href="https://translate.jellyfin.org/projects/jellyfin-android/jellyfin-androidtv/">
-<img alt="Translation Status" src="https://translate.jellyfin.org/widgets/jellyfin-android/-/jellyfin-androidtv/svg-badge.svg"/>
-</a>
-<br/>
-<a href="https://opencollective.com/jellyfin">
-<img alt="Donate" src="https://img.shields.io/opencollective/all/jellyfin.svg?label=backers"/>
-</a>
-<a href="https://features.jellyfin.org">
-<img alt="Feature Requests" src="https://img.shields.io/badge/fider-vote%20on%20features-success.svg"/>
-</a>
-<a href="https://matrix.to/#/+jellyfin:matrix.org">
-<img alt="Chat on Matrix" src="https://img.shields.io/matrix/jellyfin:matrix.org.svg?logo=matrix"/>
-</a>
-<a href="https://www.reddit.com/r/jellyfin">
-<img alt="Join our Subreddit" src="https://img.shields.io/badge/reddit-r%2Fjellyfin-%23FF5700.svg"/>
-</a>
-<br/>
-<a href="https://play.google.com/store/apps/details?id=org.jellyfin.androidtv">
-<img width="153" alt="Jellyfin on Google Play" src="https://jellyfin.org/images/store-icons/google-play.png"/>
-</a>
-<a href="https://www.amazon.com/gp/aw/d/B07TX7Z725">
-<img width="153" alt="Jellyfin on Amazon Appstore" src="https://jellyfin.org/images/store-icons/amazon.png"/>
-</a>
-<a href="https://f-droid.org/en/packages/org.jellyfin.androidtv/">
-<img width="153" alt="Jellyfin on F-Droid" src="https://jellyfin.org/images/store-icons/fdroid.png"/>
-</a>
-<br/>
-<a href="https://repo.jellyfin.org/releases/client/androidtv/">Download archive</a>
+  <img src="https://i.imgur.com/qvsQBdr.png" alt="DUNE Logo" width="300">
+  <br>
+  <img src="https://i.imgur.com/x38f0Tw.png" alt="DUNE Screenshot" width="800">
 </p>
 
-Jellyfin Android TV is a Jellyfin client for Android TV, Nvidia Shield, and Amazon Fire TV devices.
-We welcome all contributions and pull requests! If you have a larger feature in mind please open an
-issue so we can discuss the implementation before you start. 
+> **Copyright © 2025 Sam42a**  
+> Based on [Jellyfin Android TV](https://github.com/jellyfin/jellyfin-androidtv) (C) Jellyfin Contributors
+
+## About
+
+**DUNE** is a modified version of the official [Jellyfin](https://jellyfin.org/) Android TV client with enhanced UI/UX and additional customization options.
+
+> **Note**: This is an unofficial fork not affiliated with the Jellyfin project. The official Jellyfin Android TV client can be found at [jellyfin/jellyfin-androidtv](https://github.com/jellyfin/jellyfin-androidtv).
 
 ## Translating
 
-Translations can be improved very easily from our
-[Weblate](https://translate.jellyfin.org/projects/jellyfin-android/jellyfin-androidtv) instance.
-Look through the following graphic to see if your native language could use some work!
+This project uses the same translation system as the original Jellyfin Android TV client. If you'd like to help, instead please contribute to the [official Jellyfin Weblate instance](https://translate.jellyfin.org/projects/jellyfin-android/jellyfin-androidtv).
 
-<a href="https://translate.jellyfin.org/engage/jellyfin-android/">
-<img alt="Detailed Translation Status" src="https://translate.jellyfin.org/widgets/jellyfin-android/-/jellyfin-androidtv/multi-auto.svg"/>
-</a>
+## ✨ Key Features
 
-## Build Process
+### 🎨 Visual & Interface
+- **Modernized UI Framework**
+  - 🏠 Redesigned homescreen with improved content hierarchy
+  - 🔑 Enhanced login experience with visual feedback 
+  - 🔑 Default avatars for users without profile images
+  - 🔍 Intuitive search interface with voice input
+  - 🎭 Multiple theme options including OLED-optimized dark mode, based on [![Jellyfin Android TV OLED](https://img.shields.io/badge/Jellyfin%20Android%20TV-OLED-blue?logo=github)](https://github.com/LitCastVlog/jellyfin-androidtv-OLED) 
 
-### Dependencies
+### 🛠️ Customization
+- **Library Presentation**
+  - 📚 Toggle between classic and modern layouts
+  - 🖼️ Dynamic backdrops from media artwork
+  - 🎬 Customizable homescreen rows (genres, favorites, collections)
 
-- Android Studio
+### 🎥 Media Experience
+- **Enhanced Playback**
+  - 🎬 Advanced subtitle controls
+  - 🎨 Customizable background effects
+  - ⚡ Optimized performance
 
-### Build
+### ⚙️ Technical Improvements
+- 🚀 Reduced memory usage
+- ⚡ Faster app startup
+- 📦 Side-by-side installation with official client
 
-1. Clone or download this repository
 
-   ```sh
-   git clone https://github.com/jellyfin/jellyfin-androidtv.git
-   cd jellyfin-androidtv
-   ```
+## 🛠️ Building from Source
 
-2. Open the project in Android Studio and run it from there or build an APK directly through Gradle:
+### Requirements
+- Android Studio Giraffe (2022.3.1+)
+- Android SDK (API 35)
+- OpenJDK 21+
 
-   ```sh
-   ./gradlew assembleDebug
-   ```
-   
-   Add the Android SDK to your PATH environment variable or create the ANDROID_SDK_ROOT variable for
-   this to work.
+### Build Instructions
+```bash
+# Clone repository
+git clone [https://github.com/Sam42a/DUNE.git](https://github.com/Sam42a/DUNE.git)
+cd DUNE-main
 
-### Deploy to device/emulator
+# Build standard version
+./gradlew assembleStandardRelease
 
-   ```sh
-   ./gradlew installDebug
-   ```
+# Or build enhanced version (coexists with official app)
+./gradlew assembleEnhancedRelease
 
-*You can also replace the "Debug" with "Release" to get an optimized release binary.*
+# Install on Device
+
+# Install debug version
+./gradlew installStandardDebug
+
+# Install enhanced release
+./gradlew installEnhancedRelease
+
+**Note:** The enhanced version uses package ID `Dune.enhanced.tv` which allows it to be installed alongside the original Jellyfin app.
+
+
+```
+
+## Third-Party Libraries
+
+This project uses the following third-party libraries:
+
+- **Jellyfin SDK** - [GPL-2.0](https://github.com/jellyfin/sdk-kotlin)
+- **AndroidX Libraries** - [Apache-2.0](https://developer.android.com/jetpack/androidx)
+- **Kotlin Coroutines** - [Apache-2.0](https://github.com/Kotlin/kotlinx.coroutines)
+- **Koin** - [Apache-2.0](https://insert-koin.io/)
+- **Coil** - [Apache-2.0](https://coil-kt.github.io/coil/)
+- **Markwon** - [Apache-2.0](https://noties.io/Markwon/)
+- **Timber** - [Apache-2.0](https://github.com/JakeWharton/timber)
+- **ACRA** - [Apache-2.0](https://github.com/ACRA/acra)
+- **Kotest** - [Apache-2.0](https://kotest.io/)
+- **MockK** - [Apache-2.0](https://mockk.io/)
+## Acknowledgments
+
+This project is based on the work of the Jellyfin Contributors. Special thanks to all the developers and community members who have contributed to the Jellyfin Android TV project.
+
+## License
+
+This project is licensed under the **GNU General Public License v2.0 (GPL-2.0)**. See the [LICENSE](LICENSE) file for details.
+
+
+
