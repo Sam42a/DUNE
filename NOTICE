@@ -1,0 +1,69 @@
+Dune - Jellyfin Android TV Client
+Copyright (C) 2023-2025 Sam42a
+
+This is a fork of Jellyfin for Android TV, which is free and open source software
+distributed under the terms of the GNU General Public License v2.0 (GPL-2.0).
+
+---
+
+Original Jellyfin Android TV:
+Copyright (C) 2017-2025 Jellyfin Contributors
+
+This product includes software developed by the Jellyfin Project (https://jellyfin.org/).
+Original source code and NOTICE file available at:
+https://github.com/jellyfin/jellyfin-androidtv
+
+---
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+---
+
+Third-party libraries used in this project:
+
+- Jellyfin SDK (GPL-2.0)
+  https://github.com/jellyfin/sdk-kotlin
+
+- AndroidX Libraries (Apache-2.0)
+  https://developer.android.com/jetpack/androidx
+
+- Kotlin Coroutines (Apache-2.0)
+  https://github.com/Kotlin/kotlinx.coroutines
+
+- Koin (Apache-2.0)
+  https://insert-koin.io/
+
+- Coil (Apache-2.0)
+  https://coil-kt.github.io/coil/
+
+- Markwon (Apache-2.0)
+  https://github.com/noties/Markwon
+
+- Timber (Apache-2.0)
+  https://github.com/JakeWharton/timber
+
+- ACRA (Apache-2.0)
+  https://github.com/ACRA/acra
+
+- Kotest (Apache-2.0)
+  https://kotest.io/
+
+- MockK (Apache-2.0)
+  https://mockk.io/
+
+- ExoPlayer (Apache-2.0)
+  https://exoplayer.dev/
+
+Full license texts are available in the respective library source code and in the
+app/src/main/assets/licenses directory.
