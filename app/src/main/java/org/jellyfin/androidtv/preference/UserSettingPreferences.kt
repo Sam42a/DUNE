@@ -17,7 +17,7 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     val showAnimationRow = booleanPreference("showAnimationRow", false)
     val showActionRow = booleanPreference("showActionRow", false)
     val showActionAdventureRow = booleanPreference("showActionAdventureRow", false)
-    val showFavoritesRow = booleanPreference("showFavoritesRow", true)
+    val showFavoritesRow = booleanPreference("showFavoritesRow", false)
     val showMyCollectionsRow = booleanPreference("showMyCollectionsRow", true)
     val showSciFiRow = booleanPreference("showSciFiRow", false)
     val showDocumentaryRow = booleanPreference("showDocumentaryRow", false)
