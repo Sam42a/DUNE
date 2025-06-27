@@ -16,17 +16,20 @@ enum class AppTheme(
 	DARK(R.string.pref_theme_dark),
 
 	/**
-	 * The "classic" emerald theme
+	 * OLED Dark theme based on https://github.com/LitCastVlog/jellyfin-androidtv-OLED fork theme
 	 */
 	EMERALD(R.string.pref_theme_emerald),
 
 	/**
-	 * A theme with a more muted accent color, inspired by CTalvio's Monochromic CSS theme for Jellyfin Web
+	 * The "classic" emerald theme enhanced
 	 */
 	MUTED_PURPLE(R.string.pref_theme_muted_purple),
 
 	/**
-	 * A minimal theme optimized for low-end devices with basic colors and reduced animations
+	 * A minimal theme optimized and based on the ElegantFin theme for the web
 	 */
 	BASIC(R.string.pref_theme_basic)
 }
+    /**
+	 * A minimal Dark theme optimized for low-end devices with basic colors and reduced animations
+     */
