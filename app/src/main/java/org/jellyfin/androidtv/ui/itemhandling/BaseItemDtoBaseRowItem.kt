@@ -144,12 +144,20 @@ open class BaseItemDtoBaseRowItem @JvmOverloads constructor(
 				), fillWidth, fillHeight
 			)
 
-			else -> imageHelper.getPrimaryImageUrl(
-				baseItem!!,
-				preferParentThumb,
-				null,
-				fillHeight
-			)
+			else -> {
+				val item = baseItem ?: return null
+				// Only use preferParentThumb for episodes and seasons, not for movies or other types
+				val useParentThumb = when (item.type) {
+					BaseItemKind.EPISODE, BaseItemKind.SEASON -> preferParentThumb
+					else -> false
+				}
+				imageHelper.getPrimaryImageUrl(
+					item,
+					useParentThumb,
+					null,
+					fillHeight
+				)
+			}
 		}
 	}
 

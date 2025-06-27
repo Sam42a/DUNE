@@ -113,7 +113,7 @@ class HomeFragmentHelper(
                 BaseItemKind.MUSIC_ARTIST,
                 BaseItemKind.MUSIC_ALBUM,
                 BaseItemKind.MUSIC_VIDEO,
-                BaseItemKind.AUDIO
+                BaseItemKind.AUDIO,
             )
         )
 
@@ -186,7 +186,7 @@ class HomeFragmentHelper(
         // Check if series thumbnails are enabled
         val useSeriesThumbnails = userPreferences[UserPreferences.seriesThumbnailsEnabled]
 
-        // Create a custom row that will handle episode cards with consistent sizing
+        //  custom row that will handle episode cards with consistent sizing
         return object : HomeFragmentRow {
             override fun addToRowsAdapter(
                 context: Context,
@@ -214,7 +214,7 @@ class HomeFragmentHelper(
                     setUniformAspect(true)
                 }
 
-                // Add the row with our custom card presenter
+                // the row with our custom card presenter
                 HomeFragmentBrowseRowDefRow(BrowseRowDef(
                     context.getString(R.string.lbl_next_up),
                     query,
@@ -249,7 +249,7 @@ class HomeFragmentHelper(
         // Check if series thumbnails are enabled
         val useSeriesThumbnails = userPreferences[UserPreferences.seriesThumbnailsEnabled]
 
-        // Create a custom row that will handle movie and episode cards differently
+        // custom row that will handle movie and episode cards differently
         return object : HomeFragmentRow {
             override fun addToRowsAdapter(
                 context: Context,
@@ -259,13 +259,14 @@ class HomeFragmentHelper(
                 // Create a custom card presenter that shows info below cards
                 val continueWatchingPresenter = object : CardPresenter(
                     true,  // showInfo - set to true to show info below cards
-                    if (useSeriesThumbnails) ImageType.THUMB else ImageType.POSTER,  // Use THUMB or POSTER based on preference
+                    if (useSeriesThumbnails) ImageType.THUMB else ImageType.THUMB,  // Use THUMB or POSTER etc based on preference
                     260  // staticHeight
                 ) {
                     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
                         super.onBindViewHolder(viewHolder, item)
 
-                        // Set fixed dimensions for all cards in the row
+
+                        // Set fixed dimensions for all cards in the rows
                         (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
                             cardView.setMainImageDimensions(260, 150) // Standard card dimensions
                             // Set card type to show info below
@@ -283,7 +284,7 @@ class HomeFragmentHelper(
                     title,
                     query,
                     0,
-                    useSeriesThumbnails, // Pass the series thumbnails preference to prefer series poster
+                    useSeriesThumbnails, // Pass the series thumbnails preference to prefer series thumb images
                     true,
                     arrayOf(ChangeTriggerType.TvPlayback, ChangeTriggerType.MoviePlayback)
                 )).addToRowsAdapter(context, continueWatchingPresenter, rowsAdapter)
