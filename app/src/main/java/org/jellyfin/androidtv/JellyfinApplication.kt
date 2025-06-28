@@ -17,6 +17,7 @@ import org.jellyfin.androidtv.integration.LeanbackChannelWorker
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.telemetry.TelemetryService
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 @Suppress("unused")
@@ -27,8 +28,15 @@ class JellyfinApplication : Application() {
 		// Don't run in ACRA service
 		if (ACRA.isACRASenderServiceProcess()) return
 
+		// Initialize Timber
+		if (BuildConfig.DEBUG) {
+			Timber.plant(Timber.DebugTree())
+		}
+
 		val notificationsRepository by inject<NotificationsRepository>()
 		notificationsRepository.addDefaultNotifications()
+
+		Timber.d("Application created")
 	}
 
 	/**

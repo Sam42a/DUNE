@@ -5,6 +5,7 @@
     <string name="pref_subtitles_vertical_offset_center">Center</string>
     <string name="media_image">Media image</string>
     <string name="profile_picture">Profile picture</string>
+    <string name="app_name">DUNE</string>
     <string name="app_name_release" translatable="false" tools:ignore="UnusedResources">DUNE</string>
     <string name="app_name_debug" translatable="false" tools:ignore="UnusedResources">DUNE Debug</string>
     <string name="video_error_unknown_error">Failed to load video</string>
@@ -402,7 +403,7 @@
     <string name="lbl_hide_unwatched_count">When the item is watched</string>
     <string name="lbl_hide_watched_checkmark">When there are episodes remaining</string>
     <string name="lbl_use_series_thumbnails">Prefer series thumbnails</string>
-    <string name="lbl_use_series_thumbnails_description">Use series thumbnails instead of individual episode thumbnails</string>
+    <string name="lbl_use_series_thumbnails_description">Use series thumbnails instead of individual episode thumbnails AKA no spoilers</string>
     <string name="auto_sign_in">Automatic sign in</string>
     <string name="user_picker_disable_title">Disable</string>
     <string name="user_picker_disable_summary">Always show the sign in screen</string>
@@ -650,7 +651,24 @@
     <string name="audio">Audio</string>
     <string name="fullscreen">Fullscreen</string>
     <string name="genre_row_prefs">Genre Row Preferences</string>
-    <string name="genre_row_loading">Loading genres…</string>
+    <!-- Update related strings -->
+    <string name="app_updater_channel_name">App Updates</string>
+    <string name="app_updater_channel_description">Notifications for app updates</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_available_title">Update Available</string>
+    <string name="update_available_message">New version %s is available</string>
+    <string name="install_update">Install Update</string>
+    <string name="install_error">Error installing update: %s</string>
+    <string name="update_downloading_title">Downloading Update</string>
+    <string name="update_downloading_message">Downloading version %s…</string>
+    <string name="update_download_failed">Download failed: %s</string>
+    <string name="update_no_updates">No updates available!</string>
+    <string name="update_download_complete">Download complete. Installing…</string>
+    <string name="update_error_title">Update Error</string>
+    <string name="update_install">Install Update</string>
+    <string name="update_later">Later</string>
+
+    <string name="lbl_genre_row_loading">Loading genres…</string>
     <string name="genre_row_movie">Movie Genres</string>
     <string name="genre_row_tvshow">TV Show Genres</string>
     <string name="show_comedy_row">Show Comedy Row</string>

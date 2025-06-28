@@ -21,10 +21,10 @@ android {
 		targetSdk = libs.versions.android.targetSdk.get().toInt()
 
 		// Release version
-		applicationId = namespace
+		applicationId = "dune.enhanced.tv"
 		versionName = project.getVersionName()
 		versionCode = getVersionCode(versionName!!)
-		setProperty("archivesBaseName", "Dune.androidtv-V0.4")
+		setProperty("archivesBaseName", "Dune.androidtv-${versionName}")
 	}
 
 	buildFeatures {
@@ -100,7 +100,7 @@ android {
 			resValue("string", "app_search_suggest_intent_data", "content://${applicationId}.content/intent")
 
 			// Set custom APK filename
-			setProperty("archivesBaseName", "Dune.androidtv-0.4")
+			setProperty("archivesBaseName", "Dune.androidtv-0.6")
 		}
 	}
 
@@ -197,7 +197,11 @@ dependencies {
 	// Markdown
 	implementation(libs.bundles.markwon)
 
-	// Image utility
+    // Logging
+    implementation(libs.timber)
+    implementation(libs.slf4j.timber)
+
+    // Image utility
 	implementation(libs.bundles.coil)
 	implementation("com.github.bumptech.glide:glide:4.16.0")
 	implementation("androidx.viewpager2:viewpager2:1.0.0")
@@ -213,6 +217,9 @@ dependencies {
 	// Logging
 	implementation(libs.timber)
 	implementation(libs.slf4j.timber)
+
+	// Network
+	implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
 	// Compatibility (desugaring)
 	coreLibraryDesugaring(libs.android.desugar)
