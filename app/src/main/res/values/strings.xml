@@ -35,7 +35,7 @@
     <string name="show_action_adventure_row">Show Action &amp; Adventure row</string>
     <string name="genre_row_favorites">Favorites</string>
     <string name="show_favorites_row">Show Favorites row</string>
-    <string name="show_my_collections_row">Show My Collections row</string>
+    <string name="show_my_collections_row">Show Collections row</string>
     <string name="show_suggested_for_you_row">Show Suggested Movies row</string>
     <string name="show_suggested_tv_shows_row">Show Suggested TV Shows row</string>
 <string name="lbl_suggested_tv_shows">Suggested TV Shows</string>
@@ -55,7 +55,7 @@
     <string name="lbl_favorite_channels">Favorite channels</string>
     <string name="lbl_other_channels">Other channels</string>
     <string name="lbl_collections">Collections</string>
-    <string name="lbl_my_collections">My Collections</string>
+    <string name="lbl_my_collections">Collections</string>
     <string name="lbl_movies">Movies</string>
     <string name="lbl_tv_series">TV series</string>
     <string name="lbl_other">Other</string>

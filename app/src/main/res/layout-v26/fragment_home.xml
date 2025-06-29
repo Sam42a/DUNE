@@ -16,10 +16,11 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="890sp"
-        android:layout_marginTop="12sp"
+        android:layout_marginTop="13sp"
         android:fontFamily="sans-serif-thin"
+        android:textColor="@color/basic_button_text"
         android:textStyle="bold"
-        tools:ignore="VisualLintBounds" />
+        tools:ignore="VisualLintBounds,TextSizeCheck" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/toolbar"
@@ -41,9 +42,10 @@
         android:lineSpacingExtra="2sp"
         android:maxLines="1"
         android:text=""
-        android:textSize="20sp"
+        android:textColor="@color/basic_button_text"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:typeface="normal"
+        android:typeface="monospace"
         android:visibility="visible"
         tools:ignore="VisualLintBounds" />
 

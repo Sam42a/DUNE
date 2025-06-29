@@ -1,5 +1,6 @@
 package org.jellyfin.androidtv.ui.browsing
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ class SuggestedMoviesFragment : EnhancedBrowseFragment() {
 		showViews = false
 	}
 
+	@SuppressLint("StringFormatInvalid")
 	override fun setupQueries(rowLoader: RowLoader) {
 		lifecycleScope.launch {
 			val response = withContext(Dispatchers.IO) {
