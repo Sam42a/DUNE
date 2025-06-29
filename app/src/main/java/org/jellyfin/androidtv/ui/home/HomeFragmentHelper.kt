@@ -45,7 +45,7 @@ class HomeFragmentHelper(
 			includeItemTypes = setOf(BaseItemKind.BOX_SET),
 			recursive = true,
 			imageTypeLimit = 1,
-			limit = 20,
+			limit = 15,
 			sortBy = setOf(ItemSortBy.DATE_CREATED),
 			// Pass SortOrder.DESCENDING within a list or set
 			sortOrder = listOf(SortOrder.DESCENDING), // Or use setOf(SortOrder.DESCENDING)
@@ -105,7 +105,7 @@ class HomeFragmentHelper(
             isFavorite = true,
             sortBy = setOf(ItemSortBy.DATE_CREATED),
 			sortOrder = listOf(SortOrder.DESCENDING),
-            limit = 20,
+            limit = 15,
             fields = ItemRepository.itemFields,
             recursive = true,
             excludeItemTypes = setOf(
@@ -306,8 +306,8 @@ class HomeFragmentHelper(
             ),
             excludeItemTypes = listOf(BaseItemKind.EPISODE),
             genres = listOf(genreName),
-            sortBy = listOf(ItemSortBy.RANDOM),
-            limit = 50,
+            sortBy = listOf(ItemSortBy.DEFAULT),
+            limit = 10,
             recursive = true,
             fields = ItemRepository.itemFields,
             imageTypeLimit = 1,
@@ -328,7 +328,7 @@ class HomeFragmentHelper(
                 }
 
                 // Create and add the row with our custom card presenter
-                HomeFragmentBrowseRowDefRow(BrowseRowDef(genreName, query, 50, false, true))
+                HomeFragmentBrowseRowDefRow(BrowseRowDef(genreName, query, 10, false, true))
                     .addToRowsAdapter(context, noInfoCardPresenter, rowsAdapter)
             }
         }
