@@ -291,6 +291,10 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
 
 
     public void setItem(BaseRowItem item) {
+        if (binding == null) {
+            // Binding is not available, view is likely destroyed
+            return;
+        }
         if (item != null) {
             binding.title.setText(item.getFullName(requireContext()));
             InfoLayoutHelper.addInfoRow(requireContext(), item.getBaseItem(), binding.infoRow, true, false);
@@ -379,9 +383,11 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             };
 
     public void updateCounter(int position) {
-        if (mAdapter != null) {
-            binding.counter.setText(MessageFormat.format("{0} | {1}", position, mAdapter.getTotalItems()));
+        if (binding == null || mAdapter == null) {
+            // Binding or adapter not available, view is likely destroyed
+            return;
         }
+        binding.counter.setText(MessageFormat.format("{0} | {1}", position, mAdapter.getTotalItems()));
     }
 
     private void setRowDef(final BrowseRowDef rowDef) {
