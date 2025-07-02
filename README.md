@@ -1,12 +1,13 @@
-# DUNE - Jellyfin Android TV Client
+<h1 align="center">DUNE - Jellyfin Android TV Client</h1> 
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue?style=for-the-badge)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![Latest Release](https://img.shields.io/github/v/release/Sam42a/DUNE?style=for-the-badge&label=Latest%20Release)](https://github.com/Sam42a/DUNE/releases/latest)
-[![GitHub Stars](https://img.shields.io/github/stars/Sam42a/DUNE?style=for-the-badge&label=Stars)](https://github.com/Sam42a/DUNE/stargazers)
-[![Support Me](https://img.shields.io/badge/Support_Me-Buy_a_Coffee-orange?style=for-the-badge)](https://coff.ee/sam42)
+<div align="center" style="display: flex; gap: 5px; justify-content: center;">
+  <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"><img src="https://img.shields.io/badge/License-GPL_v2-blue?labelColor=555555&style=for-the-badge" alt="License: GPL v2"></a>
+  <a href="https://github.com/Sam42a/DUNE/releases/latest"><img src="https://img.shields.io/github/v/release/Sam42a/DUNE?label=Latest%20Release&labelColor=555555&style=for-the-badge" alt="Latest Release"></a>
+  <a href="https://github.com/Sam42a/DUNE/stargazers"><img src="https://img.shields.io/github/stars/Sam42a/DUNE?label=Stars&labelColor=555555&style=for-the-badge" alt="GitHub Stars"></a>
+  <a href="https://coff.ee/sam42"><img src="https://img.shields.io/badge/Support_Me-Buy_a_Coffee-orange?labelColor=555555&style=for-the-badge" alt="Support Me"></a>
+</div>
 
 <p align="center">
-  <img src="https://i.imgur.com/qvsQBdr.png" alt="DUNE Logo" width="300">
   <br>
   <img src="https://i.imgur.com/x38f0Tw.png" alt="DUNE Screenshot" width="800">
 </p>
