@@ -182,6 +182,9 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                 sortOptions.put(8, new SortOption(getString(R.string.lbl_runtime), ItemSortBy.RUNTIME, SortOrder.ASCENDING));
             }
             
+            // Add Production Year sort option
+            sortOptions.put(9, new SortOption(getString(R.string.lbl_production_year), ItemSortBy.PRODUCTION_YEAR, SortOrder.DESCENDING));
+            
             // Add Sort Order category
             sortOptions.put(100, new SortOption("Sort Order", null, null));
             sortOptions.put(101, new SortOption("Ascending", null, SortOrder.ASCENDING));

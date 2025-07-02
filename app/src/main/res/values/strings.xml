@@ -156,13 +156,14 @@
     <string name="lbl_enable_debug">Debug options</string>
     <string name="desc_debug">Provide extra information for debugging</string>
     <string name="lbl_showing">Showing</string>
-    <string name="genre_rows">Genre Rows (enable 5 or less for low end devices)</string>
+    <string name="genre_rows">Genre Rows (Enable 5 or less for better performance)</string>
     <string name="lbl_all_items">All items</string>
     <string name="lbl_sorted_by">sorted by</string>
     <string name="lbl_from">from</string>
     <string name="lbl_name">Name</string>
     <string name="lbl_date_added">Date added</string>
     <string name="lbl_premier_date">Premier date</string>
+    <string name="lbl_production_year">Production year</string>
     <string name="lbl_critic_rating">Critic rating</string>
     <string name="lbl_community_rating">Community rating</string>
     <string name="lbl_rating">Rating</string>
@@ -286,7 +287,7 @@
     <string name="lbl_my_media">My Media</string>
     <string name="lbl_my_media_small">My Media (Small)</string>
     <string name="lbl_my_media_extra_small">Media Folders</string>
-    <string name="desc_my_media_extra_small">Display media folders as simple buttons without images</string>
+    <string name="desc_my_media_extra_small">Display My media folders as buttons </string>
     <string name="pref_theme_purple_haze">Lavender Haze</string>
     <string name="pref_theme_dark">Dark Matter (Restart required)</string>
     <string name="pref_theme_emerald">Green forest</string>
@@ -703,6 +704,6 @@
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>
     <string name="enhanced_tweaks">Enhanced Tweaks</string>
-    <string name="enhanced_tweaks_description">Fine-tune app appearance and visuals</string>
+    <string name="enhanced_tweaks_description">Backdrop Settings,Genre Rows,App Themes,And more...</string>
     <string name="home_content_description">Home screen content</string>
 </resources>
