@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceScreen
+import org.jellyfin.androidtv.R
 
 class OptionsCategory(
 	internal val context: Context
@@ -20,12 +21,14 @@ class OptionsCategory(
 	}
 
 	fun build(screen: PreferenceScreen, container: OptionsUpdateFunContainer): PreferenceCategory {
-		return PreferenceCategory(context).also {
-			it.isPersistent = false
-			screen.addPreference(it)
-			it.title = title
+		return PreferenceCategory(context).also { category ->
+			category.isPersistent = false
+			// Apply custom style
+			category.layoutResource = R.layout.preference_category_custom
+			screen.addPreference(category)
+			category.title = title
 			nodes.forEach { node ->
-				node.build(it, container)
+				node.build(category, container)
 			}
 		}
 	}

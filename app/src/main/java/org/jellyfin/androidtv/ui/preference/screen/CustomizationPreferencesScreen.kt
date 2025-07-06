@@ -27,7 +27,6 @@ class CustomizationPreferencesScreen : OptionsFragment() {
 		link {
 			setTitle(R.string.enhanced_tweaks)
 			setContent(R.string.enhanced_tweaks_description)
-			icon = R.drawable.ic_settings
 			withFragment<EnhancedTweaksPreferencesScreen>()
 		}
 
