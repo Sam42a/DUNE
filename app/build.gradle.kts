@@ -164,6 +164,7 @@ dependencies {
 	// Kotlin
 	implementation(libs.kotlinx.coroutines)
 	implementation(libs.kotlinx.serialization.json)
+	implementation(kotlin("reflect"))
 
 	// Android(x)
 	implementation(libs.androidx.core)
