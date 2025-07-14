@@ -655,6 +655,19 @@
     <!-- Update related strings -->
     <string name="app_updater_channel_name">App Updates</string>
     <string name="app_updater_channel_description">Notifications for app updates</string>
+    
+    <!-- Stats Overlay -->
+    <string name="stats_title">Playback Information</string>
+    <string name="video_info">Video: %1$s • %2$s • %3$s\nProfile: %4$s</string>
+    <string name="audio_info">Audio: %1$s • %2$s • %3$s\nLanguage: %4$s</string>
+    <string name="playback_method">Playback: %1$s</string>
+    <string name="container">Container: %1$s</string>
+    <string name="transcoding_details">Transcoding Details:</string>
+    <string name="transcoding_protocol">Protocol: %1$s</string>
+    <string name="reason_for_transcoding">Reason for transcoding:</string>
+    <string name="direct_play">Direct Play</string>
+    <string name="transcoding">Transcoding</string>
+    <string name="resolution_na">N/A</string>
     <string name="update_checking">Checking for updates…</string>
     <string name="update_available_title">Update Available</string>
     <string name="update_available_message">New version %s is available</string>

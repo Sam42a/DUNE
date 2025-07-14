@@ -43,6 +43,7 @@ import org.jellyfin.androidtv.ui.playback.overlay.action.SelectQualityAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.SkipNextAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.SkipPreviousAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.ZoomAction;
+import org.jellyfin.androidtv.ui.playback.overlay.action.StatsAction;
 import org.jellyfin.androidtv.util.DateTimeExtensionsKt;
 import org.koin.java.KoinJavaComponent;
 
@@ -62,6 +63,7 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
     private SelectQualityAction selectQualityAction;
     private PlaybackSpeedAction playbackSpeedAction;
     private ZoomAction zoomAction;
+    private StatsAction statsAction;
     private ChapterAction chapterAction;
 
     // TV actions
@@ -114,6 +116,7 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
         selectAudioAction.dismissPopup();
         selectQualityAction.dismissPopup();
         zoomAction.dismissPopup();
+        if (statsAction != null) statsAction.dismissPopup();
 
         super.onDetachedFromHost();
     }
@@ -202,6 +205,8 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
         playbackSpeedAction.setLabels(new String[]{context.getString(R.string.lbl_playback_speed)});
         zoomAction = new ZoomAction(context, this);
         zoomAction.setLabels(new String[]{context.getString(R.string.lbl_zoom)});
+        statsAction = new StatsAction(context, this);
+        statsAction.setLabels(new String[]{"Stats"});
         chapterAction = new ChapterAction(context, this);
         chapterAction.setLabels(new String[]{context.getString(R.string.lbl_chapters)});
 
@@ -280,9 +285,10 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
         if (!playerAdapter.isLiveTv()) {
             secondaryActionsAdapter.add(playbackSpeedAction);
             secondaryActionsAdapter.add(selectQualityAction);
+            secondaryActionsAdapter.add(zoomAction);
+            secondaryActionsAdapter.add(statsAction);
         }
 
-        secondaryActionsAdapter.add(zoomAction);
     }
 
     @Override
