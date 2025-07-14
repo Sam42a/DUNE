@@ -8,6 +8,9 @@ import org.jellyfin.androidtv.ui.itemdetail.MyDetailsOverviewRow
 import org.jellyfin.androidtv.util.InfoLayoutHelper
 import org.jellyfin.androidtv.util.MarkdownRenderer
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.MediaSourceInfo
+import org.jellyfin.sdk.model.api.MediaStreamType
+import android.view.View
 
 class MyDetailsOverviewRowPresenter(
 	private val markdownRenderer: MarkdownRenderer,
@@ -42,6 +45,10 @@ class MyDetailsOverviewRowPresenter(
 				binding.fdGenreRow.isVisible = false
 			}
 
+			val resolution = getResolutionLabel(row.item.mediaSources?.firstOrNull())
+			binding.fdResolution.text = resolution
+			binding.fdResolution.visibility = if (resolution != null) View.VISIBLE else View.GONE
+
 			binding.fdButtonRow.removeAllViews()
 			for (button in row.actions) {
 				val parent = button.parent
@@ -61,6 +68,25 @@ class MyDetailsOverviewRowPresenter(
 
 		fun setInfoValue3(text: String?) {
 			binding.infoValue3.text = text
+		}
+
+		private fun getResolutionLabel(mediaSource: MediaSourceInfo?): String? {
+			if (mediaSource == null) return null
+
+			val videoStream = mediaSource.mediaStreams?.firstOrNull { it.type == MediaStreamType.VIDEO }
+			val width = videoStream?.width ?: return null
+			val height = videoStream.height ?: return null
+
+			// Determine resolution label based on width
+			return when {
+				width >= 7680 -> "8K"
+				width >= 3840 -> "4K"
+				width >= 2560 -> "QHD"
+				width >= 1920 -> "FHD"
+				width >= 1280 -> "HD"
+				width >= 720 -> "SD"
+				else -> "SD"
+			}
 		}
 	}
 
