@@ -227,7 +227,7 @@ class SdkPlaybackHelper(
 			playbackLauncher.launch(
 				context,
 				items,
-				pos.inWholeTicks.toInt(),
+				pos.inWholeMilliseconds.toInt(),
 				playbackControllerContainer.playbackController?.hasFragment() == true,
 				0,
 				shuffle,
