@@ -385,7 +385,8 @@ public class PlaybackController implements PlaybackControllerNotifiable {
     }
 
     protected void play(long position, @Nullable Integer forcedSubtitleIndex) {
-        Timber.i("Play called from state: %s with pos: %d and sub index: %d", mPlaybackState, position, forcedSubtitleIndex);
+        String forcedAudioLanguage = videoQueueManager.getValue().getLastPlayedAudioLanguageIsoCode();
+        Timber.i("Play called from state: %s with pos: %d, sub index: %d and forced audio: %s", mPlaybackState, position, forcedSubtitleIndex, forcedAudioLanguage);
 
         if (mFragment == null) {
             Timber.w("mFragment is null, returning");
@@ -474,7 +475,7 @@ public class PlaybackController implements PlaybackControllerNotifiable {
                 // undo setting mSeekPosition for liveTV
                 if (isLiveTv) mSeekPosition = -1;
 
-                VideoOptions internalOptions = buildExoPlayerOptions(forcedSubtitleIndex, item);
+                VideoOptions internalOptions = buildExoPlayerOptions(forcedSubtitleIndex, forcedAudioLanguage, item);
 
                 playInternal(getCurrentlyPlayingItem(), position, internalOptions);
                 mPlaybackState = PlaybackState.BUFFERING;
@@ -490,7 +491,11 @@ public class PlaybackController implements PlaybackControllerNotifiable {
     }
 
     @NonNull
-    private VideoOptions buildExoPlayerOptions(@Nullable Integer forcedSubtitleIndex, BaseItemDto item) {
+    private VideoOptions buildExoPlayerOptions(
+            @Nullable Integer forcedSubtitleIndex,
+            @Nullable String forcedAudioLanguage,
+            BaseItemDto item
+    ) {
         VideoOptions internalOptions = new VideoOptions();
         internalOptions.setItemId(item.getId());
         internalOptions.setMediaSources(item.getMediaSources());
@@ -506,6 +511,16 @@ public class PlaybackController implements PlaybackControllerNotifiable {
         MediaSourceInfo currentMediaSource = getCurrentMediaSource();
         if (!isLiveTv && currentMediaSource != null) {
             internalOptions.setMediaSourceId(currentMediaSource.getId());
+        }
+
+        if (forcedAudioLanguage != null) {
+            // find the first audio stream with the requested language
+            for (MediaStream stream : currentMediaSource.getMediaStreams()) {
+                if (stream.getType() == MediaStreamType.AUDIO && forcedAudioLanguage.equals(stream.getLanguage())) {
+                    internalOptions.setAudioStreamIndex(stream.getIndex());
+                    break;
+                }
+            }
         }
         DeviceProfile internalProfile = DeviceProfileKt.createDeviceProfile(
                 userPreferences.getValue(),
@@ -579,7 +594,20 @@ public class PlaybackController implements PlaybackControllerNotifiable {
         if (mFragment != null) mFragment.closePlayer();
     }
 
+    private int mLastIndex = -1;
+
     private void startItem(BaseItemDto item, long position, StreamInfo response) {
+        if (mVideoManager == null) {
+            Timber.w("Video manager is null, can't start item");
+            return;
+        }
+
+        if (mCurrentIndex != mLastIndex) {
+            clearPlaybackSessionOptions();
+            mCurrentOptions.setAudioStreamIndex(null);
+            mLastIndex = mCurrentIndex;
+        }
+
         if (!hasInitializedVideoManager() || !hasFragment()) {
             Timber.d("Error - attempting to play without:%s%s", hasInitializedVideoManager() ? "" : " [videoManager]", hasFragment() ? "" : " [overlay fragment]");
             return;
@@ -604,6 +632,19 @@ public class PlaybackController implements PlaybackControllerNotifiable {
         // get subtitle info
         mCurrentOptions.setSubtitleStreamIndex(response.getMediaSource().getDefaultSubtitleStreamIndex() != null ? response.getMediaSource().getDefaultSubtitleStreamIndex() : null);
         setDefaultAudioIndex(response);
+        
+        // Save the selected audio language for the next episode
+        if (mCurrentOptions.getAudioStreamIndex() != null) {
+            MediaSourceInfo currentMediaSource = getCurrentMediaSource();
+            if (currentMediaSource != null) {
+                for (MediaStream stream : currentMediaSource.getMediaStreams()) {
+                    if (stream.getType() == MediaStreamType.AUDIO && stream.getIndex() == mCurrentOptions.getAudioStreamIndex()) {
+                        videoQueueManager.getValue().setLastPlayedAudioLanguageIsoCode(stream.getLanguage());
+                        break;
+                    }
+                }
+            }
+        }
         Timber.d("default audio index set to %s remote default %s", mDefaultAudioIndex, response.getMediaSource().getDefaultAudioStreamIndex());
         Timber.d("default sub index set to %s remote default %s", mCurrentOptions.getSubtitleStreamIndex(), response.getMediaSource().getDefaultSubtitleStreamIndex());
 
