@@ -28,7 +28,12 @@ enum class AppTheme(
 	/**
 	 * A minimal theme optimized and based on the ElegantFin theme for the web
 	 */
-	BASIC(R.string.pref_theme_basic)
+	BASIC(R.string.pref_theme_basic),
+
+	/**
+	 * A Netflix-inspired theme with a dark background and red accents
+	 */
+	FLEXY(R.string.pref_theme_flexy)
 }
     /**
 	 * A minimal Dark theme optimized for low-end devices with basic colors and reduced animations

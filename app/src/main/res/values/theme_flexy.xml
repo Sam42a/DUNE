@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Jellyfin.Flexy" parent="Theme.Jellyfin">
+        <!-- Base colors -->
+        <item name="colorPrimary">@color/flexy_primary</item>
+        <item name="colorPrimaryDark">@color/flexy_status_bar</item>
+        <item name="colorAccent">@color/flexy_accent</item>
+        <item name="colorSecondary">@color/flexy_secondary</item>
+        <item name="android:colorPrimary">@color/flexy_primary</item>
+        <item name="android:colorPrimaryDark">@color/flexy_status_bar</item>
+        <item name="android:colorAccent">@color/flexy_accent</item>
+
+        <!-- Background and window -->
+        <item name="android:windowBackground">@color/flexy_background</item>
+        <item name="android:statusBarColor">@color/flexy_status_bar</item>
+        <item name="android:navigationBarColor">@color/flexy_nav_bar</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+
+        <!-- Card and UI elements -->
+        <item name="cardBackground">@color/flexy_card</item>
+        <item name="cardViewBackground">@color/transparent</item>
+        <item name="cardImageBackground">@color/transparent</item>
+        <item name="cardRounding">4dp</item>
+
+        <!-- Text colors -->
+        <item name="textColorPrimary">@color/flexy_text_primary</item>
+        <item name="textColorSecondary">@color/flexy_text_secondary</item>
+        <item name="headerTextColor">@color/flexy_text_primary</item>
+        <item name="defaultSearchColor">@color/flexy_text_primary</item>
+
+        <!-- Buttons -->
+        <item name="buttonBackground">@color/flexy_button_normal</item>
+        <item name="buttonTextColor">@color/flexy_text_primary</item>
+        <item name="android:colorButtonNormal">@color/flexy_button_normal</item>
+        <item name="buttonDefaultNormalBackground">@color/flexy_button_normal</item>
+        <item name="buttonDefaultHighlightBackground">@color/flexy_button_highlight</item>
+        <item name="buttonRounding">3dp</item>
+
+        <!-- Input fields -->
+        <item name="inputDefaultStrokeWidth">2dp</item>
+        <item name="inputDefaultStrokeColor">@color/flexy_accent</item>
+        <item name="inputDefaultHighlightBackground">@color/flexy_highlight</item>
+        <item name="inputRounding">3dp</item>
+
+        <!-- Surfaces -->
+        <item name="surfaceColor">@color/flexy_surface</item>
+        <item name="onSurfaceColor">@color/flexy_text_primary</item>
+        <item name="popupMenuBackground">@color/flexy_surface</item>
+        <item name="popupMenuRounding">3dp</item>
+
+        <!-- Progress bars -->
+        <item name="progressBackground">@color/flexy_card</item>
+        <item name="progressPrimary">@color/flexy_progress_fill</item>
+        <item name="progressSecondary">@color/flexy_highlight</item>
+
+        <!-- Icons -->
+        <item name="controlIconBackground">@color/flexy_button_normal</item>
+        <item name="controlIconForegroundActive">@color/flexy_accent</item>
+        <item name="controlIconForegroundInactive">@color/flexy_text_secondary</item>
+
+        <!-- QR Code -->
+        <item name="qrBackground">@color/white</item>
+        <item name="qrForeground">@color/flexy_primary</item>
+
+        <!-- Tile backgrounds -->
+        <item name="tile_port_person_bg">@color/flexy_tile_bg</item>
+        <item name="tile_user_bg">@color/flexy_tile_bg</item>
+        <item name="tile_port_video_bg">@color/flexy_tile_bg</item>
+        <item name="tile_land_folder_bg">@color/flexy_tile_bg</item>
+        <item name="tile_chapter_bg">@color/flexy_tile_bg</item>
+        <item name="tile_land_tv_bg">@color/flexy_tile_bg</item>
+        <item name="tile_port_tv_bg">@color/flexy_tile_bg</item>
+        <item name="tile_actors_bg">@color/flexy_tile_bg</item>
+        <item name="tile_land_photo_bg">@color/flexy_tile_bg</item>
+        <item name="tile_port_folder_bg">@color/flexy_tile_bg</item>
+        <item name="tile_land_series_timer_bg">@color/flexy_tile_bg</item>
+        <item name="tile_audio_bg">@color/flexy_tile_bg</item>
+        <item name="tile_artists_bg">@color/flexy_tile_bg</item>
+        <item name="tile_genres_bg">@color/flexy_tile_bg</item>
+        <item name="tile_search_bg">@color/flexy_tile_bg</item>
+        <item name="tile_suggestions_bg">@color/flexy_tile_bg</item>
+        <item name="tile_port_grid_bg">@color/flexy_tile_bg</item>
+        <item name="tile_letters_bg">@color/flexy_tile_bg</item>
+
+        <!-- Media Folders Buttons -->
+        <item name="mediaFolderButtonFocusedBackground">@color/flexy_button_highlight</item>
+        <item name="mediaFolderButtonTextColor">@color/flexy_text_primary</item>
+        <item name="mediaFolderButtonFocusedTextColor">@color/flexy_text_primary</item>
+        <item name="tile_port_guide_bg">@color/flexy_tile_bg</item>
+        <item name="tile_port_series_timer_bg">@color/flexy_tile_bg</item>
+        <item name="tile_port_time_bg">@color/flexy_tile_bg</item>
+
+        <!-- Other -->
+        <item name="overlayDimDimmedLevel">30%</item>
+        <item name="cardBorderDrawable">@drawable/flexy_card_border</item>
+
+        <!-- Backdrop Dimming -->
+        <item name="background_filter">@color/flexy_background_filter</item>
+        <!-- Backdrop Fading Color -->
+        <item name="backdrop_fading_color">@color/flexy_highlight</item>
+        <item name="browseTitleViewLayout">@layout/view_lb_browse_title</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:popupWindowStyle">@style/PopupWindow</item>
+        <item name="android:datePickerStyle">@style/DatePickerCustom</item>
+        <item name="rowHeaderStyle">@style/Widget.Jellyfin.Row.Header</item>
+    </style>
+
+    <!-- Preferences theme -->
+    <style name="Theme.Jellyfin.Flexy.Preferences" parent="Theme.Jellyfin.Preferences">
+        <item name="colorPrimary">@color/flexy_primary</item>
+        <item name="colorPrimaryDark">@color/flexy_status_bar</item>
+        <item name="colorAccent">@color/flexy_accent</item>
+        <item name="android:windowBackground">@color/flexy_background</item>
+    </style>
+</resources>

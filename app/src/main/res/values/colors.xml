@@ -157,28 +157,47 @@
     <color name="basic_hint">#666666</color>
     <color name="basic_divider">#1F1F1F</color>
     <color name="basic_highlight">#2A2A2A</color>
-    
+
     <!-- Button Colors -->
     <color name="basic_button_normal">#1AFFFFFF</color>
     <color name="basic_button_focused">#33FFFFFF</color>
     <color name="basic_button_pressed">#4DFFFFFF</color>
     <color name="basic_button_text">#FFFFFF</color>
-    
+
     <!-- Card Colors -->
     <color name="basic_card_background">#1A1A1A</color>
     <color name="basic_card_text">#EEEEEE</color>
-    
+
     <!-- Input Colors -->
     <color name="basic_input_background">#1A1A1A</color>
     <color name="basic_input_stroke">#333333</color>
     <color name="basic_input_text">#FFFFFF</color>
     <color name="basic_input_hint">#666666</color>
-    
+
     <!-- Progress Colors -->
     <color name="basic_progress_background">#333333</color>
     <color name="basic_progress_primary">#FFFFFF</color>
     <color name="basic_progress_secondary">#666666</color>
-    
+
     <!-- Status Bar -->
     <color name="basic_status_bar">#000000</color>
+
+    <!-- Flexy Theme (Netflix-inspired) -->
+    <color name="flexy_primary">#db0000</color>           <!-- Netflix Red -->
+    <color name="flexy_secondary">#831010</color>         <!-- Darker Red -->
+    <color name="flexy_accent">#db0000</color>            <!-- Netflix Red (Accent) -->
+    <color name="flexy_highlight">#ff1a1a</color>         <!-- Brighter Red for highlights -->
+    <color name="flexy_text_primary">#ffffff</color>       <!-- White text -->
+    <color name="flexy_text_secondary">#ffffff</color>    <!-- Light gray for secondary text -->
+    <color name="flexy_background">#0a0a0a</color>        <!-- Dark background -->
+    <color name="flexy_card">#1f1f1f</color>              /* Slightly lighter than background for cards */
+    <color name="flexy_surface">#000000</color>            /* Surface color for cards and elements */
+    <color name="flexy_button_normal">#00FFFFFF</color>      /* Dark gray for normal buttons */
+    <color name="flexy_button_highlight">#db0000</color>  /* Slightly lighter for button press */
+    <color name="flexy_progress_bg">#2a2a2a</color>       /* Darker background for progress bars */
+    <color name="flexy_progress_fill">#db0000</color>      /* Netflix Red for progress fill */
+    <color name="flexy_status_bar">#000000</color>         /* Black for status bar */
+    <color name="flexy_nav_bar">#000000</color>             /* Black for navigation bar */
+    <color name="flexy_background_filter">#000000</color> /* Semi-transparent background for filters */
+    <color name="flexy_tile_bg">#000000</color>           /* Background for tiles */
 </resources>
