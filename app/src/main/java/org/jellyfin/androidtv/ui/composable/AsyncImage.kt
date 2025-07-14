@@ -28,7 +28,7 @@ fun AsyncImage(
 	blurHash: String? = null,
 	placeholder: Drawable? = null,
 	aspectRatio: Float = 1f,
-	blurHashResolution: Int = 32,
+	blurHashResolution: Int = 22,
 	scaleType: ImageView.ScaleType? = null,
 ) {
 	// Only the important properties are added to AsyncImageState

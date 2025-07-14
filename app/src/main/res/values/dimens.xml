@@ -19,9 +19,9 @@
     <dimen name="card_border_padding">2dp</dimen>
 
     <!-- Custom row spacing -->
-    <dimen name="home_row_spacing">24dp</dimen>
+    <dimen name="home_row_spacing">5dp</dimen>
     <dimen name="home_row_spacing_large">36dp</dimen>
-    
+
     <!-- Exit dialog dimensions -->
     <dimen name="exit_dialog_min_width">280dp</dimen>
     <dimen name="exit_dialog_padding">16dp</dimen>

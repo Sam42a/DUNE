@@ -36,7 +36,7 @@ import org.jellyfin.androidtv.ui.composable.rememberCurrentTime
 fun Logo(modifier: Modifier = Modifier) {
 	Box(
 		modifier = modifier
-			.size(48.dp)
+			.size(30.dp)
 	) {
 		Image(
 			painter = painterResource(R.drawable.app_logo),
@@ -88,8 +88,9 @@ fun BoxScope.ToolbarButtons(
 	Row(
 		modifier = Modifier
 			.childFocusRestorer()
-			.align(Alignment.CenterEnd),
-		horizontalArrangement = Arrangement.spacedBy(8.dp),
+			.align(Alignment.CenterEnd)
+			.padding(end = 4.dp), // Add some right padding to the entire row
+		horizontalArrangement = Arrangement.spacedBy(4.dp), // Reduced from 8.dp to 4.dp
 	) {
 		JellyfinTheme(
 			colorScheme = JellyfinTheme.colorScheme.copy(

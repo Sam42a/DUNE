@@ -258,7 +258,9 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
 
     public void loadRows(List<BrowseRowDef> rows) {
         mRowsAdapter = new MutableObjectAdapter<>(new PositionableListRowPresenter());
-        mCardPresenter = new CardPresenter(false, 140);
+        // Match home screen card configuration but hide info text
+    mCardPresenter = new CardPresenter(false, 195); // Set showInfo to false to hide text below cards
+    mCardPresenter.setHomeScreen(true);
         ClassPresenterSelector ps = new ClassPresenterSelector();
         ps.addClassPresenter(GridButtonBaseRowItem.class, new GridButtonPresenter(155, 140));
         ps.addClassPresenter(BaseRowItem.class, mCardPresenter);
@@ -281,7 +283,7 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
                         new ItemRowAdapter(requireContext(), def.getQuery(), def.getChunkSize(), def.getPreferParentThumb(), def.isStaticHeight(), mCardPresenter, mRowsAdapter, def.getQueryType());
                 case SeriesTimer -> new ItemRowAdapter(requireContext(), def.getSeriesTimerQuery(), mCardPresenter, mRowsAdapter);
                 case Specials ->
-                        new ItemRowAdapter(requireContext(), def.getSpecialsQuery(), new CardPresenter(true, ImageType.THUMB, 150), mRowsAdapter);
+                        new ItemRowAdapter(requireContext(), def.getSpecialsQuery(), new CardPresenter(false, 150), mRowsAdapter);
                 default ->
                         new ItemRowAdapter(requireContext(), def.getQuery(), def.getChunkSize(), def.getPreferParentThumb(), def.isStaticHeight(), ps, mRowsAdapter, def.getQueryType());
             };

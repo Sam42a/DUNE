@@ -174,17 +174,17 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             } else {
                 sortOptions.put(6, new SortOption(getString(R.string.lbl_last_played), ItemSortBy.DATE_PLAYED, SortOrder.DESCENDING));
             }
-            
-            // Add Random sort option
+
+            // New sort by options
             sortOptions.put(7, new SortOption(getString(R.string.lbl_random), ItemSortBy.RANDOM, SortOrder.ASCENDING));
 
             if (mFolder.getCollectionType() != null && mFolder.getCollectionType() == CollectionType.MOVIES) {
                 sortOptions.put(8, new SortOption(getString(R.string.lbl_runtime), ItemSortBy.RUNTIME, SortOrder.ASCENDING));
             }
-            
+
             // Add Production Year sort option
             sortOptions.put(9, new SortOption(getString(R.string.lbl_production_year), ItemSortBy.PRODUCTION_YEAR, SortOrder.DESCENDING));
-            
+
             // Add Sort Order category
             sortOptions.put(100, new SortOption("Sort Order", null, null));
             sortOptions.put(101, new SortOption("Ascending", null, SortOrder.ASCENDING));
@@ -237,7 +237,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
 
     private void createGrid() {
         if (mGridPresenter == null) return;
-        
+
         mGridViewHolder = mGridPresenter.onCreateViewHolder(binding.rowsFragment);
         if (mGridViewHolder instanceof HorizontalGridPresenter.ViewHolder) {
             mGridView = ((HorizontalGridPresenter.ViewHolder) mGridViewHolder).getGridView();
@@ -326,7 +326,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             // Return a default sort option if the value is null
             return new SortOption(getString(R.string.lbl_bracket_unknown), ItemSortBy.SORT_NAME, SortOrder.ASCENDING);
         }
-        
+
         for (SortOption sortOption : sortOptions.values()) {
             if (sortOption.value != null && sortOption.value.equals(value)) {
                 return sortOption;
@@ -778,7 +778,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                     if (option.value != null) {
                         // This is a sort by option (Name, Date Added, etc.)
                         MenuItem menuItem = sortMenu.getMenu().add(0, entry.getKey(), entry.getKey(), option.name);
-                        menuItem.setChecked(option.value != null && option.value.equals(mAdapter.getSortBy()) && 
+                        menuItem.setChecked(option.value != null && option.value.equals(mAdapter.getSortBy()) &&
                             option.order != null && option.order.equals(mAdapter.getSortOrder()));
                     } else if (option.order != null) {
                         // This is a sort order option (Ascending/Descending)
@@ -789,12 +789,12 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                         sortMenu.getMenu().add(2, entry.getKey(), entry.getKey(), option.name);
                     }
                 }
-                
+
                 // Make sort options checkable
                 sortMenu.getMenu().setGroupCheckable(0, true, true);
                 sortMenu.getMenu().setGroupCheckable(1, true, true);
                 sortMenu.getMenu().setGroupEnabled(2, false); // Disable category header
-                
+
                 sortMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -807,8 +807,8 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                                 // This is a sort order option
                                 SortOption currentSort = getSortOption(mAdapter.getSortBy());
                                 SortOption newSort = new SortOption(
-                                    currentSort.name, 
-                                    currentSort.value, 
+                                    currentSort.name,
+                                    currentSort.value,
                                     selectedOption.order
                                 );
                                 mAdapter.setSortBy(newSort);
@@ -992,7 +992,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;
 
             // Don't set background in grid browse views (both horizontal and vertical)
-            if (!(mGridPresenter instanceof HorizontalGridPresenter) && 
+            if (!(mGridPresenter instanceof HorizontalGridPresenter) &&
                 !(mGridPresenter instanceof VerticalGridPresenter)) {
                 backgroundService.getValue().setBackground(mCurrentItem.getBaseItem());
             }

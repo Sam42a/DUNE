@@ -15,8 +15,8 @@
         android:id="@+id/textClock3"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="890sp"
-        android:layout_marginTop="13sp"
+        android:layout_marginStart="896sp"
+        android:layout_marginTop="7sp"
         android:fontFamily="sans-serif-thin"
         android:textColor="@color/basic_button_text"
         android:textStyle="bold"
@@ -26,15 +26,17 @@
         android:id="@+id/toolbar"
         android:layout_width="368dp"
         android:layout_height="58dp"
-        android:layout_marginStart="10sp"
-        android:layout_marginTop="-20sp"
+        android:layout_marginStart="5sp"
+        android:layout_marginTop="-25sp"
         android:visibility="visible" />
+
+    <!-- Extra spacing below info panel -->
 
     <TextView
         android:id="@+id/title"
         android:layout_width="570sp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28sp"
+        android:layout_marginStart="27sp"
         android:layout_marginTop="14sp"
         android:ellipsize="end"
         android:fontFamily="@font/bebas_neue"
@@ -49,12 +51,10 @@
         android:visibility="visible"
         tools:ignore="VisualLintBounds" />
 
-    <!-- Extra spacing below info panel -->
-
     <LinearLayout
         android:id="@+id/infoRow"
         android:layout_width="572dp"
-        android:layout_height="15.5sp"
+        android:layout_height="18.5sp"
         android:layout_marginStart="27sp"
         android:layout_marginTop="15sp"
         android:layout_toStartOf="@id/summary"

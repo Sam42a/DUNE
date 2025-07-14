@@ -83,7 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/action_use_password" />
+            android:text="@string/action_use_password"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/use_quickconnect"
@@ -91,7 +92,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/action_use_quickconnect" />
+            android:text="@string/action_use_quickconnect"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/cancel"
@@ -100,6 +102,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/btn_cancel"
-            tools:ignore="ButtonOrder" />
+            tools:ignore="ButtonOrder,TouchTargetSizeCheck" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
