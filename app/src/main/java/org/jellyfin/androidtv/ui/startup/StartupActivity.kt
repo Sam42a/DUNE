@@ -158,44 +158,50 @@ class StartupActivity : FragmentActivity() {
 		}.launchIn(lifecycleScope)
 
 	private suspend fun openNextActivity() {
-		val itemId = when {
-			intent.action == Intent.ACTION_VIEW && intent.data != null -> intent.data.toString()
-			else -> intent.getStringExtra(EXTRA_ITEM_ID)
-		}?.toUUIDOrNull()
-		val itemIsUserView = intent.getBooleanExtra(EXTRA_ITEM_IS_USER_VIEW, false)
+		try {
+			// Get the current intent
+			val currentIntent = intent
+			Timber.d("Processing intent in openNextActivity: $currentIntent")
+			Timber.d("Action: ${currentIntent.action}")
 
-		Timber.d("Determining next activity (action=${intent.action}, itemId=$itemId, itemIsUserView=$itemIsUserView)")
-
-		// Start session
-		(application as? JellyfinApplication)?.onSessionStart()
-
-		// Create destination
-		val destination = when {
-			// Search is requested
-			intent.action === Intent.ACTION_SEARCH -> Destinations.search(
-				query = intent.getStringExtra(SearchManager.QUERY)
-			)
-			// User view item is requested
-			itemId != null && itemIsUserView -> {
-				val item = withContext(Dispatchers.IO) {
-					api.userLibraryApi.getItem(itemId = itemId).content
+			val mainIntent = Intent(this, MainActivity::class.java).apply {
+				// Copy all data from the original intent
+				intent?.let { original ->
+					// Copy action and data
+					action = original.action
+					data = original.data
+					type = original.type
+					
+					// Copy categories if any
+					original.categories?.forEach { addCategory(it) }
+					
+					// Copy all extras
+					original.extras?.let { putExtras(it) }
+					
+					// Add flags
+					flags = original.flags or 
+						Intent.FLAG_ACTIVITY_SINGLE_TOP or 
+						Intent.FLAG_ACTIVITY_CLEAR_TOP or
+						Intent.FLAG_ACTIVITY_NEW_TASK
 				}
-				itemLauncher.getUserViewDestination(item)
 			}
-			// Other item is requested
-			itemId != null -> Destinations.itemDetails(itemId)
-			// No destination requested, use default
-			else -> null
+
+			Timber.d("Starting MainActivity with intent: $mainIntent")
+			Timber.d("Intent data: ${mainIntent.data}")
+			Timber.d("Intent action: ${mainIntent.action}")
+			Timber.d("Intent extras: ${mainIntent.extras?.keySet()?.joinToString()}")
+			
+			// Start the main activity
+			startActivity(mainIntent)
+			
+			// Finish this activity
+			finishAfterTransition()
+		} catch (e: Exception) {
+			Timber.e(e, "Error in openNextActivity")
+			// Fallback to default behavior
+			startActivity(Intent(this, MainActivity::class.java))
+			finish()
 		}
-
-		navigationRepository.reset(destination, true)
-
-		val intent = Intent(this, MainActivity::class.java)
-		// Clear navigation history
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
-		Timber.d("Opening next activity $intent")
-		startActivity(intent)
-		finishAfterTransition()
 	}
 
 	// Fragment switching
