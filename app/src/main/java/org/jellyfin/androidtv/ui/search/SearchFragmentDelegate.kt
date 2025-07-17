@@ -48,11 +48,7 @@ class SearchFragmentDelegate(
 	}
 
 	val onItemViewSelectedListener = OnItemViewSelectedListener { _, item, _, _ ->
-		val baseItem = item?.let { (item as BaseRowItem).baseItem }
-		if (baseItem != null) {
-			backgroundService.setBackground(baseItem)
-		} else {
-			backgroundService.clearBackgrounds()
-		}
+		// Don't change background for search results to improve performance and UX
+		// The background will remain static while browsing search results
 	}
 }

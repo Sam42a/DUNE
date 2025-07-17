@@ -7,13 +7,14 @@
 
 
     <!-- Search bar row -->
+
     <EditText
         android:id="@+id/search_bar"
         style="@style/Input.BlackWithWhiteBorder"
-        android:layout_width="456dp"
+        android:layout_width="856dp"
         android:layout_height="44dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginEnd="449dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
         android:hint="@string/lbl_search_hint"
         android:imeOptions="actionSearch"
         android:importantForAutofill="no"
@@ -30,8 +31,8 @@
         android:id="@+id/voice_search_icon_frame"
         android:layout_width="48dp"
         android:layout_height="41dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginEnd="909dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="904dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -45,13 +46,15 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:src="@drawable/ic_mic2"
-            android:tint="@color/mic_icon_tint" />
+            android:tint="@color/mic_icon_tint"
+            tools:layout_editor_absoluteX="5dp"
+            tools:layout_editor_absoluteY="16dp" />
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/results_frame"
         android:layout_width="1005dp"
-        android:layout_height="347dp"
+        android:layout_height="447dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="193dp"
         android:layout_marginEnd="1dp"
