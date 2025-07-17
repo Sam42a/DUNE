@@ -170,13 +170,18 @@
         <!-- Authentication -->
         <activity
             android:name=".ui.startup.StartupActivity"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTask"
             android:noHistory="true"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
 
             <meta-data
@@ -190,9 +195,31 @@
         <!-- Main application -->
         <activity
             android:name=".ui.browsing.MainActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="jellyfin" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="*" />
+                <data android:pathPattern="/items/.*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="*"
+                    android:pathPattern="/items/.*"
+                    android:scheme="jellyfin" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".ui.preference.PreferencesActivity"
