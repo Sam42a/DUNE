@@ -201,9 +201,14 @@ class MainActivity : FragmentActivity() {
 
 		workManager.enqueue(OneTimeWorkRequestBuilder<LeanbackChannelWorker>().build())
 
-		lifecycleScope.launch(Dispatchers.IO) {
-			Timber.d("MainActivity stopped")
-			sessionRepository.restoreSession(destroyOnly = true)
+		// Only clear session if the activity is finishing
+		if (isFinishing) {
+			lifecycleScope.launch(Dispatchers.IO) {
+				Timber.d("MainActivity finishing, cleaning up session")
+				sessionRepository.restoreSession(destroyOnly = true)
+			}
+		} else {
+			Timber.d("MainActivity stopped but not finishing, keeping session")
 		}
 	}
 
