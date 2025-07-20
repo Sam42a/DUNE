@@ -210,4 +210,11 @@
     <style name="Text">
     <!-- Add any Text base styles here if needed -->
 </style>
+    <!-- Custom banner style for Android TV -->
+    <style name="CustomBannerStyle">
+        <item name="android:height">100dp</item>
+        <item name="android:width">200dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
 </resources>

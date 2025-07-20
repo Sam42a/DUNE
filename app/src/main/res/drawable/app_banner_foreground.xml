@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Solid black background -->
-    <item android:drawable="@android:color/black" />
-    
-    <!-- Centered banner image with white tint for Fire TV -->
     <item>
         <bitmap
-            android:src="@drawable/app_banner"
+            android:src="@drawable/app_logo"
             android:gravity="center"
-            android:tint="#FFFFFF"
+            android:width="280dp"
+            android:height="140dp"
             android:antialias="true"
             android:filter="true" />
     </item>

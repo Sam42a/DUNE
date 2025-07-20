@@ -3,12 +3,11 @@
     <!-- Solid black background -->
     <item android:drawable="@android:color/black" />
     
-    <!-- Centered banner image with white tint for Fire TV -->
+    <!-- Centered banner image -->
     <item>
         <bitmap
             android:src="@drawable/app_banner"
             android:gravity="center"
-            android:tint="#FFFFFF"
             android:antialias="true"
             android:filter="true" />
     </item>
