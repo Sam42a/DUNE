@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
@@ -105,6 +107,9 @@ class StartupActivity : FragmentActivity() {
 		microphonePermissionRequester.launch(Manifest.permission.RECORD_AUDIO)
 	}
 
+	private val handler = Handler(Looper.getMainLooper())
+	private val splashDuration = 1000L // 1 second
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		applyTheme()
 
@@ -115,7 +120,8 @@ class StartupActivity : FragmentActivity() {
 		binding.screensaver.isVisible = false
 		setContentView(binding.root)
 
-		if (!intent.getBooleanExtra(EXTRA_HIDE_SPLASH, false)) showSplash()
+		// Show splash screen
+		showSplash()
 
 		// Request required network permissions first
 		networkPermissionsRequester.launch(arrayOf(
@@ -204,14 +210,26 @@ class StartupActivity : FragmentActivity() {
 		}
 	}
 
-	// Fragment switching
+	// Show splash screen
 	private fun showSplash() {
 		// Prevent progress bar flashing
+		if (isFinishing || isDestroyed) return
 		if (supportFragmentManager.findFragmentById(R.id.content_view) is SplashFragment) return
-
+		
 		supportFragmentManager.commit {
 			replace<SplashFragment>(R.id.content_view)
 		}
+
+		// Automatically hide splash after delay
+		handler.postDelayed({
+			if (!isFinishing && !isDestroyed) {
+				try {
+					supportFragmentManager.popBackStack()
+				} catch (e: IllegalStateException) {
+					// Ignore if fragment manager is already destroyed
+				}
+			}
+		}, splashDuration)
 	}
 
 	private fun showServer(id: UUID) = supportFragmentManager.commit {

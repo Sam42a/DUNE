@@ -63,7 +63,8 @@
         android:name=".JellyfinApplication"
         android:allowBackup="true"
         android:appCategory="video"
-        android:banner="@drawable/tv_banner_background"
+        android:banner="@drawable/centered_banner"
+        android:logo="@drawable/app_logo"
         android:dataExtractionRules="@xml/backup_rules"
         android:fullBackupContent="@xml/backup_content"
         android:icon="@mipmap/ic_launcher"
@@ -154,26 +155,14 @@
             android:exported="true"
             android:initOrder="10" />
 
-        <!-- Splash Screen -->
-        <activity
-            android:name=".ui.startup.SplashActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Jellyfin.Splash"
-            android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- Authentication -->
+        <!-- Main launcher activity with splash screen -->
         <activity
             android:name=".ui.startup.StartupActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:noHistory="true"
             android:screenOrientation="landscape"
+            android:theme="@style/Theme.Jellyfin.Splash"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

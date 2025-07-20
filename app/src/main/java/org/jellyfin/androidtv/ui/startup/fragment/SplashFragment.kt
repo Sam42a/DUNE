@@ -37,7 +37,7 @@ fun SplashScreen() {
 		) {
 			Box(
 				modifier = Modifier
-					.size(400.dp)
+					.size(700.dp)
 					.padding(32.dp)
 			) {
 				Image(
