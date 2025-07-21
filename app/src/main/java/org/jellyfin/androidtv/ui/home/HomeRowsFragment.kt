@@ -169,7 +169,7 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
                     setHomeScreen(true)
                 } // 150px * 1.3 = 195px height (30% increase)
 
-				val rowsAdapter = adapter as MutableObjectAdapter<Row>
+				val rowsAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
 				
 				// Add notification and now playing rows first
 				notificationsRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
@@ -231,37 +231,39 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 						Timber.d("No matching Reality genre found in library")
 					}
 				}
+				val mutableAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
+
 				if (userSettingPreferences.get(userSettingPreferences.showFamilyRow)) {
 					Timber.d("Adding Family row: ${userSettingPreferences.get(userSettingPreferences.showFamilyRow)}")
-					helper.loadFamilyRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadFamilyRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showHorrorRow)) {
 					Timber.d("Adding Horror row: ${userSettingPreferences.get(userSettingPreferences.showHorrorRow)}")
-					helper.loadHorrorRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadHorrorRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showFantasyRow)) {
 					Timber.d("Adding Fantasy row: ${userSettingPreferences.get(userSettingPreferences.showFantasyRow)}")
-					helper.loadFantasyRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadFantasyRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showHistoryRow)) {
 					Timber.d("Adding History row: ${userSettingPreferences.get(userSettingPreferences.showHistoryRow)}")
-					helper.loadHistoryRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadHistoryRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showMusicRow)) {
 					Timber.d("Adding Music row: ${userSettingPreferences.get(userSettingPreferences.showMusicRow)}")
-					helper.loadMusicRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadMusicRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showMysteryRow)) {
 					Timber.d("Adding Mystery row: ${userSettingPreferences.get(userSettingPreferences.showMysteryRow)}")
-					helper.loadMysteryRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadMysteryRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showThrillerRow)) {
 					Timber.d("Adding Thriller row: ${userSettingPreferences.get(userSettingPreferences.showThrillerRow)}")
-					helper.loadThrillerRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadThrillerRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 				if (userSettingPreferences.get(userSettingPreferences.showWarRow)) {
 					Timber.d("Adding War row: ${userSettingPreferences.get(userSettingPreferences.showWarRow)}")
-					helper.loadWarRow().addToRowsAdapter(requireContext(), cardPresenter, adapter as MutableObjectAdapter<Row>)
+					helper.loadWarRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
 				}
 
 			}
@@ -330,14 +332,18 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 
 		// Update audio queue
 		Timber.i("Updating audio queue in HomeFragment (onResume)")
-		nowPlaying.update(requireContext(), adapter as MutableObjectAdapter<Row>)
+		(adapter as? MutableObjectAdapter<Row>)?.let { mutableAdapter ->
+    nowPlaying.update(requireContext(), mutableAdapter)
+}
 	}
 
 	override fun onQueueStatusChanged(hasQueue: Boolean) {
 		if (activity == null || requireActivity().isFinishing) return
 
 		Timber.i("Updating audio queue in HomeFragment (onQueueStatusChanged)")
-		nowPlaying.update(requireContext(), adapter as MutableObjectAdapter<Row>)
+		(adapter as? MutableObjectAdapter<Row>)?.let { mutableAdapter ->
+    nowPlaying.update(requireContext(), mutableAdapter)
+}
 	}
 
 	private fun refreshRows(force: Boolean = false, delayed: Boolean = true) {
