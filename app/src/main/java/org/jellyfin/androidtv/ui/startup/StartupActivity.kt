@@ -42,6 +42,7 @@ import org.jellyfin.androidtv.ui.startup.fragment.SelectServerFragment
 import org.jellyfin.androidtv.ui.startup.fragment.ServerFragment
 import org.jellyfin.androidtv.ui.startup.fragment.SplashFragment
 import org.jellyfin.androidtv.ui.startup.fragment.StartupToolbarFragment
+import org.jellyfin.androidtv.data.eventhandling.SocketHandler
 import org.jellyfin.androidtv.util.applyTheme
 import org.jellyfin.androidtv.util.DeviceUtils
 import org.jellyfin.sdk.api.client.ApiClient
@@ -66,6 +67,7 @@ class StartupActivity : FragmentActivity() {
 	private val userRepository: UserRepository by inject()
 	private val navigationRepository: NavigationRepository by inject()
 	private val itemLauncher: ItemLauncher by inject()
+	private val socketHandler: SocketHandler by inject()
 
 	private lateinit var binding: ActivityStartupBinding
 
@@ -151,6 +153,13 @@ class StartupActivity : FragmentActivity() {
 				Timber.i("CurrentUser changed to ${currentUser?.id} while waiting for startup.")
 
 				lifecycleScope.launch {
+					// Ensure WebSocket connection is active before proceeding
+					try {
+						socketHandler.updateSession()
+						Timber.i("WebSocket session updated after login")
+					} catch (e: Exception) {
+						Timber.e(e, "Failed to update WebSocket session after login")
+					}
 					openNextActivity()
 				}
 			} else {
@@ -177,16 +186,16 @@ class StartupActivity : FragmentActivity() {
 					action = original.action
 					data = original.data
 					type = original.type
-					
+
 					// Copy categories if any
 					original.categories?.forEach { addCategory(it) }
-					
+
 					// Copy all extras
 					original.extras?.let { putExtras(it) }
-					
+
 					// Add flags
-					flags = original.flags or 
-						Intent.FLAG_ACTIVITY_SINGLE_TOP or 
+					flags = original.flags or
+						Intent.FLAG_ACTIVITY_SINGLE_TOP or
 						Intent.FLAG_ACTIVITY_CLEAR_TOP or
 						Intent.FLAG_ACTIVITY_NEW_TASK
 				}
@@ -196,10 +205,10 @@ class StartupActivity : FragmentActivity() {
 			Timber.d("Intent data: ${mainIntent.data}")
 			Timber.d("Intent action: ${mainIntent.action}")
 			Timber.d("Intent extras: ${mainIntent.extras?.keySet()?.joinToString()}")
-			
+
 			// Start the main activity
 			startActivity(mainIntent)
-			
+
 			// Finish this activity
 			finishAfterTransition()
 		} catch (e: Exception) {
@@ -215,7 +224,7 @@ class StartupActivity : FragmentActivity() {
 		// Prevent progress bar flashing
 		if (isFinishing || isDestroyed) return
 		if (supportFragmentManager.findFragmentById(R.id.content_view) is SplashFragment) return
-		
+
 		supportFragmentManager.commit {
 			replace<SplashFragment>(R.id.content_view)
 		}

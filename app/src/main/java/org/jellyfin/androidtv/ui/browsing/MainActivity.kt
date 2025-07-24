@@ -38,6 +38,7 @@ import org.jellyfin.androidtv.ui.navigation.NavigationRepository
 import org.jellyfin.androidtv.ui.navigation.Destinations
 import org.jellyfin.androidtv.ui.screensaver.InAppScreensaver
 import org.jellyfin.androidtv.ui.startup.StartupActivity
+import org.jellyfin.androidtv.data.eventhandling.SocketHandler
 import org.jellyfin.androidtv.util.applyTheme
 import org.jellyfin.androidtv.util.isMediaSessionKeyEvent
 import org.jellyfin.sdk.model.api.BaseItemDto
@@ -55,6 +56,7 @@ class MainActivity : FragmentActivity() {
 	private val userRepository by inject<UserRepository>()
 	private val screensaverViewModel by viewModel<ScreensaverViewModel>()
 	private val workManager by inject<WorkManager>()
+	private val socketHandler by inject<SocketHandler>()
 
 	private lateinit var binding: ActivityMainBinding
 
@@ -123,7 +125,7 @@ class MainActivity : FragmentActivity() {
 			Timber.d("onNewIntent: ${intent.data}")
 			Timber.d("Intent action: ${intent.action}")
 			Timber.d("Intent extras: ${intent.extras?.keySet()?.joinToString()}")
-			
+
 			// Handle the intent in onResume to ensure the activity is fully created
 			handleIntent(intent)
 		}
@@ -137,9 +139,9 @@ class MainActivity : FragmentActivity() {
 					intent.getStringExtra(SearchManager.QUERY) ?: ""
 				} else null
 				val startPlayback = !searchQuery.isNullOrBlank()
-				
+
 				Timber.d("Handling intent with item: $itemId, isUserView: $isUserView, startPlayback: $startPlayback, searchQuery: $searchQuery")
-				
+
 				// Create a minimal BaseItemDto with required fields
 				val item = BaseItemDto(
 					id = UUID.fromString(itemId),
@@ -147,14 +149,14 @@ class MainActivity : FragmentActivity() {
 					mediaType = MediaType.UNKNOWN,
 					name = ""
 				)
-				
+
 				// Reset navigation first to ensure clean state
 				navigationRepository.reset(clearHistory = true)
-				
+
 				// Use itemDetails for navigation as it's more reliable with minimal item data
 				val destination = Destinations.itemDetails(item.id!!)
 				navigationRepository.navigate(destination)
-				
+
 				// Clear the intent to prevent handling it multiple times
 				setIntent(Intent())
 			} catch (e: Exception) {
@@ -170,6 +172,16 @@ class MainActivity : FragmentActivity() {
 			applyTheme()
 
 			screensaverViewModel.activityPaused = false
+
+			// Ensure WebSocket connection is active
+			lifecycleScope.launch(Dispatchers.IO) {
+				try {
+					socketHandler.updateSession()
+					Timber.i("WebSocket session updated in MainActivity.onResume")
+				} catch (e: Exception) {
+					Timber.e(e, "Failed to update WebSocket session in MainActivity.onResume")
+				}
+			}
 
 			// Handle any pending intents when the activity is resumed
 			intent?.let { currentIntent ->

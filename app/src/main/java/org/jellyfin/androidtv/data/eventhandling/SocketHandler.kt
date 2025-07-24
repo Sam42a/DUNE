@@ -55,20 +55,27 @@ class SocketHandler(
 
 	suspend fun updateSession() {
 		try {
+			Timber.i("Updating WebSocket session capabilities")
 			withContext(Dispatchers.IO) {
-				api.sessionApi.postCapabilities(
+				val capabilities = api.sessionApi.postCapabilities(
 					playableMediaTypes = listOf(MediaType.VIDEO, MediaType.AUDIO),
 					supportsMediaControl = true,
 					supportedCommands = buildList {
+						Timber.d("Adding capability: DISPLAY_CONTENT")
 						add(GeneralCommandType.DISPLAY_CONTENT)
+						Timber.d("Adding capability: SET_SUBTITLE_STREAM_INDEX")
 						add(GeneralCommandType.SET_SUBTITLE_STREAM_INDEX)
+						Timber.d("Adding capability: SET_AUDIO_STREAM_INDEX")
 						add(GeneralCommandType.SET_AUDIO_STREAM_INDEX)
 
+						Timber.d("Adding capability: DISPLAY_MESSAGE")
 						add(GeneralCommandType.DISPLAY_MESSAGE)
+						Timber.d("Adding capability: SEND_STRING")
 						add(GeneralCommandType.SEND_STRING)
 
 						// Note: These are used in the PlaySessionSocketService
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !audioManager.isVolumeFixed) {
+							Timber.d("Adding volume control capabilities")
 							add(GeneralCommandType.VOLUME_UP)
 							add(GeneralCommandType.VOLUME_DOWN)
 							add(GeneralCommandType.SET_VOLUME)
@@ -79,6 +86,7 @@ class SocketHandler(
 						}
 					},
 				)
+				Timber.i("Successfully updated WebSocket capabilities: $capabilities")
 			}
 		} catch (err: ApiClientException) {
 			Timber.e(err, "Unable to update capabilities")
@@ -86,6 +94,7 @@ class SocketHandler(
 	}
 
 	init {
+		Timber.i("Initializing WebSocket handlers")
 		api.webSocket.apply {
 			// Library
 			subscribe<LibraryChangedMessage>()
@@ -138,13 +147,20 @@ class SocketHandler(
 				}
 				.launchIn(coroutineScope)
 
-			subscribeGeneralCommands(setOf(GeneralCommandType.DISPLAY_MESSAGE, GeneralCommandType.SEND_STRING))
+			subscribeGeneralCommand(GeneralCommandType.DISPLAY_MESSAGE)
 				.onEach { message ->
 					val header by message
 					val text by message
+
+					onDisplayMessage(header, text)
+				}
+				.launchIn(coroutineScope)
+
+			subscribeGeneralCommand(GeneralCommandType.SEND_STRING)
+				.onEach { message ->
 					val string by message
 
-					onDisplayMessage(header, text ?: string)
+					onDisplayMessage(null, string)
 				}
 				.launchIn(coroutineScope)
 		}
@@ -229,13 +245,27 @@ class SocketHandler(
 	}
 
 	private fun onDisplayMessage(header: String?, text: String?) {
+		Timber.i("Received message - Header: $header, Text: $text")
+
+		if (text.isNullOrBlank()) {
+			Timber.w("Message text is null or empty")
+			return
+		}
+
 		val toastMessage = buildString {
 			if (!header.isNullOrBlank()) append(header, ": ")
 			append(text)
 		}
 
+		Timber.d("Showing toast message: $toastMessage")
 		runBlocking(Dispatchers.Main) {
-			Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+			try {
+				val toast = Toast.makeText(context, toastMessage, Toast.LENGTH_LONG)
+				toast.show()
+				Timber.d("Toast shown successfully")
+			} catch (e: Exception) {
+				Timber.e(e, "Failed to show toast message")
+			}
 		}
 	}
 
