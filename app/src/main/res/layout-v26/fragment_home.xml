@@ -15,9 +15,11 @@
         android:id="@+id/textClock3"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="896sp"
+        android:layout_marginStart="856sp"
         android:layout_marginTop="7sp"
         android:fontFamily="sans-serif-thin"
+        android:textAlignment="textEnd"
+        android:textAllCaps="true"
         android:textColor="@color/basic_button_text"
         android:textStyle="bold"
         tools:ignore="VisualLintBounds,TextSizeCheck" />
@@ -26,7 +28,7 @@
         android:id="@+id/toolbar"
         android:layout_width="368dp"
         android:layout_height="58dp"
-        android:layout_marginStart="5sp"
+        android:layout_marginStart="2sp"
         android:layout_marginTop="-25sp"
         android:visibility="visible" />
 
@@ -67,7 +69,7 @@
         android:layout_width="452dp"
         android:layout_height="79dp"
         android:layout_marginStart="27sp"
-        android:layout_marginTop="18sp"
+        android:layout_marginTop="11sp"
         android:layout_marginBottom="9.8dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
