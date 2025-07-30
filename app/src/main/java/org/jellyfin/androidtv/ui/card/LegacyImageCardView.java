@@ -104,14 +104,11 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
 
     @SuppressLint({"NewApi", "WrongConstant"})
     private void updateCardBorder() {
-        // Get the preference using the static method
-        android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean showWhiteBorders = prefs.getBoolean(org.jellyfin.androidtv.preference.UserPreferences.getShowWhiteBordersKey(), false);
-
-        Timber.d("showWhiteBorders: %s, isFocused: %s, isSelected: %s",
-            showWhiteBorders, isFocused(), isSelected());
-
-        boolean shouldShowBorder = showWhiteBorders && (isFocused() || isSelected());
+        // Always show white borders when focused or selected
+        boolean shouldShowBorder = isFocused() || isSelected();
+        
+        Timber.d("Card border state - focused: %s, selected: %s, showing border: %s",
+            isFocused(), isSelected(), shouldShowBorder);
 
         // Skip if state hasn't changed
         if (isFocusedState == shouldShowBorder) return;

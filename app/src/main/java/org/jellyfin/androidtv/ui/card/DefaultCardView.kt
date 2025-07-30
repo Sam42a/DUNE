@@ -84,11 +84,8 @@ class DefaultCardView @JvmOverloads constructor(
     private var isFocused: Boolean = false
 
     @SuppressLint("UseCompatLoadingForDrawables")
-	private fun updateWhiteBorder(hasFocus: Boolean) {
-        val prefs = UserPreferences(context)
-        val showWhiteBorders = prefs[UserPreferences.showWhiteBorders]
-
-        if (hasFocus && showWhiteBorders) {
+    private fun updateWhiteBorder(hasFocus: Boolean) {
+        if (hasFocus) {
             if (foreground == null) {
                 foreground = context.getDrawable(R.drawable.card_focused_border)
             }
