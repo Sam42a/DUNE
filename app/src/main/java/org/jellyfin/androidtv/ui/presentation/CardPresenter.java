@@ -65,7 +65,7 @@ public class CardPresenter extends Presenter {
         this(showInfo);
         mStaticHeight = staticHeight;
     }
-    
+
     public void setHomeScreen(boolean isHomeScreen) {
         this.isHomeScreen = isHomeScreen;
     }
@@ -368,18 +368,18 @@ public class CardPresenter extends Presenter {
             holder.mCardView.setFocusable(true);
             holder.mCardView.setFocusableInTouchMode(true);
             holder.mCardView.setSelected(false);
-            
+
             // Set minimum possible elevation (0.1dp)
             final float minElevation = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 
-                0.1f, 
+                TypedValue.COMPLEX_UNIT_DIP,
+                0.1f,
                 holder.mCardView.getContext().getResources().getDisplayMetrics()
             );
-            
+
             // Set up a focus change listener to handle the border and elevation
             holder.mCardView.setOnFocusChangeListener((v, hasFocus) -> {
                 v.setSelected(hasFocus);
-                
+
                 // Apply minimal elevation when focused
                 if (hasFocus) {
                     v.setElevation(minElevation);
@@ -388,14 +388,14 @@ public class CardPresenter extends Presenter {
                     v.setElevation(0);
                     v.setTranslationZ(0);
                 }
-                
+
                 // Manually set the foreground drawable for the border with API level check
                 View mainImage = v.findViewById(R.id.main_image);
                 if (mainImage != null) {
                     if (hasFocus) {
                         // Get the border drawable from resources
                         Drawable border = ContextCompat.getDrawable(
-                            v.getContext(), 
+                            v.getContext(),
                             R.drawable.card_focused_border
                         );
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
