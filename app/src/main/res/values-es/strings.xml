@@ -102,6 +102,7 @@
     <string name="lbl_play_first_unwatched">Reproducir Primero Lo No Visto</string>
     <string name="lbl_search_hint">Buscar texto (seleccionar por teclado)</string>
     <string name="lbl_play_trailers">Reproducir Tráiler(s)</string>
+    <string name="lbl_play_external"> Reproducir en reproductor externo</string>
     <string name="lbl_recordings">Grabaciones</string>
     <string name="lbl_videos">Vídeos</string>
     <string name="lbl_watched">Visto</string>
@@ -278,7 +279,7 @@
     <string name="server_connecting">Conectando con %1$s</string>
     <string name="lbl_hide_unwatched_count">Cuando el contenido fue visto</string>
     <string name="pref_watched_indicator">Mostrar indicadores de \"ya visto\"</string>
-    <string name="login_help_description">Jellyfin necesita un servidor al cual conectarse. Visita nuestra documentación en docs.jellyfin.org o escanea el código QR para comenzar a usar Jellyfin.</string>
+    <string name="login_help_description">DUNE necesita un servidor al cual conectarse. Visita nuestra documentación en docs.jellyfin.org o escanea el código QR para comenzar a usar Jellyfin.</string>
     <string name="login_help_title">¿Necesitas ayuda\?</string>
     <string name="connect_manually_by_address">Introduce la dirección del servidor</string>
     <string name="discovered_servers_empty">No se ha encontrado ningún servidor en la red local.</string>
@@ -302,7 +303,7 @@
     <string name="lbl_remove_user_content">Eliminar cuenta</string>
     <string name="lbl_remove_users">Esto también eliminará todas las cuentas asociadas</string>
     <string name="lbl_manage_servers">Gestionar servidores</string>
-    <string name="no_network_permissions">Jellyfin necesita permisos de red para funcionar</string>
+    <string name="no_network_permissions">DUNE necesita permisos de red para funcionar</string>
     <string name="pref_theme_muted_purple">Morado silenciado</string>
     <string name="lbl_switch_user">Cambiar de cuenta</string>
     <string name="user_picker_last_user_summary">Usar la última cuenta activa</string>
@@ -318,7 +319,7 @@
     <string name="no_user_warning">¡No pudimos encontrar ninguna cuenta!
 \nAgregue una nueva cuenta presionando el botón \"Agregar cuenta\".</string>
     <string name="welcome_content">Conéctate a tu servidor para empezar.</string>
-    <string name="welcome_title">¡Bienvenido a Jellyfin!</string>
+    <string name="welcome_title">¡Bienvenido a DUNE!</string>
     <string name="saved_servers">Servidores guardados</string>
     <string name="press_to_close">Presione para cerrar</string>
     <string name="lbl_next_up_minimal">Sin miniatura</string>
@@ -357,14 +358,14 @@
     <string name="license_artifact">Artefacto</string>
     <string name="license_version">Versión</string>
     <string name="license_description">Descripción</string>
-    <string name="licenses_link_description">Ver las licencias de las librerías usadas por Jellyfin</string>
+    <string name="licenses_link_description">Ver las licencias de las librerías usadas</string>
     <string name="licenses_link">Licencias</string>
     <string name="home_section_resume">Continuar mirando</string>
     <string name="searchable_settings_description">Medios</string>
     <string name="home_section_livetv">Television en vivo</string>
     <string name="home_sections">Secciones de inicio</string>
     <string name="home_prefs">Inicio</string>
-    <string name="searchable_hint">Buscar en Jellyfin</string>
+    <string name="searchable_hint">Buscar en DUNE</string>
     <string name="home_section_next_up">A continuación</string>
     <string name="home_section_active_recordings">Grabaciones activas</string>
     <string name="home_section_resume_audio">Seguir escuchando</string>

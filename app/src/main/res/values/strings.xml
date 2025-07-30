@@ -522,7 +522,7 @@
     <string name="pref_refresh_rate_scale_on_device">Scale on device</string>
     <string name="action_connect">Connect</string>
     <string name="live_tv_preferences">Live TV options</string>
-    <string name="app_notification_uimode_invalid">This app is optimized for televisions. We recommend using our mobile app on other devices.</string>
+    <string name="app_notification_uimode_invalid">This app is optimized for televisions. We recommend using the mobile app.</string>
     <string name="server_unsupported_notification">This server uses Jellyfin version %1$s which is unsupported. Please update to Jellyfin %2$s or newer to continue using the app.</string>
     <string name="pref_telemetry_category">Crash reporting</string>
     <string name="pref_telemetry_description">Send crash reports, include logs</string>
@@ -566,6 +566,7 @@
     <string name="clear_image_cache">Clear image cache</string>
     <string name="clear_image_cache_content">Used: %1$s</string>
     <string name="random">Random</string>
+    <string name="no_movies_found">No movies found</string>
     <string name="unreleased">Not yet released</string>
     <string name="pref_playback_advanced">Advanced playback preferences</string>
     <string name="pref_screensaver_ageratingmax">Maximum age rating</string>
@@ -656,9 +657,12 @@
     <!-- Update related strings -->
     <string name="app_updater_channel_name">App Updates</string>
     <string name="app_updater_channel_description">Notifications for app updates</string>
-    
+
     <!-- Stats Overlay -->
     <string name="stats_title">Playback Information</string>
+    <string name="video_title">Video</string>
+    <string name="audio_title">Audio</string>
+    <string name="playback_info_title">Playback</string>
     <string name="video_info">Video: %1$s • %2$s • %3$s\nProfile: %4$s</string>
     <string name="audio_info">Audio: %1$s • %2$s • %3$s\nLanguage: %4$s</string>
     <string name="playback_method">Playback: %1$s</string>
@@ -710,14 +714,19 @@
     <string name="show_reality_row">Show Reality Row</string>
     <string name="show_thriller_row">Show Thriller Row</string>
     <string name="show_war_row">Show War Row</string>
+    <string name="show_music_videos_row">Show Music Videos Row</string>
+    <string name="music_videos">Music Videos</string>
 
 
     <!-- Live TV Button -->
     <string name="show_live_tv_button">Live TV Button</string>
-    <string name="show_live_tv_button_summary">Display the Live TV button in the top toolbar</string>
+    <string name="show_live_tv_button_summary">Display the Live TV button </string>
+    <string name="show_random_button">Random Movie Button</string>
+    <string name="show_random_button_summary">Display the Random Movie button </string>
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>
     <string name="enhanced_tweaks">Enhanced Tweaks</string>
     <string name="enhanced_tweaks_description">Backdrop Settings,Genre Rows,App Themes,And more...</string>
     <string name="home_content_description">Home screen content</string>
+    <string name="lbl_music_videos">Music Videos</string>
 </resources>

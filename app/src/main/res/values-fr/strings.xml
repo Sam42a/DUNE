@@ -61,6 +61,7 @@
     <string name="lbl_bracket_unknown">Inconnu</string>
     <string name="lbl_trailer">"Bande-annonce "</string>
     <string name="lbl_play_trailers">Lire les bandes-annonces</string>
+    <string name="lbl_play_external">Lire dans un lecteur externe</string>
     <string name="lbl_no">Non</string>
     <string name="lbl_yes">Oui</string>
     <string name="lbl_enter_server_address">Saisir l\'adresse du serveur</string>
@@ -283,7 +284,7 @@
     <string name="lbl_sign_out_content">Demande une connexion à la prochaine utilisation</string>
     <string name="lbl_hide_unwatched_count">Quand l\'élément est visionné</string>
     <string name="pref_watched_indicator">Afficher les indicateurs de visionnage</string>
-    <string name="login_help_description">Jellyfin a besoin d\'un serveur auquel se connecter. Visitez notre documentation docs.jellyfin.org ou scannez le QR code pour commencer à utiliser Jellyfin.</string>
+    <string name="login_help_description">DUNE a besoin d\'un serveur auquel se connecter. Visitez notre documentation docs.jellyfin.org ou scannez le QR code pour commencer à utiliser Jellyfin.</string>
     <string name="login_help_title">Besoin d\'aide \?</string>
     <string name="connect_manually_by_address">Entrez l\'adresse du serveur</string>
     <string name="discovered_servers_empty">Aucun serveur n\'a été trouvé sur le réseau local.</string>
@@ -311,7 +312,7 @@
     <string name="user_picker_last_user_title">Plus récent</string>
     <string name="auto_sign_in">Connexion automatique</string>
     <string name="lbl_switch_user">Changer de compte</string>
-    <string name="no_network_permissions">Jellyfin a besoin des permissions réseau pour fonctionner</string>
+    <string name="no_network_permissions">DUNE a besoin des permissions réseau pour fonctionner</string>
     <string name="pref_theme_muted_purple">Violet atténué</string>
     <string name="lbl_next_up_minimal">Sans vignette</string>
     <string name="lbl_next_up_extended">Avec vignette</string>
@@ -325,7 +326,7 @@
     <string name="no_user_warning">Nous n\'avons trouvé aucun compte !
 \nAjoutez un nouveau compte en appuyant sur le bouton \"Ajouter un compte\".</string>
     <string name="welcome_content">Connectez-vous à votre serveur pour commencer.</string>
-    <string name="welcome_title">Bienvenue sur Jellyfin !</string>
+    <string name="welcome_title">Bienvenue sur DUNE !</string>
     <string name="saved_servers">Serveurs sauvegardés</string>
     <string name="press_to_close">Appuyer pour fermer</string>
     <string name="pref_next_up_behavior_title">Afficher les infos de la prochaine vidéo</string>
@@ -366,7 +367,7 @@
     <string name="license_artifact">Artefact</string>
     <string name="license_version">Version</string>
     <string name="license_description">Description</string>
-    <string name="licenses_link_description">Voir les licences des bibliothèques utilisées dans l\'application Jellyfin</string>
+    <string name="licenses_link_description">Voir les licences des bibliothèques utilisées dans l\'application </string>
     <string name="licenses_link">Licences</string>
     <string name="home_section_livetv">TV en direct</string>
     <string name="home_section_latest_media">Derniers médias ajoutés</string>
@@ -461,7 +462,7 @@
     <string name="pref_enable_media_management_description">Afficher l\'option pour gérer les médias pendant la navigation</string>
     <string name="item_delete_confirm_message">Êtes-vous sûr de bien vouloir supprimer cet élément du serveur \? Cette action ne peut pas être annulée.</string>
     <string name="lbl_latest_in">Récemment ajouté dans %1$s</string>
-    <string name="pref_screensaver_inapp_enabled_description">Afficher l\'économiseur d\'écran Jellyfin lorsque l\'application est ouverte</string>
+    <string name="pref_screensaver_inapp_enabled_description">Afficher l\'économiseur d\'écran,lorsque l\'application est ouverte</string>
     <string name="enable_reactive_homepage">Activer la page d\'accueil réactive</string>
     <string name="pref_screensaver_inapp_enabled">Utiliser l\'économiseur d\'écran intégré à l\'application</string>
     <string name="pref_screensaver_inapp_timeout">Lancer l\'économiseur d\'écran après</string>

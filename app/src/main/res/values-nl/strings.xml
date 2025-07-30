@@ -61,6 +61,7 @@
     <string name="lbl_bracket_unknown">Onbekend</string>
     <string name="lbl_trailer">"Trailer "</string>
     <string name="lbl_play_trailers">Trailer(s) afspelen</string>
+    <string name="lbl_play_external">Afspelen in externe speler</string>
     <string name="lbl_no">Nee</string>
     <string name="lbl_yes">Ja</string>
     <string name="lbl_enter_server_address">Serveradres invoeren</string>
@@ -293,7 +294,7 @@
     <string name="lbl_remove_user_content">Account verwijderen</string>
     <string name="lbl_remove_users">Dit zal ook alle bijbehorende accounts verwijderen</string>
     <string name="lbl_manage_servers">Servers beheren</string>
-    <string name="login_help_description">Jellyfin vereist een server om mee te verbinden. Raadpleeg onze documentatie op docs.jellyfin.org of scan de QR-code om met Jellyfin van start te gaan.</string>
+    <string name="login_help_description">DUNE vereist een server om mee te verbinden. Raadpleeg onze documentatie op docs.jellyfin.org of scan de QR-code om met Jellyfin van start te gaan.</string>
     <string name="login_help_title">Hulp nodig\?</string>
     <string name="connect_manually_by_address">Serveradres invoeren</string>
     <string name="discovered_servers_empty">Geen servers gevonden op het lokale netwerk.</string>
@@ -308,7 +309,7 @@
     <string name="lbl_use_series_thumbnails_description">Serieminiatuur gebruiken bij weergeven van afleveringen</string>
     <string name="lbl_use_series_thumbnails">Voorkeur voor serieminiaturen</string>
     <string name="lbl_sign_out_content">De volgende keer is aanmelden vereist</string>
-    <string name="no_network_permissions">Jellyfin heeft netwerktoestemming nodig om te functioneren</string>
+    <string name="no_network_permissions">DUNE heeft netwerktoestemming nodig om te functioneren</string>
     <string name="lbl_switch_user">Account wisselen</string>
     <string name="pref_theme_muted_purple">Muted purple</string>
     <string name="lbl_hide_unwatched_count">Als het item is gekeken</string>
@@ -339,7 +340,7 @@
     <string name="no_user_warning">Er zijn geen accounts gevonden!
 \nVoeg een nieuw account toe met de knop \"Account toevoegen\".</string>
     <string name="welcome_content">Maak verbinding met je server om te beginnen.</string>
-    <string name="welcome_title">Welkom bij Jellyfin!</string>
+    <string name="welcome_title">Welkom bij DUNE!</string>
     <string name="saved_servers">Opgeslagen servers</string>
     <string name="pref_next_up_behavior_title">Informatie volgende video tonen</string>
     <string name="lbl_fit">Normaal</string>
@@ -376,7 +377,7 @@
     <string name="pref_subtitles_background_summary">Toon de ondertiteling met een zwarte achtergrond</string>
     <string name="home_section_next_up">Als volgende</string>
     <string name="home_section_library_small">Mijn media (klein)</string>
-    <string name="licenses_link_description">Bekijk de licenties van de bibliotheken die door de Jellyfin-app worden gebruikt</string>
+    <string name="licenses_link_description">Bekijk de licenties van de bibliotheken die door de app worden gebruikt</string>
     <string name="server_issue_unsupported_version">Server gebruikt niet-ondersteunde versie %1$s</string>
     <string name="lbl_playback_speed">Afspeelsnelheid</string>
     <string name="pref_show_backdrop_description">Achtergrond aanpassen aan geselecteerd item</string>
@@ -467,7 +468,7 @@
         <item quantity="other">%1$s seconden</item>
     </plurals>
     <string name="pref_screensaver_inapp_enabled">Schermbeveiliging van app gebruiken</string>
-    <string name="pref_screensaver_inapp_enabled_description">Toon de Jellyfin-schermbeveiliging als de app geopend is</string>
+    <string name="pref_screensaver_inapp_enabled_description">Toon de schermbeveiliging als de app geopend is</string>
     <plurals name="minutes">
         <item quantity="one">%1$s minuut</item>
         <item quantity="other">%1$s minuten</item>

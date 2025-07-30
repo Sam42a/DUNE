@@ -159,6 +159,7 @@
     <string name="lbl_yes">Ja</string>
     <string name="lbl_no">Nej</string>
     <string name="lbl_play_trailers">Spela trailer(s)</string>
+    <string name="lbl_play_external"> Spela i extern spelare</string>
     <string name="lbl_trailer">"Trailer "</string>
     <string name="lbl_bracket_unknown">Okänd</string>
     <string name="msg_video_playback_error">"Videouppspelningsfel "</string>
@@ -279,7 +280,7 @@
     <string name="image_type_thumbnail">Miniatyr</string>
     <string name="pref_watched_indicator">Visa indikator för antal tittade</string>
     <string name="lbl_hide_unwatched_count">Dölj antal ej uppspelade föremål</string>
-    <string name="login_help_description">Jellyfin behöver en server att ansluta till. Besök vår dokumentation på docs.jellyfin.org eller skanna QR-koden för att komma igång med Jellyfin.</string>
+    <string name="login_help_description">DUNE behöver en server att ansluta till. Besök vår dokumentation på docs.jellyfin.org eller skanna QR-koden för att komma igång med Jellyfin.</string>
     <string name="login_help_title">Behöver du hjälp\?</string>
     <string name="connect_manually_by_address">Ange serveraddress</string>
     <string name="discovered_servers_empty">Inga servrar hittades på det lokala nätverket.</string>
@@ -319,7 +320,7 @@
     <string name="no_user_warning">Vi hittade inga konton!
 \nLägg till ett konto genom att trycka på \"Lägg till konto\".</string>
     <string name="welcome_content">Anslut till din server för att börja.</string>
-    <string name="welcome_title">Välkommen till Jellyfin!</string>
+    <string name="welcome_title">Välkommen till DUNE!</string>
     <string name="saved_servers">Sparade servrar</string>
     <string name="press_to_close">Tryck för att stänga</string>
     <string name="lbl_record_all">Kommer att övervaka alla avsnitt</string>
@@ -343,7 +344,7 @@
     <string name="lbl_next_up_minimal">Utan miniatyrbild</string>
     <string name="lbl_next_up_extended">Med miniatyrbild</string>
     <string name="lbl_episode_range">E%1$d–%2$d</string>
-    <string name="no_network_permissions">Jellyfin kräver nätverksprivilegier för att fungera</string>
+    <string name="no_network_permissions">DUNE kräver nätverksprivilegier för att fungera</string>
     <string name="pref_theme_muted_purple">Dämpad lila</string>
     <string name="lbl_fit">Normal</string>
     <string name="lbl_stretch">Sträck ut</string>
@@ -369,7 +370,7 @@
     <string name="license_artifact">Artefakt</string>
     <string name="license_version">Version</string>
     <string name="license_description">Beskrivning</string>
-    <string name="licenses_link_description">Se på alla de bibliotekslicenser som Jellyfin använder</string>
+    <string name="licenses_link_description">Se på alla de bibliotekslicenser som använder</string>
     <string name="licenses_link">Licenser</string>
     <string name="select_version">Version</string>
     <string name="lbl_community_rating">Publiksbetyg</string>
@@ -469,7 +470,7 @@
     <string name="pref_enable_media_management_description">Visa inställningar för mediahantering under bläddring</string>
     <string name="item_delete_confirm_message">Är du säker på att du vill ta bort denna från servern\? Det går inte att ångra.</string>
     <string name="pref_screensaver_inapp_enabled">Använd appens skärmsläckare</string>
-    <string name="pref_screensaver_inapp_enabled_description">Visa Jellyfins skärmsläckare när appen är öppen</string>
+    <string name="pref_screensaver_inapp_enabled_description">Visa skärmsläckare när appen är öppen</string>
     <string name="pref_screensaver_inapp_timeout">Starta skärmsläckaren efter</string>
     <plurals name="seconds">
         <item quantity="one">%1$s sekund</item>

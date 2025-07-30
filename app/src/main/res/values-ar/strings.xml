@@ -255,7 +255,7 @@
     <string name="lbl_auto_crop">قص تلقائي</string>
     <string name="lbl_special">الخاص</string>
     <string name="lbl_hide_unwatched_count">عندما يكون قد تم مشاهدة العنصر</string>
-    <string name="login_help_description">Jellyfin يستلزم خادم للإتصال به. قم بزيارة وثائقنا على docs.jellyfin.org او قم بمسح رمز QR للبدأ مع Jellyfin.</string>
+    <string name="login_help_description">Jellyfin يستلزم خادم للإتصال به. قم بزيارة   docs.jellyfin.org او قم بمسح رمز QR للبدأ مع .</string>
     <string name="pref_developer_link">إعدادات المطورين</string>
     <string name="lbl_manage_servers">إدارة الخوادم</string>
     <string name="watch_count_overflow">+99</string>
@@ -275,10 +275,10 @@
     <string name="no_user_warning">لم نستطع العثور على أي مستخدم!
 \nأضف مستخدم جديد بالضغط على زر \"إضافة مستخدم\".</string>
     <string name="welcome_content">إتصل بخادمك للبدأ.</string>
-    <string name="welcome_title">مرحبا الى jellyfin!</string>
+    <string name="welcome_title">مرحبا الى DUNE!</string>
     <string name="saved_servers">الخوادم المحفوظة</string>
     <string name="press_to_close">إظغط للغلق</string>
-    <string name="no_network_permissions">Jellyfin يحتاج إلى صلاحيات الشبكة للعمل</string>
+    <string name="no_network_permissions">DUNE يحتاج إلى صلاحيات الشبكة للعمل</string>
     <string name="lbl_switch_user">تغيير المستخدم</string>
     <string name="user_picker_last_user_summary">إظهار آخر مستخدم نشط</string>
     <string name="user_picker_disable_summary">إظهار شاشة تسجيل الدخول دائما</string>
@@ -328,7 +328,7 @@
     <string name="license_author">مؤلف</string>
     <string name="license_website">موقع الكتروني</string>
     <string name="license_description">وصف</string>
-    <string name="licenses_link_description">عرض تراخيص المكتبات التي يستخدمها تطبيق Jellyfin</string>
+    <string name="licenses_link_description">عرض تراخيص المكتبات التي يستخدمها تطبيق </string>
     <string name="licenses_link">التراخيص</string>
     <string name="lbl_tomatoes">طماطم</string>
     <string name="player_error">واجهت مشكلة. سأعيد المحاولة …</string>
@@ -460,7 +460,7 @@
     <string name="item_delete_confirm_message">هل أنت متأكد من رغبتك على حذف هذا العنصر من الخادم؟ لا يمكن التراجع عن هذا القرار.</string>
     <string name="pref_screensaver">شاشة التوقف</string>
     <string name="pref_screensaver_inapp_enabled">استخدم شاشة التوقف التابعة للتطبيق</string>
-    <string name="pref_screensaver_inapp_enabled_description">استخدم شاشة توقف تابعة لـ Jellyfin عندما يكون التطبيق مفتوحا</string>
+    <string name="pref_screensaver_inapp_enabled_description">استخدم شاشة توقف تابعة  عندما يكون التطبيق مفتوحا</string>
     <string name="pref_screensaver_inapp_timeout">شغل شاشة التوقف بعد</string>
     <plurals name="seconds">
         <item quantity="zero">%1$s ثواني</item>
