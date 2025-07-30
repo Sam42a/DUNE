@@ -12,7 +12,7 @@
     <!-- Button Colors -->
     <color name="purplehaze_button">#311B92</color> <!-- Button: Deep Purple -->
     <color name="purplehaze_button_text">#FFFFFF</color>
-    <color name="purplehaze_button_normal">#1A237E</color> <!-- Dark Blue -->
+    <color name="purplehaze_button_normal">#00FFFFFF</color> <!-- Dark Blue -->
     <color name="purplehaze_button_highlight">#4527A0</color> <!-- Deep Purple -->
 
     <!-- Surface & Background -->

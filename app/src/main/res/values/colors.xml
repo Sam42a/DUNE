@@ -43,7 +43,7 @@
     <color name="black_transparent">#97000000</color>
     <color name="black_transparent_light">#74000000</color>
     <color name="button_dark_transparent">#2F000000</color>
-    <color name="white_transparent">#40FFFFFF</color>
+    <color name="white_transparent">#80FFFFFF</color>
     <color name="colorAccent">#aa5cc3</color>
     <!-- Progressbar Background -->
     <color name="grey_transparent">#CC4b4b4b</color>
@@ -114,7 +114,7 @@
     <color name="muted_purple_text_primary">#ffffff</color>     <!-- White text -->
     <color name="muted_purple_text_secondary">#b8beca</color>   <!-- Light gray-blue secondary text -->
     <color name="muted_purple_card">#2a3446</color>            <!-- Slightly lighter than background for cards -->
-    <color name="muted_purple_button_normal">#2a3446</color>    <!-- Card color for normal buttons -->
+    <color name="muted_purple_button_normal">#00FFFFFF</color>    <!-- Card color for normal buttons -->
     <color name="muted_purple_button_highlight">#3a4456</color> <!-- Slightly lighter for button press -->
     <color name="muted_purple_progress_bg">#1a1f2a</color>     <!-- Darker background for progress bars -->
     <color name="muted_purple_progress_fill">#0bfffb</color>    <!-- Cyan for progress fill -->
@@ -140,7 +140,7 @@
     <color name="emerald_text_primary">#ffffff</color>    <!-- White text -->
     <color name="emerald_text_secondary">#e0e0e0</color>  <!-- Light gray for secondary text -->
     <color name="emerald_card">#1a3a24</color>            <!-- Dark green for cards -->
-    <color name="emerald_button_normal">#1a3a24</color>   <!-- Card color for normal buttons -->
+    <color name="emerald_button_normal">#00FFFFFF</color>   <!-- Card color for normal buttons -->
     <color name="emerald_button_highlight">#2a4a34</color><!-- Slightly lighter for button press -->
     <color name="emerald_progress_bg">#0f2a15</color>     <!-- Darker background for progress bars -->
     <color name="emerald_progress_fill">#57ffa6</color>   <!-- Bright green for progress fill -->
@@ -185,11 +185,11 @@
     <!-- Flexy Theme (Netflix-inspired) -->
     <color name="flexy_primary">#db0000</color>           <!-- Netflix Red -->
     <color name="flexy_secondary">#831010</color>         <!-- Darker Red -->
-    <color name="flexy_accent">#db0000</color>            <!-- Netflix Red (Accent) -->
+    <color name="flexy_accent">#a10b15</color>            <!-- Netflix Red (Accent) -->
     <color name="flexy_highlight">#ff1a1a</color>         <!-- Brighter Red for highlights -->
     <color name="flexy_text_primary">#ffffff</color>       <!-- White text -->
     <color name="flexy_text_secondary">#ffffff</color>    <!-- Light gray for secondary text -->
-    <color name="flexy_background">#0a0a0a</color>        <!-- Dark background -->
+    <color name="flexy_background">#120e0e</color>        <!-- Dark background -->
     <color name="flexy_card">#1f1f1f</color>              /* Slightly lighter than background for cards */
     <color name="flexy_surface">#000000</color>            /* Surface color for cards and elements */
     <color name="flexy_button_normal">#00FFFFFF</color>      /* Dark gray for normal buttons */
