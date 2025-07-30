@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,6 +27,7 @@ import org.jellyfin.androidtv.ui.startup.StartupActivity
 import org.jellyfin.androidtv.util.ImageHelper
 import org.jellyfin.androidtv.util.ImagePreloader
 import org.jellyfin.sdk.api.client.ApiClient
+import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -81,12 +83,23 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         try {
-            // Clear any view listeners and callbacks
+            // Cancel any ongoing work
             view?.let { v ->
-                v.viewTreeObserver.removeOnWindowFocusChangeListener { /* no-op */ }
-                v.removeCallbacks(null)
-                v.setOnClickListener(null)
-                v.setOnKeyListener(null)
+                if (v.isAttachedToWindow) {
+                    v.viewTreeObserver.removeOnWindowFocusChangeListener { /* no-op */ }
+                    v.removeCallbacks(null)
+                    v.setOnClickListener(null)
+                    v.setOnKeyListener(null)
+                }
+            }
+
+            // Clear coroutine jobs if view is still available
+            if (view != null && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
+                try {
+                    viewLifecycleOwner.lifecycleScope.coroutineContext[Job]?.cancel()
+                } catch (e: Exception) {
+                    Timber.e(e, "Error clearing coroutine jobs")
+                }
             }
 
             // Clear binding
@@ -125,18 +138,20 @@ class HomeFragment : Fragment() {
      * Clear any remaining references to prevent memory leaks
      */
     private fun clearReferences() {
-        // Clear any remaining listeners or callbacks
-        // Add any additional cleanup needed for your fragment
+        try {
+            // Clear any remaining listeners or callbacks
+            // Add any additional cleanup needed for your fragment
 
-        // Clear any coroutine jobs
-        (viewLifecycleOwner.lifecycleScope.coroutineContext[Job] as? Job)?.cancel()
-
-        // Clear any remaining view references
-        view?.let { v ->
-            v.viewTreeObserver.removeOnWindowFocusChangeListener { /* no-op */ }
-            v.removeCallbacks(null)
-            v.setOnClickListener(null)
-            v.setOnKeyListener(null)
+            // Clear coroutine jobs if view is still available
+            if (view != null && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
+                try {
+                    viewLifecycleOwner.lifecycleScope.coroutineContext[Job]?.cancel()
+                } catch (e: Exception) {
+                    Timber.e(e, "Error clearing coroutine jobs")
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Error in clearReferences")
         }
     }
 
@@ -256,12 +271,23 @@ class HomeFragment : Fragment() {
                 // Navigate to the home screen which shows the library content
                 navigationRepository.navigate(Destinations.home)
             }
-            
+
             val favoritesAction = {
                 // Navigate to the favorites fragment
                 navigationRepository.navigate(Destinations.favorites)
             }
-            
+
+            val openRandomMovie: (BaseItemDto) -> Unit = { item ->
+                item.id?.let { idStr ->
+                    try {
+                        val uuid = UUID.fromString(idStr.toString())
+                        navigationRepository.navigate(Destinations.itemDetails(uuid))
+                    } catch (e: Exception) {
+                        Timber.e(e, "Error parsing item ID")
+                    }
+                }
+            }
+
             org.jellyfin.androidtv.ui.shared.toolbar.HomeToolbar(
                 openSearch = { searchAction() },
                 openLiveTv = { liveTvAction() },
@@ -269,6 +295,7 @@ class HomeFragment : Fragment() {
                 switchUsers = { switchUsersAction() },
                 openLibrary = { libraryAction() },
                 onFavoritesClick = { favoritesAction() },
+                openRandomMovie = openRandomMovie,
                 userSettingPreferences = userSettingPreferences
             )
         }

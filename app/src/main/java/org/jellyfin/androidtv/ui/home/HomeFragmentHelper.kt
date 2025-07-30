@@ -23,6 +23,7 @@ import org.jellyfin.sdk.model.api.request.GetRecommendedProgramsRequest
 import org.jellyfin.sdk.model.api.request.GetRecordingsRequest
 import org.jellyfin.sdk.model.api.request.GetResumeItemsRequest
 import org.jellyfin.sdk.model.api.SortOrder
+import org.jellyfin.androidtv.ui.home.HomeFragmentMusicVideosRow
 
 class HomeFragmentHelper(
     private val context: Context,
@@ -37,90 +38,6 @@ class HomeFragmentHelper(
         private const val ITEM_LIMIT_ON_NOW = 20
     }
 
-
-
-	fun loadMyCollectionsRow(): HomeFragmentRow {
-		val query = GetItemsRequest(
-			fields = ItemRepository.itemFields,
-			includeItemTypes = setOf(BaseItemKind.BOX_SET),
-			recursive = true,
-			imageTypeLimit = 1,
-			limit = 15,
-			sortBy = setOf(ItemSortBy.DATE_CREATED),
-			// Pass SortOrder.DESCENDING within a list or set
-			sortOrder = listOf(SortOrder.DESCENDING), // Or use setOf(SortOrder.DESCENDING)
-			enableImageTypes = setOf(
-				org.jellyfin.sdk.model.api.ImageType.THUMB,
-				org.jellyfin.sdk.model.api.ImageType.BACKDROP,
-				org.jellyfin.sdk.model.api.ImageType.PRIMARY
-			)
-		)
-
-		// ... rest of your function remains the same ...
-		// Create a custom row that matches the Next Up row style but uses backdrop images
-		return object : HomeFragmentRow {
-			override fun addToRowsAdapter(
-				context: Context,
-				cardPresenter: CardPresenter,
-				rowsAdapter: MutableObjectAdapter<Row>
-			) {
-				// Create a custom card presenter with THUMB type for collections
-				val collectionsCardPresenter = object : CardPresenter(
-					false,  // showInfo - set to false to hide rating
-					ImageType.THUMB,  // Use THUMB for collections to show thumbnails
-					147  // Reduced height by 8% (from 160)
-				) {
-					override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any) {
-						super.onBindViewHolder(viewHolder, item)
-						// Set fixed dimensions for all cards in the row
-						(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.apply {
-							setCardType(BaseCardView.CARD_TYPE_MAIN_ONLY)  // Changed from CARD_TYPE_INFO_UNDER to hide all text
-							// Reduce height by 8% (from 160 to 147) and adjust width proportionally (from 290 to 266)
-							setMainImageDimensions(266, 147)
-							// Clear any content text that might be set
-							contentText = ""
-						}
-					}
-				}.apply {
-					setHomeScreen(true)
-					setUniformAspect(true)
-				}
-
-				// Add the row with our custom card presenter
-				HomeFragmentBrowseRowDefRow(
-					org.jellyfin.androidtv.ui.browsing.BrowseRowDef(
-						context.getString(R.string.lbl_my_collections),
-						query,
-						20,
-						false,
-						true
-					)
-				).addToRowsAdapter(context, collectionsCardPresenter, rowsAdapter)
-			}
-		}
-	}
-
-    fun loadFavoritesRow(): HomeFragmentRow {
-        val query = GetItemsRequest(
-            isFavorite = true,
-            sortBy = setOf(ItemSortBy.DATE_CREATED),
-			sortOrder = listOf(SortOrder.DESCENDING),
-            limit = 15,
-            fields = ItemRepository.itemFields,
-            recursive = true,
-            excludeItemTypes = setOf(
-                BaseItemKind.EPISODE,
-                BaseItemKind.MUSIC_ARTIST,
-                BaseItemKind.MUSIC_ALBUM,
-                BaseItemKind.MUSIC_VIDEO,
-                BaseItemKind.AUDIO,
-            )
-        )
-
-        // Create a custom row with no-info card style
-        val row = HomeFragmentBrowseRowDefRow(BrowseRowDef(context.getString(R.string.lbl_favorites), query, 20, false, true))
-        return createNoInfoRow(row)
-    }
 
     fun loadSciFiRow(): HomeFragmentRow = genreRow("Science Fiction")
     fun loadComedyRow(): HomeFragmentRow = genreRow("Comedy")
@@ -151,6 +68,10 @@ class HomeFragmentHelper(
     fun loadHorrorRow(): HomeFragmentRow = genreRow("Horror")
     fun loadFantasyRow(): HomeFragmentRow = genreRow("Fantasy")
     fun loadHistoryRow(): HomeFragmentRow = genreRow("History")
+
+    fun loadMusicVideosRow(): HomeFragmentRow {
+        return HomeFragmentMusicVideosRow(userRepository)
+    }
 
 
     fun loadRecentlyAdded(userViews: Collection<org.jellyfin.sdk.model.api.BaseItemDto>): HomeFragmentRow {
@@ -204,9 +125,9 @@ class HomeFragmentHelper(
 
                         // Set fixed dimensions for all cards in the row
                         (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
-                            cardView.setMainImageDimensions(260, 150) // Standard card dimensions
+                            cardView.setMainImageDimensions(235, 135) // Standard card dimensions
                             // Set card type to not show info below
-                            cardView.cardType = BaseCardView.CARD_TYPE_MAIN_ONLY
+                            cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA
                         }
                     }
                 }.apply {
@@ -268,7 +189,7 @@ class HomeFragmentHelper(
 
                         // Set fixed dimensions for all cards in the rows
                         (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
-                            cardView.setMainImageDimensions(260, 150) // Standard card dimensions
+                            cardView.setMainImageDimensions(235, 135) // Standard card dimensions
                             // Set card type to show info below
                             cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER
                         }

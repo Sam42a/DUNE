@@ -170,7 +170,7 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
                 } // 150px * 1.3 = 195px height (30% increase)
 
 				val rowsAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
-				
+
 				// Add notification and now playing rows first
 				notificationsRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
 				nowPlaying.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
@@ -186,19 +186,13 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 
 				// Additional rows can be added here if needed in the future
 
-                // Add Favorites and My Collections rows if enabled
-                if (userSettingPreferences.get(userSettingPreferences.showFavoritesRow)) {
-                    Timber.d("Adding Favorites row")
-                    helper.loadFavoritesRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-                }
-                
-                // Add My Collections row if enabled - placed right after Favorites
-                if (userSettingPreferences.get(userSettingPreferences.showMyCollectionsRow)) {
+                // Add Music Videos row if enabled
+                if (userSettingPreferences.get(userSettingPreferences.showMusicVideosRow)) {
                     try {
-                        Timber.d("Adding My Collections row")
-                        helper.loadMyCollectionsRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+                        Timber.d("Adding Music Videos row")
+                        helper.loadMusicVideosRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
                     } catch (e: Exception) {
-                        Timber.e(e, "Error loading collections row")
+                        Timber.e(e, "Error adding Music Videos row")
                     }
                 }
 				if (userSettingPreferences.get(userSettingPreferences.showSciFiRow)) {
@@ -347,13 +341,32 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 	}
 
 	private fun refreshRows(force: Boolean = false, delayed: Boolean = true) {
-		lifecycleScope.launch(Dispatchers.IO) {
+		lifecycleScope.launch(Dispatchers.Main) {
 			if (delayed) delay(1.5.seconds)
 
-			repeat(adapter.size()) { i ->
-				val rowAdapter = (adapter[i] as? ListRow)?.adapter as? ItemRowAdapter
-				if (force) rowAdapter?.Retrieve()
-				else rowAdapter?.ReRetrieveIfNeeded()
+			try {
+				val size = adapter.size()
+				repeat(size) { i ->
+					val row = adapter[i] as? ListRow ?: return@repeat
+					val rowAdapter = row.adapter as? ItemRowAdapter ?: return@repeat
+
+					// Add a small delay between row refreshes to prevent UI freezing
+					if (i > 0) delay(50)
+
+					try {
+						// Instead of clearing immediately, let's preserve the current items
+						// and let the refresh update them in place
+						if (force) {
+							rowAdapter.Retrieve()
+						} else {
+							rowAdapter.ReRetrieveIfNeeded()
+						}
+					} catch (e: Exception) {
+						Timber.e(e, "Error refreshing row at position $i")
+					}
+				}
+			} catch (e: Exception) {
+				Timber.e(e, "Error during refreshRows")
 			}
 		}
 	}

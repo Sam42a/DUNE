@@ -1,5 +1,6 @@
 package org.jellyfin.androidtv.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.leanback.widget.Row
 import org.jellyfin.androidtv.R
@@ -17,6 +18,7 @@ class HomeFragmentLatestRow(
 	private val userRepository: UserRepository,
 	private val userViews: Collection<BaseItemDto>,
 ) : HomeFragmentRow {
+	@SuppressLint("StringFormatInvalid")
 	override fun addToRowsAdapter(context: Context, cardPresenter: CardPresenter, rowsAdapter: MutableObjectAdapter<Row>) {
 		// Get configuration (to find excluded items)
 		val configuration = userRepository.currentUser.value?.configuration
