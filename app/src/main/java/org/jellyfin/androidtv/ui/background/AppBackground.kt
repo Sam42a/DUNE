@@ -48,7 +48,7 @@ private fun AppThemeBackground() {
         attributes.recycle()
 
         if (drawable is ColorDrawable) drawable.toBitmap(1, 1).asImageBitmap()
-        else drawable?.toBitmap(1920, 1080)?.asImageBitmap()
+        else drawable?.toBitmap(1920, 720)?.asImageBitmap()
     }
 
     if (themeBackground != null) {
@@ -94,17 +94,17 @@ fun AppBackground() {
     }
 
     var isImageReady by remember { mutableStateOf(false) }
-    
+
     if (currentBackground != null) {
         isImageReady = true
     }
 
     val localContext = LocalContext.current
-    
+
     AnimatedContent(
         targetState = currentBackground,
         transitionSpec = {
-            fadeIn(animationSpec = tween(800)) togetherWith fadeOut(animationSpec = tween(800))
+            fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
         },
         label = "BackgroundTransition",
     ) { background ->
@@ -115,7 +115,7 @@ fun AppBackground() {
             )
             val backgroundColor = Color(typedArray.getColor(0, 0x000000)).copy(alpha = dimmingIntensity)
             typedArray.recycle()
-            
+
             val fadingColor = getBackdropFadingColor()
             Box(Modifier.fillMaxSize()) {
                 if (isImageReady) {
@@ -133,7 +133,7 @@ fun AppBackground() {
                                 .fillMaxSize()
                                 .then(if (blurBackground) Modifier.blur((blurIntensity * 20).dp) else Modifier)
                                 .themedFadingEdges(
-                                    start = (backdropFadingIntensity * 200).toInt().dp,  // Fade from left
+                                    start = (backdropFadingIntensity * 250).toInt().dp,  // Fade from left
                                     bottom = (backdropFadingIntensity * 300).toInt().dp,  // Fade from bottom
                                     color = fadingColor
                                 ),
