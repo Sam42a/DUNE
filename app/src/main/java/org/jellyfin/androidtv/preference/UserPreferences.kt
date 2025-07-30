@@ -36,11 +36,9 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
     companion object {
 		/* Display */
         /**
-         * Show white borders around cards
+         * Always show white borders around cards when focused
          */
-        var showWhiteBorders = booleanPreference("show_white_borders", true)
-        @JvmStatic
-        fun getShowWhiteBordersKey(): String = "show_white_borders"
+        const val showWhiteBorders = true
         /**
          * Image quality preference: low, normal, high
          */
@@ -48,7 +46,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		/**
 		 * Select the app theme
 		 */
-		var appTheme = enumPreference("app_theme", AppTheme.DARK)
+		var appTheme = enumPreference("app_theme", AppTheme.FLEXY)
 
 		/**
 		 * Enable background images while browsing

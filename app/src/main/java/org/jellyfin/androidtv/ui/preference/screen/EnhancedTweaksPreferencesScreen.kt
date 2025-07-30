@@ -1,5 +1,6 @@
 package org.jellyfin.androidtv.ui.preference.screen
 
+import android.R.attr.icon
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.UserSettingPreferences
@@ -22,13 +23,13 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             link {
                 setTitle(R.string.backdrop_settings)
                 setContent(R.string.backdrop_settings_description)
-                icon = R.drawable.ic_photo
+                icon = R.drawable.ic_backdrop
                 withFragment<BackdropSettingsPreferencesScreen>()
             }
 
             enum<AppTheme> {
                 setTitle(R.string.pref_app_theme)
-                bind(userPreferences, UserPreferences.appTheme)
+				bind(userPreferences, UserPreferences.appTheme)
             }
 
             checkbox {
@@ -37,11 +38,10 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
                 bind(userSettingPreferences, userSettingPreferences.showLiveTvButton)
             }
 
-
             checkbox {
-                setTitle(R.string.show_white_borders)
-                setContent(R.string.show_white_borders_summary)
-                bind(userPreferences, UserPreferences.showWhiteBorders)
+                setTitle(R.string.show_random_button)
+                setContent(R.string.show_random_button_summary)
+                bind(userSettingPreferences, userSettingPreferences.showRandomButton)
             }
 
             checkbox {
@@ -53,17 +53,20 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
 
         category {
             setTitle(R.string.genre_rows)
+            // Music Videos
             checkbox {
-                setTitle(R.string.genre_row_favorites)
-                bind(userSettingPreferences, userSettingPreferences.showFavoritesRow)
+                setTitle(R.string.show_music_videos_row)
+                bind(userSettingPreferences, userSettingPreferences.showMusicVideosRow)
             }
-            checkbox {
-                setTitle(R.string.show_my_collections_row)
-                bind(userSettingPreferences, userSettingPreferences.showMyCollectionsRow)
-            }
+
+            // Genre rows in specified order
             checkbox {
                 setTitle(R.string.show_sci_fi_row)
                 bind(userSettingPreferences, userSettingPreferences.showSciFiRow)
+            }
+            checkbox {
+                setTitle(R.string.show_comedy_row)
+                bind(userSettingPreferences, userSettingPreferences.showComedyRow)
             }
             checkbox {
                 setTitle(R.string.show_romance_row)
@@ -80,10 +83,6 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             checkbox {
                 setTitle(R.string.genre_row_action_adventure)
                 bind(userSettingPreferences, userSettingPreferences.showActionAdventureRow)
-            }
-            checkbox {
-                setTitle(R.string.show_comedy_row)
-                bind(userSettingPreferences, userSettingPreferences.showComedyRow)
             }
             checkbox {
                 setTitle(R.string.show_documentary_row)

@@ -96,7 +96,6 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 
 		category {
 			setTitle(R.string.pref_subtitles)
-
 			subtitlePreview {}
 
 
@@ -186,7 +185,7 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 				}
 			}
 
-			
+
 
 			checkbox {
 				setTitle(R.string.pref_subtitles_bold)

@@ -17,8 +17,6 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     val showAnimationRow = booleanPreference("showAnimationRow", false)
     val showActionRow = booleanPreference("showActionRow", false)
     val showActionAdventureRow = booleanPreference("showActionAdventureRow", false)
-    val showFavoritesRow = booleanPreference("showFavoritesRow", false)
-    val showMyCollectionsRow = booleanPreference("showMyCollectionsRow", true)
     val showSciFiRow = booleanPreference("showSciFiRow", false)
     val showDocumentaryRow = booleanPreference("showDocumentaryRow", false)
     val showDramaRow = booleanPreference("showDramaRow", false)
@@ -32,6 +30,7 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     val showRealityRow = booleanPreference("showRealityRow", false)
     val showThrillerRow = booleanPreference("showThrillerRow", false)
     val showWarRow = booleanPreference("showWarRow", false)
+    val showMusicVideosRow = booleanPreference("showMusicVideosRow", false)
 
     private val defaultGenreOrder = listOf(
         "Comedy",
@@ -62,6 +61,7 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     // Media folder display options
     val useExtraSmallMediaFolders = booleanPreference("useExtraSmallMediaFolders", true)
     val showLiveTvButton = booleanPreference("show_live_tv_button", false)
+    val showRandomButton = booleanPreference("show_masks_button", false)
 
     val homesection0 = enumPreference("homesection0", HomeSectionType.LIBRARY_TILES_SMALL)
     val homesection1 = enumPreference("homesection1", HomeSectionType.RESUME)

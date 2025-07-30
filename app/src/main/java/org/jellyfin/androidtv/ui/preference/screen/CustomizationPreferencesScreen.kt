@@ -63,14 +63,14 @@ class CustomizationPreferencesScreen : OptionsFragment() {
 			link {
 				setTitle(R.string.home_prefs)
 				setContent(R.string.pref_home_description)
-				icon = R.drawable.ic_house
+				icon = R.drawable.ic_sections
 				withFragment<HomePreferencesScreen>()
 			}
 
 			link {
 				setTitle(R.string.pref_libraries)
 				setContent(R.string.pref_libraries_description)
-				icon = R.drawable.ic_grid
+				icon = R.drawable.ic_libraries
 				withFragment<LibrariesPreferencesScreen>()
 			}
 		}

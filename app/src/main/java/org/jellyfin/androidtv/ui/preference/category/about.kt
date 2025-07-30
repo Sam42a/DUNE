@@ -15,7 +15,7 @@ import org.jellyfin.androidtv.util.AppUpdater
 import org.jellyfin.androidtv.util.UpdateResult
 import timber.log.Timber
 
-private const val CURRENT_VERSION = "0.0.6"
+private const val CURRENT_VERSION = "0.0.7"
 
 fun OptionsScreen.aboutCategory() = category {
     setTitle(R.string.pref_about_title)
@@ -23,12 +23,12 @@ fun OptionsScreen.aboutCategory() = category {
     link {
         title = "Dune app version"
         content = CURRENT_VERSION
-        icon = R.drawable.app_logo
+        icon = R.drawable.dune_icon
     }
 
     action {
         title = "Check for updates"
-        icon = R.drawable.ic_refresh
+        icon = R.drawable.ic_check_update
         onActivate = {
             checkForUpdates(context)
         }
@@ -37,13 +37,13 @@ fun OptionsScreen.aboutCategory() = category {
     link {
         setTitle(R.string.pref_device_model)
         content = "${Build.MANUFACTURER} ${Build.MODEL}"
-        icon = R.drawable.ic_tv
+        icon = R.drawable.ic_device
     }
 
     link {
         setTitle(R.string.licenses_link)
         setContent(R.string.licenses_link_description)
-        icon = R.drawable.ic_guide
+        icon = R.drawable.ic_license
         withFragment<LicensesScreen>()
     }
 }
