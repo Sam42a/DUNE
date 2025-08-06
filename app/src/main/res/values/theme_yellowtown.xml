@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- YellowTown Theme Colors -->
+    <color name="yellowtown_primary">#e5a00d</color>  <!-- Gold/Yellow primary color -->
+    <color name="yellowtown_primary_dark">#B39700</color>  <!-- Darker gold -->
+    <color name="yellowtown_accent">#e5a00d</color>  <!-- Amber accent -->
+    <color name="yellowtown_background">#B39700</color>  <!-- Dark background -->
+    <color name="yellowtown_Fading_background">#282a2d</color>  <!-- Dark background -->
+    <color name="yellowtown_surface">#1E1E1E</color>  <!-- Slightly lighter surface -->
+    <color name="yellowtown_text_primary">#FFFFFF</color>  <!-- White text -->
+    <color name="yellowtown_text_secondary">#B3B3B3</color>  <!-- Light gray text -->
+    <color name="yellowtown_transparent_10">#1AFFD700</color>  <!-- 10% opacity primary -->
+    <color name="yellowtown_transparent_20">#33FFD700</color>  <!-- 20% opacity primary -->
+    <color name="yellowtown_transparent_30">#4DFFD700</color>  <!-- 30% opacity primary -->
+
+    <style name="Theme.YellowTown" parent="@style/Theme.AppCompat.Leanback">
+        <!-- Base colors -->
+        <item name="android:colorPrimary">@color/yellowtown_primary</item>
+        <item name="android:colorPrimaryDark">@color/yellowtown_primary_dark</item>
+        <item name="android:colorAccent">@color/yellowtown_accent</item>
+        <item name="android:windowBackground">@color/yellowtown_Fading_background</item>
+        <item name="android:colorBackground">@color/yellowtown_Fading_background</item>
+
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/yellowtown_text_primary</item>
+        <item name="android:textColorSecondary">@color/yellowtown_text_secondary</item>
+
+        <!-- Backgrounds and surfaces -->
+        <item name="cardViewBackground">@color/yellowtown_surface</item>
+        <item name="cardImageBackground">@color/yellowtown_surface</item>
+        <item name="popupMenuBackground">@color/yellowtown_surface</item>
+        <item name="defaultBackground">@drawable/dark_backgrounds</item>
+        <item name="background_filter">@color/yellowtown_background</item>
+        <item name="backdrop_fading_color">@color/yellowtown_background</item>
+
+        <!-- Buttons and controls -->
+        <item name="buttonBackground">@color/muted_purple_button_normal</item>
+        <item name="buttonTextColor">@color/muted_purple_text_primary</item>
+        <item name="android:colorButtonNormal">@color/muted_purple_button_normal</item>
+        <item name="buttonDefaultNormalBackground">@color/muted_purple_button_normal</item>
+        <item name="buttonDefaultHighlightBackground">@color/yellowtown_primary</item>
+        <item name="buttonRounding">3dp</item>
+
+        <!-- Input fields -->
+        <item name="inputDefaultStrokeColor">@color/yellowtown_primary</item>
+        <item name="inputDefaultHighlightBackground">@color/yellowtown_transparent_10</item>
+
+        <!-- Progress bars -->
+        <item name="progressBackground">@color/yellowtown_transparent_10</item>
+        <item name="progressPrimary">@color/yellowtown_primary</item>
+        <item name="progressSecondary">@color/yellowtown_primary_dark</item>
+
+        <!-- Media folder buttons -->
+        <item name="mediaFolderButtonBackground">@color/transparent</item>
+        <item name="mediaFolderButtonFocusedBackground">@color/yellowtown_primary</item>
+        <item name="mediaFolderButtonTextColor">@color/yellowtown_text_primary</item>
+        <item name="mediaFolderButtonFocusedTextColor">@color/white</item>
+
+        <!-- Tiles and cards -->
+        <item name="tile_port_person_bg">@color/yellowtown_primary</item>
+        <item name="tile_user_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_video_bg">@color/yellowtown_primary</item>
+        <item name="tile_land_folder_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_chapter_bg">@color/yellowtown_primary</item>
+        <item name="tile_land_tv_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_tv_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_actors_bg">@color/yellowtown_primary</item>
+        <item name="tile_land_photo_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_folder_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_land_series_timer_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_audio_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_artists_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_genres_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_search_bg">@color/yellowtown_primary</item>
+        <item name="tile_suggestions_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_grid_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_letters_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_guide_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_series_timer_bg">@color/yellowtown_transparent_10</item>
+        <item name="tile_port_time_bg">@color/yellowtown_transparent_10</item>
+
+        <!-- Window and animations -->
+        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+
+        <!-- Rounding and styling -->
+        <item name="cardRounding">1dp</item>
+        <item name="buttonRounding">1dp</item>
+        <item name="inputRounding">1dp</item>
+        <item name="popupMenuRounding">1dp</item>
+        <item name="overlayDimDimmedLevel">10%</item>
+    </style>
+
+    <!-- Preferences theme variant -->
+    <style name="Theme.YellowTown.Preferences" parent="Theme.YellowTown">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+    </style>
+</resources>
