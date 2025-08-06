@@ -254,7 +254,7 @@
     <string name="lbl_guide_option_played">Last played</string>
     <string name="lbl_guide_option_number">Channel number</string>
     <string name="lbl_resume_preroll">Resume pre-roll</string>
-    <string name="lbl_subtitle_text_color">Subtitle text color</string>
+    <string name="lbl_subtitle_text_color">Subtitle color</string>
     <string name="lbl_subtitle_background_color">Subtitle background color</string>
     <string name="lbl_subtitle_text_stroke_color">Subtitle stroke color</string>
     <string name="lbl_resume_from">Resume from %1$s</string>
@@ -469,8 +469,8 @@
     <string name="color_yellow">Yellow</string>
     <string name="color_pink">Pink</string>
     <string name="color_cyan">Cyan</string>
-    <string name="pref_subtitles_size">Text size</string>
-    <string name="pref_subtitles_bold">Bold text</string>
+    <string name="pref_subtitles_size">Subtitle size</string>
+    <string name="pref_subtitles_bold">Bold Subtitle</string>
     <string name="server_issue_unable_to_connect">Unable to connect</string>
     <string name="server_issue_invalid_product">Server software is incompatible</string>
     <string name="server_issue_missing_version">Could not determine server version</string>
@@ -706,4 +706,38 @@
     <string name="enhanced_tweaks_description">Backdrop Settings,Genre Rows,App Themes,And more...</string>
     <string name="home_content_description">Home screen content</string>
     <string name="lbl_music_videos">Music Videos</string>
+
+    <!-- Audio Language pref-->
+    <string name="pref_audio_default_language">Default Audio Language</string>
+    <string name="pref_default_language_none">(Default)</string>
+    <string name="pref_default_language_ara">العربية (Arabic)</string>
+    <string name="pref_default_language_zho">中文 (Chinese)</string>
+    <string name="pref_default_language_ces">Čeština (Czech)</string>
+    <string name="pref_default_language_dan">Dansk (Danish)</string>
+    <string name="pref_default_language_nld">Nederlands (Dutch)</string>
+    <string name="pref_default_language_eng">English</string>
+    <string name="pref_default_language_fin">Suomi (Finnish)</string>
+    <string name="pref_default_language_fra">Français (French)</string>
+    <string name="pref_default_language_deu">Deutsch (German)</string>
+    <string name="pref_default_language_ell">Ελληνικά (Greek)</string>
+    <string name="pref_default_language_heb">עברית (Hebrew)</string>
+    <string name="pref_default_language_hin">हिन्दी (Hindi)</string>
+    <string name="pref_default_language_hun">Magyar (Hungarian)</string>
+    <string name="pref_default_language_ind">Bahasa Indonesia (Indonesian)</string>
+    <string name="pref_default_language_ita">Italiano (Italian)</string>
+    <string name="pref_default_language_jpn">日本語 (Japanese)</string>
+    <string name="pref_default_language_kor">한국어 (Korean)</string>
+    <string name="pref_default_language_msa">Bahasa Melayu (Malay)</string>
+    <string name="pref_default_language_nor">Norsk (Norwegian)</string>
+    <string name="pref_default_language_pol">Polski (Polish)</string>
+    <string name="pref_default_language_por">Português (Portuguese)</string>
+    <string name="pref_default_language_ron">Română (Romanian)</string>
+    <string name="pref_default_language_rus">Русский (Russian)</string>
+    <string name="pref_default_language_slk">Slovenčina (Slovak)</string>
+    <string name="pref_default_language_spa">Español (Spanish)</string>
+    <string name="pref_default_language_swe">Svenska (Swedish)</string>
+    <string name="pref_default_language_tha">ไทย (Thai)</string>
+    <string name="pref_default_language_tur">Türkçe (Turkish)</string>
+    <string name="pref_default_language_ukr">Українська (Ukrainian)</string>
+    <string name="pref_default_language_vie">Tiếng Việt (Vietnamese)</string>
 </resources>

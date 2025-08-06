@@ -17,6 +17,7 @@ import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
 import org.jellyfin.androidtv.ui.preference.dsl.checkbox
 import org.jellyfin.androidtv.ui.preference.dsl.colorList
 import org.jellyfin.androidtv.ui.preference.dsl.enum
+import org.jellyfin.androidtv.ui.preference.dsl.list
 import org.jellyfin.androidtv.ui.preference.dsl.link
 import org.jellyfin.androidtv.ui.preference.dsl.optionsScreen
 import org.jellyfin.androidtv.ui.preference.dsl.seekbar
@@ -91,6 +92,47 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 			enum<AudioBehavior> {
 				setTitle(R.string.lbl_audio_output)
 				bind(userPreferences, UserPreferences.audioBehaviour)
+			}
+
+			// Audio language preference
+			list {
+				setTitle(R.string.pref_audio_default_language)
+				// Set the entries for the list in alphabetical order by display name
+				entries = mapOf(
+					"" to getString(R.string.pref_default_language_none),
+					"ara" to getString(R.string.pref_default_language_ara),
+					"zho" to getString(R.string.pref_default_language_zho),
+					"ces" to getString(R.string.pref_default_language_ces),
+					"dan" to getString(R.string.pref_default_language_dan),
+					"nld" to getString(R.string.pref_default_language_nld),
+					"eng" to getString(R.string.pref_default_language_eng),
+					"fin" to getString(R.string.pref_default_language_fin),
+					"fra" to getString(R.string.pref_default_language_fra),
+					"deu" to getString(R.string.pref_default_language_deu),
+					"ell" to getString(R.string.pref_default_language_ell),
+					"heb" to getString(R.string.pref_default_language_heb),
+					"hin" to getString(R.string.pref_default_language_hin),
+					"hun" to getString(R.string.pref_default_language_hun),
+					"ind" to getString(R.string.pref_default_language_ind),
+					"ita" to getString(R.string.pref_default_language_ita),
+					"jpn" to getString(R.string.pref_default_language_jpn),
+					"kor" to getString(R.string.pref_default_language_kor),
+					"msa" to getString(R.string.pref_default_language_msa),
+					"nor" to getString(R.string.pref_default_language_nor),
+					"pol" to getString(R.string.pref_default_language_pol),
+					"por" to getString(R.string.pref_default_language_por),
+					"ron" to getString(R.string.pref_default_language_ron),
+					"rus" to getString(R.string.pref_default_language_rus),
+					"slk" to getString(R.string.pref_default_language_slk),
+					"spa" to getString(R.string.pref_default_language_spa),
+					"swe" to getString(R.string.pref_default_language_swe),
+					"tha" to getString(R.string.pref_default_language_tha),
+					"tur" to getString(R.string.pref_default_language_tur),
+					"ukr" to getString(R.string.pref_default_language_ukr),
+					"vie" to getString(R.string.pref_default_language_vie)
+				)
+				// Bind to the preference store
+				bind(userPreferences, UserPreferences.defaultAudioLanguage)
 			}
 		}
 

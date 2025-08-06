@@ -8,6 +8,7 @@ import org.jellyfin.androidtv.preference.constant.AudioBehavior
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
 import org.jellyfin.androidtv.preference.constant.RatingType
+import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.constant.RefreshRateSwitchingBehavior
 import org.jellyfin.androidtv.preference.constant.WatchedIndicatorBehavior
 import org.jellyfin.androidtv.preference.constant.ZoomMode
@@ -225,6 +226,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var subtitlesTextSize = floatPreference("subtitles_text_size", 1f)
 
+
         /**
          * Subtitles bold text
          */
@@ -281,7 +283,13 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Enable preloading of images for better performance
 		 */
 		var preloadImages = booleanPreference("preload_images", true)
-	}
+
+        /**
+         * Default audio language preference (empty string means use best guess)
+         * Values are ISO 639-2 language codes
+         */
+        var defaultAudioLanguage = stringPreference("default_audio_language", "")
+    }
 
 	init {
 		// Note: Create a single migration per app version
