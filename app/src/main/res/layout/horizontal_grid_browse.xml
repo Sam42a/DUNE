@@ -8,8 +8,8 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="37dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="120dp"
         android:textSize="20sp"
         android:maxLines="1"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="40dp"
         android:alpha=".75"
         android:dividerPadding="4dp"
@@ -49,7 +49,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/infoRow"
         android:layout_above="@id/statusText"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="6dp" />
 
     <TextView
         android:id="@+id/statusText"

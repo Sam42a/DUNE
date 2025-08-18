@@ -1,67 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidUnresolvableTag -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <!-- Info Panel (Title, Info Row, Summary) -->
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
+
+    <TextClock
+        android:id="@+id/textClock3"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50sp"
-        android:layout_marginTop="20sp"
-        android:layout_marginEnd="20sp"
-        android:ellipsize="end"
-        android:fontFamily="@font/roboto_bold_family"
-        android:maxLines="1"
-        android:text=""
-        android:textSize="14.4sp" />
+        android:layout_marginStart="856sp"
+        android:layout_marginTop="7sp"
+        android:fontFamily="sans-serif-thin"
+        android:textAlignment="textEnd"
+        android:textAllCaps="true"
+        android:textColor="@color/basic_button_text"
+        android:textStyle="bold"
+        tools:ignore="VisualLintBounds,TextSizeCheck" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/toolbar"
+        android:layout_width="368dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="2sp"
+        android:layout_marginTop="-25sp"
+        android:visibility="visible" />
 
     <!-- Extra spacing below info panel -->
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="570sp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27sp"
+        android:layout_marginTop="14sp"
+        android:ellipsize="end"
+        android:fontFamily="@font/bebas_neue"
+        android:letterSpacing="0.02"
+        android:lineSpacingExtra="2sp"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="@color/basic_button_text"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        android:visibility="visible"
+        tools:ignore="VisualLintBounds" />
+
     <LinearLayout
         android:id="@+id/infoRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50sp"
-        android:layout_marginTop="1.8sp"
-        android:baselineAligned="false"
-        android:orientation="horizontal" />
+        android:layout_width="572dp"
+        android:layout_height="18.5sp"
+        android:layout_marginStart="27sp"
+        android:layout_marginTop="15sp"
+        android:layout_toStartOf="@id/summary"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        tools:ignore="ObsoleteLayoutParam,VisualLintBounds" />
 
     <TextView
         android:id="@+id/summary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50sp"
-        android:layout_marginTop="10sp"
-        android:layout_marginEnd="20sp"
-        android:layout_marginBottom="10.8dp"
+        android:layout_width="452dp"
+        android:layout_height="79dp"
+        android:layout_marginStart="27sp"
+        android:layout_marginTop="11sp"
+        android:layout_marginBottom="9.8dp"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="1sp"
         android:maxLines="4"
         android:text=""
+        android:textAlignment="textStart"
         android:textSize="13.8sp"
-        android:textStyle="bold" />
+        android:typeface="monospace"
+        android:visibility="visible"
+        tools:ignore="VisualLintBounds" />
+
+    <!-- Row Header Dock -->
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/content_view"
         android:name="org.jellyfin.androidtv.ui.home.HomeRowsFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginStart="-27sp"
+        android:baselineAligned="true"
         android:contentDescription="@string/home_content_description"
         android:descendantFocusability="afterDescendants"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:focusedByDefault="true">
+        android:focusedByDefault="true"
+        tools:ignore="VisualLintBounds">
 
         <requestFocus />
     </androidx.fragment.app.FragmentContainerView>
+
 </LinearLayout>

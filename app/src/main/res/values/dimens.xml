@@ -6,7 +6,7 @@
     <dimen name="overscan_vertical">48dp</dimen>
 
     <fraction name="card_scale_default">100%</fraction>
-    <fraction name="card_scale_focus">115%</fraction>
+    <fraction name="card_scale_focus">100%</fraction>
 
     <!-- Set leanback card scale values -->
     <fraction name="lb_focus_zoom_factor_small">@fraction/card_scale_focus</fraction>
@@ -15,7 +15,7 @@
     <fraction name="lb_focus_zoom_factor_large">@fraction/card_scale_focus</fraction>
 
     <!-- Card corner radius -->
-    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_corner_radius">3dp</dimen>
     <dimen name="card_border_padding">2dp</dimen>
 
     <!-- Custom row spacing -->
