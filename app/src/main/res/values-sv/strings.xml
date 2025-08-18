@@ -93,6 +93,7 @@
     <string name="lbl_albums">Album</string>
     <string name="lbl_live_tv_guide">Direktsänd-TV Guide</string>
     <string name="lbl_no_recordings">Inga inspelningar tillgängliga</string>
+    <string name="preference_enable_pgs">Direktuppspelning av PGS-undertexter</string>
     <string name="msg_burn_sub_warning">Bränner in undertexter. Detta kan ta några sekunder…</string>
     <string name="msg_unable_load_subs">Kan inte ladda undertext</string>
     <string name="msg_subtitles_loading">Undertexter laddas…</string>
@@ -140,6 +141,7 @@
     <string name="lbl_remove_favorite">Ta bort favorit</string>
     <string name="lbl_mark_played">Markera som uppspelat</string>
     <string name="lbl_mark_unplayed">Markera som ej uppspelat</string>
+    <string name="lbl_playing">Spelar</string>
     <string name="lbl_play_first_unwatched">Spela först osedda</string>
     <string name="lbl_search_hint">Sök text (välj för tangentbord)</string>
     <string name="lbl_tv_queuing">Spela nästa avsnitt automatiskt</string>
@@ -193,6 +195,8 @@
     <string name="lbl_cancel_series">Avbryt serie</string>
     <string name="lbl_cancel_recording">Avbryt inspelning</string>
     <string name="lbl_cancel">Avbryt</string>
+    <string name="lbl_Watched_History_Series">Sedda serier</string>
+    <string name="lbl_Watched_History_Movies">Såg historiska filmer</string>
     <string name="lbl_play">Spela upp</string>
     <string name="lbl_shuffle_all">Blanda alla</string>
     <string name="lbl_play_all">Spela upp alla</string>
@@ -206,6 +210,7 @@
     <string name="lbl_favorites">Favoriter</string>
     <string name="lbl_by_name">Efter namn</string>
     <string name="lbl_latest">Senast tillagda</string>
+    <string name="lbl_voice_search">Röstsökning</string>
     <string name="msg_not_implemented">" stöds ännu inte"</string>
     <string name="lbl_search">Sök</string>
     <string name="lbl_genres">Genrer</string>
@@ -404,8 +409,10 @@
     <string name="server_issue_unsupported_version">Servern använder version %1$s vilket stöds ej</string>
     <string name="server_issue_missing_version">Kunde ej bestämma serverversion</string>
     <string name="server_issue_invalid_product">Servermjukvara är inkompatibel</string>
+    <string name="pref_subtitles_bold">Fet textning</string>
     <string name="server_issue_unable_to_connect">Kunde ej ansluta</string>
     <string name="server_connection_failed_candidates">Kunde ej ansluta till servern, försökte följande adresser: %1$s</string>
+    <string name="backdrop_settings_description">Anpassa bakgrundens utseende och beteende</string>
     <string name="pref_show_backdrop_description">Ändra bakgrundsbild enligt valda objekt</string>
     <string name="action_connect">Anslut</string>
     <string name="pref_refresh_rate_scale_on_device">Skala på enheten</string>
@@ -524,6 +531,7 @@
     <string name="dca">DTS</string>
     <string name="eac3">DD+</string>
     <string name="dts_x">DTS:X</string>
+    <string name="indicator_subtitles_hearing_impaired">Sedda serier</string>
     <string name="dolby_atmos">Dolby Atmos</string>
     <string name="dts_hd">DTS:HD</string>
     <string name="clear_image_cache_content">Använt: %1$s</string>
@@ -567,4 +575,33 @@
     <string name="segment_type_commercial">Reklamfilmer</string>
     <string name="runtime_hours_minutes">%1$dt %2$dm</string>
     <string name="runtime_minutes">%1$dm</string>
+    <string name="pref_audio_default_language">Standardspråk för ljud</string>
+    <string name="pref_default_language_none">(Standard)</string>
+    <string name="genre_row_movie">Filmgenrer</string>
+    <string name="genre_row_tvshow">TV-programgenrer</string>
+    <string name="show_history_row">Visa historikrad</string>
+    <string name="show_music_row">Visa musikrad</string>
+    <string name="show_mystery_row">Visa mysterierad</string>
+    <string name="show_reality_row">Visa verklighetsrad</string>
+    <string name="show_thriller_row">Visa thrillerrad</string>
+    <string name="show_war_row">Visa krigsrad</string>
+    <string name="show_music_videos_row">Visa musikvideorad</string>
+    <string name="music_videos">Musikvideor</string>
+    <string name="show_live_tv_button">Knapp för direktsänd TV</string>
+    <string name="show_live_tv_button_summary">Visa knappen för direktsänd TV</string>
+    <string name="move_up">Flytta upp</string>
+    <string name="move_down">Flytta ner</string>
+    <string name="enhanced_tweaks">Förbättrade inställningar</string>
+    <string name="enhanced_tweaks_description">Bakgrundsinställningar, genrerader, appteman och mer...</string>
+    <string name="lbl_music_videos">Musikvideor</string>
+    <string name="pref_report_device_profile_failure">Kunde inte skicka dokumentet. Din Jellyfin-server kan förbjuda klientloggar.</string>
+    <string name="pref_report_device_profile_summary">Ladda upp ett felsökningsdokument till Jellyfin-servern med information om uppspelningsfunktioner</string>
+    <string name="voice_search_not_available">Röstsökning är inte tillgänglig</string>
+    <string name="error_occurred">Ett fel uppstod. Försök igen.</string>
+    <string name="no_results_found">Inga resultat hittades</string>
+    <string name="lbl_library">Refresh</string>
+    <string name="pref_clock_settings">Klockinställningar</string>
+    <string name="subtitles">Undertexter</string>
+    <string name="audio">ljud</string>
+    <string name="transcoding_details">Detaljer om Transcoding</string>
 </resources>
