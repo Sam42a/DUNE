@@ -88,6 +88,38 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 			)
 		))
 
+		// 2. Movies Watched
+		mRows.add(createRow(
+			getString(R.string.lbl_Watched_History_Movies),
+			GetItemsRequest(
+				includeItemTypes = setOf(BaseItemKind.MOVIE),
+				filters = setOf(ItemFilter.IS_PLAYED),
+				sortBy = setOf(ItemSortBy.DATE_PLAYED),
+				sortOrder = setOf(SortOrder.DESCENDING),
+				recursive = true,
+				limit = 20,
+				fields = ItemRepository.itemFields,
+				enableImages = true,
+				enableUserData = true
+			)
+		))
+
+		// 2. Series Watched
+		mRows.add(createRow(
+			getString(R.string.lbl_Watched_History_Series),
+			GetItemsRequest(
+				includeItemTypes = setOf(BaseItemKind.SERIES),
+				filters = setOf(ItemFilter.IS_PLAYED),
+				sortBy = setOf(ItemSortBy.DATE_PLAYED),
+				sortOrder = setOf(SortOrder.DESCENDING),
+				recursive = true,
+				limit = 20,
+				fields = ItemRepository.itemFields,
+				enableImages = true,
+				enableUserData = true
+			)
+		))
+
 		// 4. Collections
 		mRows.add(createRow(
 			header = getString(R.string.lbl_collections),
@@ -106,6 +138,7 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 			),
 			isMusicVideo = true
 		))
+
 
 		// 5. Playlists & Albums (combined)
 		mRows.add(createRow(
@@ -178,8 +211,8 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 
 				//  fixed dimensions for all cards in the row
 				(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
-					cardView.setMainImageDimensions(235, 135)
-					cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER
+					cardView.setMainImageDimensions(200, 110)
+					cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA
 				}
 			}
 		}
@@ -188,7 +221,7 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 		val rowDef = BrowseRowDef(
 			header,
 			query,
-			20, // chunkSize
+			6, // chunkSize
 			false, // preferParentThumb
 			true, // staticHeight
 			arrayOf(ChangeTriggerType.LibraryUpdated)
