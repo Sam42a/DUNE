@@ -11,7 +11,7 @@
     <string name="video_error_unknown_error">Failed to load video</string>
     <string name="loading">Loading…</string>
     <string name="btn_cancel">Cancel</string>
-    <string name="byletter_letters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="byletter_letters" translatable="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="pref_playback">Playback</string>
     <string name="pref_max_bitrate_title">Max streaming bitrate</string>
     <string name="settings_title">Settings</string>
@@ -62,6 +62,8 @@
     <string name="because_you_watched">Because you watched %1$s</string>
     <string name="lbl_play_all">Play all</string>
     <string name="lbl_shuffle_all">Shuffle all</string>
+    <string name="lbl_Watched_History_Series">Watched Series</string>
+    <string name="lbl_Watched_History_Movies">Watched Movies</string>
 
     <string name="lbl_play">Play</string>
     <string name="lbl_pause">Pause</string>
@@ -176,6 +178,11 @@
     <string name="msg_subtitles_loading">Subtitles loading…</string>
     <string name="pref_enable_libass">Enable Advanced SubStation Alpha subtitle client rendering</string>
     <string name="preference_enable_pgs">Direct play PGS subtitles</string>
+    <string name="preference_enable_assDirectPlay">Direct play ASS/SSA subtitles</string>
+    <string name="preference_enable_assDirectPlay_description">This feature is experimental. Disable it if you experience video playback issues</string>
+
+
+
     <string name="msg_burn_sub_warning">Burning in subtitles. This may take a few seconds…</string>
     <string name="lbl_no_recordings">No recordings available</string>
     <string name="lbl_live_tv_guide">Live TV Guide</string>
@@ -289,6 +296,7 @@
     <string name="lbl_my_media_extra_small">Media Folders</string>
     <string name="desc_my_media_extra_small">Display My media folders as buttons </string>
     <string name="pref_theme_purple_haze">Lavender Haze</string>
+    <string name="pref_theme_dark_purple">Dark Purple</string>
     <string name="pref_theme_dark">Dark Matter (Restart required)</string>
     <string name="pref_theme_emerald">Green forest</string>
     <string name="pref_theme_muted_purple">Light Breeze</string>
@@ -471,6 +479,7 @@
     <string name="searchable_settings_description">Media</string>
     <string name="pref_subtitles_background_title">Enable background</string>
     <string name="pref_subtitles_background_summary">Show a black background behind the subtitles</string>
+    <string name="pref_Subtitle_Codecs"> </string>
     <string name="color_white">White</string>
     <string name="color_black">Black</string>
     <string name="color_darkgrey">Dark grey</string>

@@ -111,6 +111,20 @@
     <color name="muted_purple_secondary">#b8beca</color>        <!-- Light gray-blue secondary color -->
     <color name="muted_purple_accent">#0bfffb</color>          <!-- Cyan accent color -->
     <color name="muted_purple_highlight">#00fead</color>       <!-- Mint green highlight color -->
+
+    <!-- Dark Purple Theme Colors -->
+    <color name="dark_purple_primary">#4A148C</color>         <!-- Deep purple primary color -->
+    <color name="dark_purple_primary_dark">#12005E</color>    <!-- Darker purple for status bar -->
+    <color name="dark_purple_accent">#7C4DFF</color>         <!-- Bright purple accent color -->
+    <color name="dark_purple_secondary">#B388FF</color>       <!-- Lighter purple for secondary elements -->
+    <color name="dark_purple_background">#121212</color>      <!-- Dark background -->
+    <color name="dark_purple_background_filter">#E61F0937</color>  <!-- Slightly transparent dark background -->
+    <color name="dark_purple_card">#1E1E1E</color>            <!-- Slightly lighter than background for cards -->
+    <color name="dark_purple_button_normal">#2F4A148C</color>   <!-- Button normal state -->
+    <color name="dark_purple_button_highlight">#7C4DFF</color> <!-- Button pressed/highlight state -->
+    <color name="dark_purple_surface">#1E1E1E</color>         /* Surface color for dialogs and menus */
+    <color name="dark_purple_input_highlight">#4A148C</color>  /* Input field highlight */
+    <color name="dark_purple_tile_bg">#1E1E1E</color>         /* Background color for tiles */
     <color name="muted_purple_text_primary">#ffffff</color>     <!-- White text -->
     <color name="muted_purple_text_secondary">#b8beca</color>   <!-- Light gray-blue secondary text -->
     <color name="muted_purple_card">#2a3446</color>            <!-- Slightly lighter than background for cards -->
@@ -121,7 +135,7 @@
     <color name="muted_purple_surface">#2a3446</color>         <!-- Surface color for cards and elements -->
     <color name="muted_purple_status_bar">#121821</color>       <!-- Darker for status bar -->
     <color name="muted_purple_nav_bar">#121821</color>          <!-- Darker for navigation bar -->
-    <color name="muted_purple_background_filter">#1A1b2332</color> <!-- Semi-transparent background for filters -->
+    <color name="muted_purple_background_filter">#96050505</color> <!-- Semi-transparent background for filters -->
 
     <!-- Light Breeze colors (kept for reference) -->
     <color name="light_breeze_background">#1b2332</color>    <!-- Dark blue-gray background -->

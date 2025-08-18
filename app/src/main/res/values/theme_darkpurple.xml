@@ -1,0 +1,132 @@
+<resources>
+    <style name="Theme.Jellyfin.DarkPurple" parent="Theme.Jellyfin">
+        <!-- Base colors - Using darker purple palette -->
+        <item name="colorPrimary">@color/dark_purple_primary</item>
+        <item name="colorPrimaryDark">@color/dark_purple_primary_dark</item>
+        <item name="colorAccent">@color/dark_purple_accent</item>
+        <item name="colorSecondary">@color/dark_purple_secondary</item>
+        <item name="android:colorPrimary">@color/dark_purple_primary</item>
+        <item name="android:colorPrimaryDark">@color/dark_purple_primary_dark</item>
+        <item name="android:colorAccent">@color/dark_purple_accent</item>
+
+        <!-- Background and window -->
+        <item name="android:windowBackground">@color/dark_purple_background_filter</item>
+        <item name="android:statusBarColor">@color/dark_purple_primary_dark</item>
+        <item name="android:navigationBarColor">@color/dark_purple_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+
+        <!-- Card and UI elements -->
+        <item name="cardBackground">@color/dark_purple_card</item>
+        <item name="cardViewBackground">@color/transparent</item>
+        <item name="cardImageBackground">@color/transparent</item>
+        <item name="cardRounding">4dp</item>
+
+        <!-- Text colors -->
+        <item name="textColorPrimary">@color/white</item>
+        <item name="textColorSecondary">@color/white</item>
+        <item name="headerTextColor">@color/white</item>
+        <item name="defaultSearchColor">@color/white</item>
+
+        <!-- Buttons -->
+        <item name="buttonBackground">@color/dark_purple_button_normal</item>
+        <item name="buttonTextColor">@color/white</item>
+        <item name="android:colorButtonNormal">@color/dark_purple_button_normal</item>
+        <item name="buttonDefaultNormalBackground">@color/dark_purple_button_normal</item>
+        <item name="buttonDefaultHighlightBackground">@color/dark_purple_button_highlight</item>
+        <item name="buttonRounding">3dp</item>
+
+        <!-- Input fields -->
+        <item name="inputDefaultStrokeWidth">2dp</item>
+        <item name="inputDefaultStrokeColor">@color/dark_purple_accent</item>
+        <item name="inputDefaultHighlightBackground">@color/dark_purple_input_highlight</item>
+        <item name="inputRounding">3dp</item>
+
+        <!-- Surfaces -->
+        <item name="surfaceColor">@color/dark_purple_surface</item>
+        <item name="onSurfaceColor">@color/white</item>
+        <item name="popupMenuBackground">@color/dark_purple_surface</item>
+        <item name="popupMenuRounding">3dp</item>
+
+        <!-- Progress bars -->
+        <item name="progressBackground">@color/grey_light</item>
+        <item name="progressPrimary">@color/colorAccent</item>
+        <item name="progressSecondary">@color/purplehaze_primary_dark</item>
+
+        <!-- Icons -->
+        <item name="controlIconBackground">@color/dark_purple_button_normal</item>
+        <item name="controlIconForegroundActive">@color/white</item>
+        <item name="controlIconForegroundInactive">@color/dark_purple_button_highlight</item>
+
+        <!-- QR Code -->
+        <item name="qrBackground">@color/white</item>
+        <item name="qrForeground">@color/dark_purple_primary_dark</item>
+
+        <!-- Tile backgrounds -->
+        <item name="tile_port_person_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_user_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_port_video_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_land_folder_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_chapter_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_land_tv_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_port_tv_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_actors_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_land_photo_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_port_folder_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_land_series_timer_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_audio_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_artists_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_genres_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_search_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_suggestions_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_port_grid_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_letters_bg">@color/dark_purple_tile_bg</item>
+        <item name="tile_port_guide_bg">@color/dark_purple_tile_bg</item>
+
+        <!-- Focus Border Color -->
+        <item name="focusBorderColor">@color/white</item>
+
+        <!-- Media Folders Buttons -->
+        <item name="mediaFolderButtonBackground">@android:color/transparent</item>
+        <item name="mediaFolderButtonFocusedBackground">@color/dark_purple_primary</item>
+        <item name="mediaFolderButtonTextColor">@color/white</item>
+        <item name="mediaFolderButtonFocusedTextColor">@color/white</item>
+
+        <!-- Disable card scaling by setting state list animator to null -->
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="tile_port_time_bg">@color/purplehaze_tile_bg</item>
+
+        <!-- Other -->
+        <item name="overlayDimDimmedLevel">30%</item>
+        <item name="cardBorderDrawable">@drawable/purplehaze_card_border</item>
+
+        <!-- Backdrop Dimming -->
+        <item name="background_filter">@color/backdrop_dim_10</item>
+        <!-- Backdrop Fading Color -->
+        <item name="backdrop_fading_color">@color/white</item>
+        <item name="browseTitleViewLayout">@layout/view_lb_browse_title</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:popupWindowStyle">@style/PopupWindow</item>
+        <item name="android:datePickerStyle">@style/DatePickerCustom</item>
+        <item name="rowHeaderStyle">@style/Widget.Jellyfin.Row.Header</item>
+    </style>
+
+    <!-- Preferences theme -->
+    <style name="Theme.Jellyfin.DarkPurple.Preferences" parent="Theme.Jellyfin.Preferences">
+        <item name="colorPrimary">@color/dark_purple_primary</item>
+        <item name="colorPrimaryDark">@color/purplehaze_primary_dark</item>
+        <item name="colorAccent">@color/purplehaze_accent</item>
+        <item name="android:windowBackground">@color/purplehaze_background</item>
+    </style>
+</resources>

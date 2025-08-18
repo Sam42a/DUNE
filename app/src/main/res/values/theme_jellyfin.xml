@@ -50,11 +50,18 @@
         <item name="tile_port_person_bg">@color/black_transparent_dark</item>
         <item name="tile_user_bg">@color/black_transparent_dark</item>
 
+        <!-- Focus Border Color -->
+        <item name="focusBorderColor">@color/white</item>
+        
         <!-- Media Folders Buttons -->
         <item name="mediaFolderButtonBackground">@color/transparent</item>
         <item name="mediaFolderButtonFocusedBackground">@color/white</item>
         <item name="mediaFolderButtonTextColor">@color/white</item>
         <item name="mediaFolderButtonFocusedTextColor">@color/black</item>
+
+        <!-- Disable card scaling by setting state list animator to null -->
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@color/transparent</item>
 
         <!-- Backdrop Filter -->
         <item name="background_filter">@color/default_background_filter</item>

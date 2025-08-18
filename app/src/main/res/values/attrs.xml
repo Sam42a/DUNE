@@ -41,7 +41,8 @@
         <attr name="background_filter" format="reference|color" />
         <!-- Backdrop fading effect color -->
         <attr name="backdrop_fading_color" format="reference|color" />
-        
+        <!-- Focus Border Color -->
+        <attr name="focusBorderColor" format="reference|color" />
         <!-- Media Folders Buttons -->
         <attr name="mediaFolderButtonBackground" format="reference|color" />
         <attr name="mediaFolderButtonFocusedBackground" format="reference|color" />

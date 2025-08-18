@@ -21,6 +21,8 @@ private val AppTheme.style
 		AppTheme.BASIC -> R.style.Theme_Basic
 		AppTheme.FLEXY -> R.style.Theme_Jellyfin_Flexy
 		AppTheme.YELLOW_TOWN -> R.style.Theme_YellowTown
+		AppTheme.DARK_PURPLE -> R.style.Theme_Jellyfin_DarkPurple
+
 	}
 
 /**
@@ -45,7 +47,7 @@ fun FragmentActivity.applyTheme() {
         Timber.i("Theme changed from ${viewModel.theme} to $newTheme, applying...")
         viewModel.theme = newTheme
         setTheme(newTheme.style)
-        
+
         // Only recreate if we're not in the middle of creating the activity
         if (!isFinishing && !isDestroyed) {
             window.decorView.post {

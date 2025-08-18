@@ -50,8 +50,11 @@
         <item name="progressPrimary">@color/yellowtown_primary</item>
         <item name="progressSecondary">@color/yellowtown_primary_dark</item>
 
+        <!-- Focus Border Color -->
+        <item name="focusBorderColor">@color/yellowtown_accent</item>
+
         <!-- Media folder buttons -->
-        <item name="mediaFolderButtonBackground">@color/transparent</item>
+        <item name="mediaFolderButtonBackground">@android:color/transparent</item>
         <item name="mediaFolderButtonFocusedBackground">@color/yellowtown_primary</item>
         <item name="mediaFolderButtonTextColor">@color/yellowtown_text_primary</item>
         <item name="mediaFolderButtonFocusedTextColor">@color/white</item>
@@ -93,7 +96,6 @@
 
         <!-- Rounding and styling -->
         <item name="cardRounding">1dp</item>
-        <item name="buttonRounding">1dp</item>
         <item name="inputRounding">1dp</item>
         <item name="popupMenuRounding">1dp</item>
         <item name="overlayDimDimmedLevel">10%</item>

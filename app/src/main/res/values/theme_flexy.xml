@@ -92,6 +92,9 @@
         <item name="tile_port_grid_bg">@color/flexy_tile_bg</item>
         <item name="tile_letters_bg">@color/flexy_tile_bg</item>
 
+        <!-- Focus Border Color -->
+        <item name="focusBorderColor">@color/flexy_accent</item>
+        
         <!-- Media Folders Buttons -->
         <item name="mediaFolderButtonFocusedBackground">@color/flexy_button_highlight</item>
         <item name="mediaFolderButtonTextColor">@color/flexy_text_primary</item>

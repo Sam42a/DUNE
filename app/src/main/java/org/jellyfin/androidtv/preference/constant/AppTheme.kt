@@ -38,6 +38,11 @@ enum class AppTheme(
 	/**
 	 * A warm yellow/gold theme with dark background
 	 */
-	YELLOW_TOWN(R.string.pref_theme_yellow_town)
+	YELLOW_TOWN(R.string.pref_theme_yellow_town),
+
+	/**
+	 * A Dark purple theme with dark background
+	 */
+	DARK_PURPLE(R.string.pref_theme_dark_purple)
 }
 
