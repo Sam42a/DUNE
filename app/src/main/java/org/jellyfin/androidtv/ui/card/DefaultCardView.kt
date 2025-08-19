@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.RequiresApi
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -83,7 +84,8 @@ class DefaultCardView @JvmOverloads constructor(
     private var currentScale: Float = 0.95f
     private var isFocused: Boolean = false
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @RequiresApi(Build.VERSION_CODES.M)
+	@SuppressLint("UseCompatLoadingForDrawables")
     private fun updateWhiteBorder(hasFocus: Boolean) {
         if (hasFocus) {
             if (foreground == null) {
@@ -94,7 +96,8 @@ class DefaultCardView @JvmOverloads constructor(
         }
     }
 
-    override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+    @RequiresApi(Build.VERSION_CODES.M)
+	override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
 
         // Skip if focus state hasn't changed
@@ -116,7 +119,8 @@ class DefaultCardView @JvmOverloads constructor(
         updateWhiteBorder(gainFocus)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @RequiresApi(Build.VERSION_CODES.M)
+	@OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         // Update border state when preferences might have changed
         updateWhiteBorder(hasFocus())
