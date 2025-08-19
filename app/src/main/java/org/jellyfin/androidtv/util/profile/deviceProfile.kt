@@ -1,5 +1,6 @@
 package org.jellyfin.androidtv.util.profile
 
+import android.content.Context
 import androidx.media3.common.MimeTypes
 import org.jellyfin.androidtv.constant.Codec
 import org.jellyfin.androidtv.preference.UserPreferences
@@ -10,6 +11,7 @@ import org.jellyfin.sdk.model.api.EncodingContext
 import org.jellyfin.sdk.model.api.MediaStreamProtocol
 import org.jellyfin.sdk.model.api.ProfileConditionValue
 import org.jellyfin.sdk.model.api.SubtitleDeliveryMethod
+import org.jellyfin.sdk.model.api.VideoRangeType
 import org.jellyfin.sdk.model.deviceprofile.DeviceProfileBuilder
 import org.jellyfin.sdk.model.deviceprofile.buildDeviceProfile
 
@@ -51,7 +53,12 @@ private fun UserPreferences.getMaxBitrate(): Int {
 	return maxBitrate * 1_000_000
 }
 
-fun createDeviceProfile(userPreferences: UserPreferences, disableDirectPlay: Boolean) = createDeviceProfile(
+fun createDeviceProfile(
+	context: Context,
+	userPreferences: UserPreferences,
+	disableDirectPlay: Boolean = false,
+) = createDeviceProfile(
+	mediaTest = MediaCodecCapabilitiesTest(context),
 	maxBitrate = userPreferences.getMaxBitrate(),
 	disableDirectPlay = disableDirectPlay,
 	isAC3Enabled = userPreferences[UserPreferences.ac3Enabled],
@@ -61,12 +68,13 @@ fun createDeviceProfile(userPreferences: UserPreferences, disableDirectPlay: Boo
 )
 
 fun createDeviceProfile(
+	mediaTest: MediaCodecCapabilitiesTest,
 	maxBitrate: Int,
 	disableDirectPlay: Boolean,
 	isAC3Enabled: Boolean,
 	downMixAudio: Boolean,
 	assDirectPlay: Boolean,
-	pgsDirectPlay: Boolean
+	pgsDirectPlay: Boolean,
 ) = buildDeviceProfile {
 	val allowedAudioCodecs = when {
 		downMixAudio -> downmixSupportedAudioCodecs
@@ -74,7 +82,6 @@ fun createDeviceProfile(
 		else -> supportedAudioCodecs
 	}
 
-	val mediaTest = MediaCodecCapabilitiesTest()
 	val supportsHevc = mediaTest.supportsHevc()
 	val supportsHevcMain10 = mediaTest.supportsHevcMain10()
 	val hevcMainLevel = mediaTest.getHevcMainLevel()
@@ -339,6 +346,21 @@ fun createDeviceProfile(
 		}
 	}
 
+	// HDR
+	codecProfile {
+		type = CodecType.VIDEO
+
+		conditions {
+			if (!mediaTest.supportsDolbyVision()) ProfileConditionValue.VIDEO_RANGE_TYPE notEquals VideoRangeType.DOVI.serialName
+			if (!mediaTest.supportsHdr10()) ProfileConditionValue.VIDEO_RANGE_TYPE notEquals VideoRangeType.HDR10.serialName
+			if (!mediaTest.supportsHdr10Plus()) {
+			}
+		}
+	}.let {
+		// Remove codec profile if all HDR types are fully supported
+		if (it.conditions.isEmpty()) codecProfiles.remove(it)
+	}
+
 	// Audio channel profile
 	codecProfile {
 		type = CodecType.VIDEO_AUDIO
@@ -365,9 +387,10 @@ fun createDeviceProfile(
 	subtitleProfile(Codec.Subtitle.PGS, embedded = pgsDirectPlay, encode = true)
 	subtitleProfile(Codec.Subtitle.PGSSUB, embedded = pgsDirectPlay, encode = true)
 
-	// ASS/SSA renderer only supports a small subset of the specification so encoding is required for correct rendering
-	subtitleProfile(Codec.Subtitle.ASS, encode = true, embedded = assDirectPlay, external = assDirectPlay)
-	subtitleProfile(Codec.Subtitle.SSA, encode = true)
+	// ASS/SSA is supported via libass extension by nielsvanvelzen & peerless2012
+	subtitleProfile(Codec.Subtitle.SSA, embedded = assDirectPlay, encode = true)
+	subtitleProfile(Codec.Subtitle.ASS, embedded = assDirectPlay, encode = true)
+
 }
 
 // Little helper function to more easily define subtitle profiles

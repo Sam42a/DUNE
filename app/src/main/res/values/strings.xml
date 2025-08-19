@@ -158,7 +158,9 @@
     <string name="lbl_enable_debug">Debug options</string>
     <string name="desc_debug">Provide extra information for debugging</string>
     <string name="lbl_showing">Showing</string>
-    <string name="genre_rows">Genre Rows (Enable 5 or less for better performance)</string>
+    <string name="genre_rows">Genre Rows</string>
+    <string name="genre_rows_description">Enable 5 or less for better performance</string>
+
     <string name="lbl_all_items">All items</string>
     <string name="lbl_sorted_by">sorted by</string>
     <string name="lbl_from">from</string>
@@ -479,7 +481,7 @@
     <string name="searchable_settings_description">Media</string>
     <string name="pref_subtitles_background_title">Enable background</string>
     <string name="pref_subtitles_background_summary">Show a black background behind the subtitles</string>
-    <string name="pref_Subtitle_Codecs"> </string>
+    <string name="pref_Subtitle_Codecs">Subtitles</string>
     <string name="color_white">White</string>
     <string name="color_black">Black</string>
     <string name="color_darkgrey">Dark grey</string>

@@ -74,6 +74,7 @@ fun Scope.createPlaybackManager() = playbackManager(androidContext()) {
 	val api = get<ApiClient>()
 	val exoPlayerOptions = ExoPlayerOptions(
 		preferFfmpeg = userPreferences[UserPreferences.preferExoPlayerFfmpeg],
+		enableLibass = userPreferences[UserPreferences.assDirectPlay],
 		enableDebugLogging = userPreferences[UserPreferences.debuggingEnabled],
 		baseDataSourceFactory = get<HttpDataSource.Factory>(),
 	)
@@ -87,7 +88,7 @@ fun Scope.createPlaybackManager() = playbackManager(androidContext()) {
 	)
 	install(media3SessionPlugin(get(), mediaSessionOptions))
 
-	val deviceProfileBuilder = { createDeviceProfile(userPreferences, false) }
+	val deviceProfileBuilder = { createDeviceProfile(androidContext(), userPreferences, false) }
 	install(jellyfinPlugin(get(), deviceProfileBuilder))
 
 	// Options

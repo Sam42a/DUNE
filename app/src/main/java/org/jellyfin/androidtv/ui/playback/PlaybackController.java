@@ -531,7 +531,11 @@ public class PlaybackController implements PlaybackControllerNotifiable {
             Timber.w("buildExoPlayerOptions: No media streams available for audio selection");
         }
 
+        if (!isLiveTv && currentMediaSource != null) {
+            internalOptions.setMediaSourceId(currentMediaSource.getId());
+        }
         DeviceProfile internalProfile = DeviceProfileKt.createDeviceProfile(
+                mFragment.getContext(),
                 userPreferences.getValue(),
                 !internalOptions.getEnableDirectStream()
         );
@@ -821,76 +825,30 @@ public class PlaybackController implements PlaybackControllerNotifiable {
     }
 
     public void switchAudioStream(int index) {
-        if (!(isPlaying() || isPaused()) || index < 0) {
-            Timber.w("switchAudioStream: Invalid state (playing: %b, paused: %b) or index: %d", isPlaying(), isPaused(), index);
+        if (!(isPlaying() || isPaused()) || index < 0)
             return;
-        }
 
-        // Get the actual current track from ExoPlayer
-        int actualCurrentTrack = hasInitializedVideoManager() ?
-                mVideoManager.getExoPlayerTrack(MediaStreamType.AUDIO, getCurrentlyPlayingItem().getMediaStreams()) : -1;
-        Timber.d("switchAudioStream: Actual ExoPlayer track: %d, requested index: %d", actualCurrentTrack, index);
-
-        if (actualCurrentTrack == index) {
-            Timber.d("switchAudioStream: Actual ExoPlayer track already set to %d, updating mCurrentOptions if needed", index);
-            if (mCurrentOptions.getAudioStreamIndex() == null || !mCurrentOptions.getAudioStreamIndex().equals(index)) {
+        int currAudioIndex = getAudioStreamIndex();
+        Timber.d("trying to switch audio stream from %s to %s", currAudioIndex, index);
+        if (currAudioIndex == index) {
+            Timber.d("skipping setting audio stream, already set to requested index %s", index);
+            if (mCurrentOptions.getAudioStreamIndex() == null || mCurrentOptions.getAudioStreamIndex() != index) {
+                Timber.d("setting mCurrentOptions audio stream index from %s to %s", mCurrentOptions.getAudioStreamIndex(), index);
                 mCurrentOptions.setAudioStreamIndex(index);
-                Timber.i("switchAudioStream: Updated mCurrentOptions audio stream index to %d", index);
-                MediaSourceInfo mediaSource = getCurrentMediaSource();
-                if (mediaSource != null) {
-                    for (MediaStream stream : mediaSource.getMediaStreams()) {
-                        if (stream.getType() == MediaStreamType.AUDIO && stream.getIndex() == index) {
-                            if (stream.getLanguage() != null) {
-                                videoQueueManager.getValue().setLastPlayedAudioLanguageIsoCode(stream.getLanguage());
-                                Timber.i("switchAudioStream: Persisted audio language: %s for index: %d", stream.getLanguage(), index);
-                            }
-                            break;
-                        }
-                    }
-                }
             }
             return;
         }
 
+        // get current timestamp first
         refreshCurrentPosition();
-        boolean trackSwitchSuccess = false;
-        if (!isTranscoding()) {
-            trackSwitchSuccess = mVideoManager.setExoPlayerTrack(index, MediaStreamType.AUDIO, getCurrentlyPlayingItem().getMediaStreams());
-            Timber.i("switchAudioStream: setExoPlayerTrack to index %d returned %b", index, trackSwitchSuccess);
-        }
 
-        if (trackSwitchSuccess) {
+        if (!isTranscoding() && mVideoManager.setExoPlayerTrack(index, MediaStreamType.AUDIO, getCurrentlyPlayingItem().getMediaStreams())) {
             mCurrentOptions.setMediaSourceId(getCurrentMediaSource().getId());
             mCurrentOptions.setAudioStreamIndex(index);
-            MediaSourceInfo mediaSource = getCurrentMediaSource();
-            if (mediaSource != null) {
-                for (MediaStream stream : mediaSource.getMediaStreams()) {
-                    if (stream.getType() == MediaStreamType.AUDIO && stream.getIndex() == index) {
-                        if (stream.getLanguage() != null) {
-                            videoQueueManager.getValue().setLastPlayedAudioLanguageIsoCode(stream.getLanguage());
-                            Timber.i("switchAudioStream: Persisted audio language: %s for index: %d", stream.getLanguage(), index);
-                        }
-                        break;
-                    }
-                }
-            }
         } else {
-            Timber.w("switchAudioStream: ExoPlayer track switch to index %d failed or transcoding, restarting stream", index);
             startSpinner();
             mCurrentOptions.setMediaSourceId(getCurrentMediaSource().getId());
             mCurrentOptions.setAudioStreamIndex(index);
-            MediaSourceInfo mediaSource = getCurrentMediaSource();
-            if (mediaSource != null) {
-                for (MediaStream stream : mediaSource.getMediaStreams()) {
-                    if (stream.getType() == MediaStreamType.AUDIO && stream.getIndex() == index) {
-                        if (stream.getLanguage() != null) {
-                            videoQueueManager.getValue().setLastPlayedAudioLanguageIsoCode(stream.getLanguage());
-                            Timber.i("switchAudioStream: Persisted audio language: %s for index: %d before stream restart", stream.getLanguage(), index);
-                        }
-                        break;
-                    }
-                }
-            }
             stop();
             playInternal(getCurrentlyPlayingItem(), mCurrentPosition, mCurrentOptions);
             mPlaybackState = PlaybackState.BUFFERING;

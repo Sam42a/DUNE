@@ -13,11 +13,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.VideoSize
 import androidx.media3.common.text.CueGroup
-import androidx.media3.common.C.TRACK_TYPE_TEXT
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.decoder.DecoderInputBuffer
-import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -26,6 +23,12 @@ import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.ts.TsExtractor
 import androidx.media3.ui.SubtitleView
+import io.github.peerless2012.ass.media.AssHandler
+import io.github.peerless2012.ass.media.factory.AssRenderersFactory
+import io.github.peerless2012.ass.media.kt.withAssMkvSupport
+import io.github.peerless2012.ass.media.parser.AssSubtitleParserFactory
+import io.github.peerless2012.ass.media.type.AssRenderType
+import io.github.peerless2012.ass.media.widget.AssSubtitleView
 import org.jellyfin.playback.core.backend.BasePlayerBackend
 import org.jellyfin.playback.core.mediastream.MediaStream
 import org.jellyfin.playback.core.mediastream.PlayableMediaStream
@@ -57,55 +60,62 @@ class ExoPlayerBackend(
 	private var subtitleView: SubtitleView? = null
 	private var audioPipeline = ExoPlayerAudioPipeline()
 
+	private val assHandler by lazy {
+		AssHandler(AssRenderType.OVERLAY)
+	}
+
 	private val exoPlayer by lazy {
-		ExoPlayer.Builder(context)
-			.setRenderersFactory(DefaultRenderersFactory(context).apply {
-				setEnableDecoderFallback(true)
-				setMediaCodecSelector(MediaCodecSelector.DEFAULT)
-				setExtensionRendererMode(
-					when (exoPlayerOptions.preferFfmpeg) {
-						true -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
-						false -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
-					}
-				)
-			})
-			.setTrackSelector(DefaultTrackSelector(context).apply {
-				setParameters(buildUponParameters().apply {
-					setPreferredTextLanguage("en") // or user's preferred language
-					setTrackTypeDisabled(TRACK_TYPE_TEXT, false)
-					setAudioOffloadPreferences(
-						TrackSelectionParameters.AudioOffloadPreferences.DEFAULT.buildUpon().apply {
-							setAudioOffloadMode(TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
-						}.build()
-					)
-				})
-			})
-			.setTrackSelector(DefaultTrackSelector(context).apply {
-				setParameters(buildUponParameters().apply {
-					setAudioOffloadPreferences(
-						TrackSelectionParameters.AudioOffloadPreferences.DEFAULT.buildUpon().apply {
-							setAudioOffloadMode(TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
-						}.build()
-					)
-				})
-			})
-			.setMediaSourceFactory(DefaultMediaSourceFactory(
-				DefaultDataSource.Factory(
-					context,
-					exoPlayerOptions.baseDataSourceFactory,
-				),
-				DefaultExtractorsFactory().apply {
-					val isLowRamDevice = context.getSystemService<ActivityManager>()?.isLowRamDevice == true
-					setTsExtractorTimestampSearchBytes(
-						when (isLowRamDevice) {
-							true -> TS_SEARCH_BYTES_LM
-							false -> TS_SEARCH_BYTES_HM
-						}
-					)
-					setConstantBitrateSeekingEnabled(true)
-					setConstantBitrateSeekingAlwaysEnabled(true)
+		val dataSourceFactory = DefaultDataSource.Factory(
+			context,
+			exoPlayerOptions.baseDataSourceFactory,
+		)
+		val extractorsFactory = DefaultExtractorsFactory().apply {
+			val isLowRamDevice = context.getSystemService<ActivityManager>()?.isLowRamDevice == true
+			setTsExtractorTimestampSearchBytes(
+				when (isLowRamDevice) {
+					true -> TS_SEARCH_BYTES_LM
+					false -> TS_SEARCH_BYTES_HM
 				}
-			))
+			)
+			setConstantBitrateSeekingEnabled(true)
+			setConstantBitrateSeekingAlwaysEnabled(true)
+		}
+
+		val mediaSourceFactory = if (exoPlayerOptions.enableLibass) {
+			val assSubtitleParserFactory = AssSubtitleParserFactory(assHandler)
+			val assExtractorsFactory = extractorsFactory.withAssMkvSupport(assSubtitleParserFactory, assHandler)
+			DefaultMediaSourceFactory(dataSourceFactory, assExtractorsFactory).apply {
+				setSubtitleParserFactory(assSubtitleParserFactory)
+			}
+		} else DefaultMediaSourceFactory(dataSourceFactory, extractorsFactory)
+
+		val renderersFactory = DefaultRenderersFactory(context).apply {
+			setEnableDecoderFallback(true)
+			setExtensionRendererMode(
+				when (exoPlayerOptions.preferFfmpeg) {
+					true -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+					false -> DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
+				}
+			)
+		}.let { renderersFactory ->
+			if (exoPlayerOptions.enableLibass) AssRenderersFactory(assHandler, renderersFactory)
+			else renderersFactory
+		}
+
+		ExoPlayer.Builder(context)
+			.setRenderersFactory(renderersFactory)
+
+
+			.setTrackSelector(DefaultTrackSelector(context).apply {
+				setParameters(buildUponParameters().apply {
+					setAudioOffloadPreferences(
+						TrackSelectionParameters.AudioOffloadPreferences.DEFAULT.buildUpon().apply {
+							setAudioOffloadMode(TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
+						}.build()
+					)
+				})
+			})
+			.setMediaSourceFactory(mediaSourceFactory)
 			.setAudioAttributes(AudioAttributes.Builder().apply {
 				setUsage(C.USAGE_MEDIA)
 			}.build(), true)
@@ -116,6 +126,10 @@ class ExoPlayerBackend(
 
 				if (exoPlayerOptions.enableDebugLogging) {
 					player.addAnalyticsListener(EventLogger())
+				}
+
+				if (exoPlayerOptions.enableLibass) {
+					assHandler.init(player)
 				}
 			}
 	}
@@ -131,30 +145,7 @@ class ExoPlayerBackend(
 		}
 
 		override fun onPlayerError(error: PlaybackException) {
-			// Clear any stuck subtitles on error
-			subtitleView?.setCues(emptyList())
 			listener?.onPlayStateChange(PlayState.ERROR)
-		}
-		
-		override fun onPositionDiscontinuity(
-			oldPosition: Player.PositionInfo,
-			newPosition: Player.PositionInfo,
-			reason: Int
-		) {
-			if (reason == Player.DISCONTINUITY_REASON_SEEK || 
-				reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) {
-				// Clear current cues to force reload and ensure sync
-				subtitleView?.setCues(emptyList())
-				subtitleView?.invalidate()
-			}
-		}
-		
-		override fun onPositionDiscontinuity(reason: Int) {
-			if (reason == Player.DISCONTINUITY_REASON_SEEK || 
-				reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT) {
-				// Force update subtitle view
-				subtitleView?.invalidate()
-			}
 		}
 
 		override fun onVideoSizeChanged(size: VideoSize) {
@@ -195,7 +186,15 @@ class ExoPlayerBackend(
 
 	override fun setSubtitleView(surfaceView: PlayerSubtitleView?) {
 		if (surfaceView != null) {
-			if (subtitleView == null) subtitleView = SubtitleView(surfaceView.context)
+			if (subtitleView == null) {
+				subtitleView = SubtitleView(surfaceView.context).apply {
+					if (exoPlayerOptions.enableLibass) {
+						addView(AssSubtitleView(surfaceView.context, assHandler))
+					}
+				}
+			}
+
+
 			surfaceView.addView(subtitleView)
 		} else {
 			(subtitleView?.parent as? ViewGroup)?.removeView(subtitleView)
@@ -258,12 +257,7 @@ class ExoPlayerBackend(
 			Timber.w("Trying to seek but ExoPlayer doesn't support it for the current item")
 		}
 
-		// Clear any active subtitles before seeking
-		subtitleView?.setCues(emptyList())
 		exoPlayer.seekTo(position.inWholeMilliseconds)
-		
-		// Force update the subtitle view after seek
-		subtitleView?.invalidate()
 	}
 
 	override fun setSpeed(speed: Float) {
