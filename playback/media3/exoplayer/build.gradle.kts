@@ -41,8 +41,9 @@ dependencies {
 
 	// Logging
 	implementation(libs.timber)
+    implementation(libs.libass.media3)
 
-	// Compatibility (desugaring)
+    // Compatibility (desugaring)
 	coreLibraryDesugaring(libs.android.desugar)
 
 	// Testing
