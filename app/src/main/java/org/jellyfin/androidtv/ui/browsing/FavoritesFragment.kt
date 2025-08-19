@@ -211,7 +211,7 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 
 				//  fixed dimensions for all cards in the row
 				(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
-					cardView.setMainImageDimensions(200, 110)
+					cardView.setMainImageDimensions(210, 120)
 					cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA
 				}
 			}

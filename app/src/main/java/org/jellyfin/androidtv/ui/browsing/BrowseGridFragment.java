@@ -662,10 +662,10 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         // adapt chunk size if needed
         int chunkSize = mRowDef.getChunkSize();
         if (mCardsScreenEst > 0 && mCardsScreenEst >= chunkSize) {
-            chunkSize = Math.min(mCardsScreenEst + mCardsScreenStride, 150); // cap at 150
+            chunkSize = Math.min(mCardsScreenEst + mCardsScreenStride, 100); // cap at 150
             Timber.d("buildAdapter adjusting chunkSize to <%s> screenEst <%s>", chunkSize, mCardsScreenEst);
         }
-        chunkSize=100;
+        chunkSize=50;
 
         switch (mRowDef.getQueryType()) {
             case NextUp:
