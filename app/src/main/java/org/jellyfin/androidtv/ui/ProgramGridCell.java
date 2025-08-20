@@ -72,23 +72,23 @@ public class ProgramGridCell extends RelativeLayout implements RecordingIndicato
         LiveTvPreferences liveTvPreferences = get(LiveTvPreferences.class);
 
         if (liveTvPreferences.get(LiveTvPreferences.Companion.getShowNewIndicator()) && BaseItemExtensionsKt.isNew(program) && (!liveTvPreferences.get(LiveTvPreferences.Companion.getShowPremiereIndicator()) || !Utils.isTrue(program.isPremiere()))) {
-            addBlockText(context.getString(R.string.lbl_new), 10, Color.GRAY, R.drawable.dark_green_gradient);
+            addBlockText(context.getString(R.string.lbl_new), 9.5f, Color.GRAY, R.drawable.dark_green_gradient);
         }
 
         if (liveTvPreferences.get(LiveTvPreferences.Companion.getShowPremiereIndicator()) && Utils.isTrue(program.isPremiere())) {
-            addBlockText(context.getString(R.string.lbl_premiere), 10, Color.GRAY, R.drawable.dark_green_gradient);
+            addBlockText(context.getString(R.string.lbl_premiere), 9.5f, Color.GRAY, R.drawable.dark_green_gradient);
         }
 
         if (liveTvPreferences.get(LiveTvPreferences.Companion.getShowRepeatIndicator()) && Utils.isTrue(program.isRepeat())) {
-            addBlockText(context.getString(R.string.lbl_repeat), 10, Color.GRAY, androidx.leanback.R.color.lb_default_brand_color);
+            addBlockText(context.getString(R.string.lbl_repeat), 9.5f, Color.GRAY, androidx.leanback.R.color.lb_default_brand_color);
         }
 
         if (program.getOfficialRating() != null && !program.getOfficialRating().equals("0")) {
-            addBlockText(program.getOfficialRating(), 10, Color.BLACK, R.drawable.block_text_bg);
+            addBlockText(program.getOfficialRating(), 9.5f, Color.BLACK, R.drawable.block_text_bg);
         }
 
         if (liveTvPreferences.get(LiveTvPreferences.Companion.getShowHDIndicator()) && Utils.isTrue(program.isHd())) {
-            addBlockText("HD", 10, Color.BLACK, R.drawable.block_text_bg);
+            addBlockText("HD", 9.5f, Color.BLACK, R.drawable.block_text_bg);
         }
 
         if (program.getSeriesTimerId() != null) {
@@ -109,7 +109,7 @@ public class ProgramGridCell extends RelativeLayout implements RecordingIndicato
 
     }
 
-    private void addBlockText(String text, int size, int textColor, int backgroundRes) {
+    private void addBlockText(String text, float size, int textColor, int backgroundRes) {
         TextView view = new TextView(getContext());
         view.setTextSize(size);
         view.setTextColor(textColor);
@@ -144,11 +144,10 @@ public class ProgramGridCell extends RelativeLayout implements RecordingIndicato
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
 
         if (gainFocus) {
-            setBackgroundColor(Utils.getThemeColor(getContext(), android.R.attr.colorAccent));
-
+            setBackgroundResource(R.drawable.channel_guide_focused_background);
             mActivity.setSelectedProgram(this);
         } else {
-            setBackgroundColor(mBackgroundColor);
+            setBackgroundResource(R.drawable.light_border);
         }
     }
 
