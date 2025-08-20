@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/subtitlePreviewText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subtitle Preview Example"
+        android:textColor="#FFFFFF"
+        android:background="#80000000"
+        android:textSize="24sp"
+        android:padding="8dp"
+        android:gravity="center"
+        android:elevation="4dp"
+        android:layout_gravity="center" />
+</FrameLayout>
