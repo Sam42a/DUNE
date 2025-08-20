@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/bagel_fat_one</item>
+        <item>@font/bebas_neue</item>
+        <item>@font/fugaz_one</item>
+        <item>@font/roboto_regular_family</item>
+        <item>@font/roboto_bold_family</item>
+    </array>
+</resources>
