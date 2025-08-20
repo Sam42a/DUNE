@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,12 +50,32 @@ class GridButtonPresenter @JvmOverloads constructor(
 	inner class ViewHolder(
 		private val composeView: ComposeView,
 	) : Presenter.ViewHolder(ComposeViewWrapper(composeView)) {
+		private var isFocused by mutableStateOf(false)
+
+		init {
+			view.setOnFocusChangeListener { _, hasFocus ->
+				isFocused = hasFocus
+			}
+		}
+
 		fun bind(value: GridButton) = composeView.setContent {
+			val backgroundColor = if (isFocused) {
+				colorResource(android.R.color.white)
+			} else {
+				colorResource(R.color.button_default_normal_background)
+			}
+
+			val textColor = if (isFocused) {
+				colorResource(android.R.color.black)
+			} else {
+				colorResource(R.color.button_default_normal_text)
+			}
+
 			Box(
 				modifier = Modifier
 					.width(width.dp)
 					.clip(RoundedCornerShape(4.dp))
-					.background(colorResource(R.color.button_default_normal_background))
+					.background(backgroundColor)
 			) {
 				if (value.imageRes != null) {
 					Image(
@@ -66,7 +89,7 @@ class GridButtonPresenter @JvmOverloads constructor(
 				Text(
 					text = value.text,
 					style = TextStyle(
-						color = colorResource(R.color.button_default_normal_text),
+						color = textColor,
 						fontSize = 12.sp
 					),
 					modifier = Modifier
@@ -80,7 +103,7 @@ class GridButtonPresenter @JvmOverloads constructor(
 	override fun onCreateViewHolder(parent: ViewGroup): ViewHolder =
 		ViewHolder(ComposeView(parent.context))
 
-	override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
+	override fun onBindViewHolder(viewHolder: Presenter.ViewHolder?, item: Any?) {
 		if (viewHolder !is ViewHolder) return
 
 		when (item) {
@@ -89,6 +112,6 @@ class GridButtonPresenter @JvmOverloads constructor(
 		}
 	}
 
-	override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) = Unit
-	override fun onViewAttachedToWindow(viewHolder: Presenter.ViewHolder) = Unit
+	override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder?) = Unit
+	override fun onViewAttachedToWindow(viewHolder: Presenter.ViewHolder?) = Unit
 }
