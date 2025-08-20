@@ -1,5 +1,6 @@
 package org.jellyfin.androidtv.ui.preference.custom
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
 import androidx.leanback.preference.LeanbackPreferenceDialogFragmentCompat
-import androidx.leanback.widget.VerticalGridView
 import androidx.preference.ListPreference
 import androidx.recyclerview.widget.RecyclerView
 import org.jellyfin.androidtv.R
@@ -64,10 +64,9 @@ class RichListDialogFragment : LeanbackPreferenceDialogFragmentCompat() {
 		}
 
 		// Items
-		val verticalGridView = binding.list
-		verticalGridView.windowAlignment = VerticalGridView.WINDOW_ALIGN_BOTH_EDGE
-		verticalGridView.adapter = adapter
-		verticalGridView.requestFocus()
+		val recyclerView = binding.list
+		recyclerView.adapter = adapter
+		recyclerView.requestFocus()
 
 		return binding.root
 	}
@@ -119,16 +118,17 @@ class RichListDialogFragment : LeanbackPreferenceDialogFragmentCompat() {
 			is RichListItem.RichListOption<*> -> {
 				holder as OptionViewHolder
 
-				holder.button.isChecked = item.key == selectedValue
+				// Handle navigation to new preference window here
 				holder.title.text = item.title
 				holder.summary.text = item.summary
 				holder.summary.isVisible = item.summary?.isNotBlank() == true
 			}
-
 			is RichListItem.RichListSection -> {
 				holder as CategoryViewHolder
-
 				holder.title.text = item.title
+			}
+			else -> {
+				// Handle any other unexpected cases
 			}
 		}
 
@@ -154,7 +154,7 @@ class RichListDialogFragment : LeanbackPreferenceDialogFragmentCompat() {
 		view: View,
 		private val clickListener: (viewHolder: OptionViewHolder) -> Unit
 	) : RecyclerView.ViewHolder(view), View.OnClickListener {
-		val button = view.findViewById<View>(R.id.button) as Checkable
+		// Removed CheckBox reference as it is not used for navigation
 		val title = view.findViewById<TextView>(R.id.title)
 		val summary = view.findViewById<TextView>(R.id.summary)
 		val container = view.findViewById<ViewGroup>(R.id.container).also {
