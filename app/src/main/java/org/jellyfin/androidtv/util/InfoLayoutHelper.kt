@@ -13,7 +13,8 @@ object InfoLayoutHelper {
 		item: BaseItemDto?,
 		mediaSource: MediaSourceInfo?,
 		layout: LinearLayout,
-		includeRuntime: Boolean
+		includeRuntime: Boolean,
+		showMediaDetails: Boolean = false
 	) {
 		// Find existing BaseItemInfoRowView or create a new one
 		var baseItemInfoRowView: BaseItemInfoRowView? = null
@@ -36,6 +37,7 @@ object InfoLayoutHelper {
 		baseItemInfoRowView.item = item
 		baseItemInfoRowView.mediaSource = mediaSource ?: item?.mediaSources?.firstOrNull()
 		baseItemInfoRowView.includeRuntime = includeRuntime
+		baseItemInfoRowView.showMediaDetails = showMediaDetails
 	}
 
 	@JvmStatic
@@ -43,6 +45,7 @@ object InfoLayoutHelper {
 		context: Context,
 		item: BaseItemDto?,
 		layout: LinearLayout,
-		includeRuntime: Boolean
-	) = addInfoRow(context, item, null, layout, includeRuntime)
+		includeRuntime: Boolean,
+		showMediaDetails: Boolean = false
+	) = addInfoRow(context, item, null, layout, includeRuntime, showMediaDetails)
 }

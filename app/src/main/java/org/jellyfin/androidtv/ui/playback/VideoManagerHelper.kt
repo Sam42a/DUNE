@@ -1,7 +1,7 @@
 package org.jellyfin.androidtv.ui.playback
 
 import androidx.core.net.toUri
-import org.jellyfin.playback.media3.exoplayer.mapping.getFfmpegSubtitleMimeType
+import org.jellyfin.playback.media3.exoplayer.mapping.SubtitleMimeTypeMapper
 import org.jellyfin.sdk.model.api.MediaStream
 
 /**
@@ -10,10 +10,15 @@ import org.jellyfin.sdk.model.api.MediaStream
  */
 fun getSubtitleMediaStreamCodec(stream: MediaStream): String {
 	val codec = requireNotNull(stream.codec)
-	val codecMediaType = getFfmpegSubtitleMimeType(codec, "").ifBlank { null }
+	val codecMediaType = SubtitleMimeTypeMapper.getFfmpegSubtitleMimeType(codec, "").ifBlank { null }
 
 	val urlSubtitleExtension = stream.deliveryUrl?.toUri()?.lastPathSegment?.split('.')?.last()
-	val urlExtensionMediaType = urlSubtitleExtension?.let { getFfmpegSubtitleMimeType(it, "") }?.ifBlank { null }
+	val urlExtensionMediaType = urlSubtitleExtension?.let {
+		SubtitleMimeTypeMapper.getFfmpegSubtitleMimeType(it, "")
+	}?.ifBlank { null }
 
-	return urlExtensionMediaType ?: codecMediaType ?: urlSubtitleExtension ?: codec
+	return urlExtensionMediaType
+		?: codecMediaType
+		?: urlSubtitleExtension
+		?: codec
 }

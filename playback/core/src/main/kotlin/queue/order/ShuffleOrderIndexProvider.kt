@@ -33,11 +33,6 @@ internal class ShuffleOrderIndexProvider : OrderIndexProvider {
 		}
 	}
 
-	override fun notifyRemoved(index: Int) {
-		nextIndices.removeAll { it == index }
-		nextIndices.replaceAll { if (it > index) it - 1 else it }
-	}
-
 	override fun useNextIndex() {
 		nextIndices.removeAt(0)
 	}

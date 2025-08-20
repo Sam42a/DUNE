@@ -104,6 +104,8 @@ class ExoPlayerBackend(
 
 		ExoPlayer.Builder(context)
 			.setRenderersFactory(renderersFactory)
+
+
 			.setTrackSelector(DefaultTrackSelector(context).apply {
 				setParameters(buildUponParameters().apply {
 					setAudioOffloadPreferences(
@@ -111,7 +113,6 @@ class ExoPlayerBackend(
 							setAudioOffloadMode(TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
 						}.build()
 					)
-					setAllowInvalidateSelectionsOnRendererCapabilitiesChange(true)
 				})
 			})
 			.setMediaSourceFactory(mediaSourceFactory)
@@ -148,9 +149,7 @@ class ExoPlayerBackend(
 		}
 
 		override fun onVideoSizeChanged(size: VideoSize) {
-			if (size != VideoSize.UNKNOWN) {
-				listener?.onVideoSizeChange(size.width, size.height)
-			}
+			listener?.onVideoSizeChange(size.width, size.height)
 		}
 
 		override fun onCues(cueGroup: CueGroup) {
@@ -195,6 +194,7 @@ class ExoPlayerBackend(
 				}
 			}
 
+
 			surfaceView.addView(subtitleView)
 		} else {
 			(subtitleView?.parent as? ViewGroup)?.removeView(subtitleView)
@@ -224,13 +224,15 @@ class ExoPlayerBackend(
 
 		currentStream = stream
 
-		val streamIsPrepared = (0 until exoPlayer.mediaItemCount).any { index ->
-			exoPlayer.getMediaItemAt(index).mediaId == stream.hashCode().toString()
+		var streamIsPrepared = false
+		repeat(exoPlayer.mediaItemCount) { index ->
+			streamIsPrepared =
+				streamIsPrepared || exoPlayer.getMediaItemAt(index).mediaId == stream.hashCode()
+					.toString()
 		}
 
 		if (!streamIsPrepared) prepareItem(item)
 
-		Timber.i("Playing ${item.mediaStream?.url}")
 		exoPlayer.seekToNextMediaItem()
 		exoPlayer.play()
 	}
@@ -256,10 +258,6 @@ class ExoPlayerBackend(
 		}
 
 		exoPlayer.seekTo(position.inWholeMilliseconds)
-	}
-
-	override fun setScrubbing(scrubbing: Boolean) {
-		exoPlayer.isScrubbingModeEnabled = scrubbing
 	}
 
 	override fun setSpeed(speed: Float) {

@@ -17,6 +17,17 @@ class PlayerSubtitleView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 	lateinit var playbackManager: PlaybackManager
 
+	private var pendingVerticalOffsetPercent: Int? = null
+
+	fun setVerticalOffset(percent: Int) {
+		if (height == 0) {
+			pendingVerticalOffsetPercent = percent
+			return
+		}
+		val offsetPx = (height * percent / 100f)
+		translationY = offsetPx
+	}
+
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
 
@@ -24,5 +35,12 @@ class PlayerSubtitleView @JvmOverloads constructor(
 			playbackManager.backendService.attachSubtitleView(this)
 		}
 	}
-}
 
+	override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+		super.onLayout(changed, left, top, right, bottom)
+		pendingVerticalOffsetPercent?.let {
+			setVerticalOffset(it)
+			pendingVerticalOffsetPercent = null
+		}
+	}
+}

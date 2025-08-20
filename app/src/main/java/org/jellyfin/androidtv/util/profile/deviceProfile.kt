@@ -354,8 +354,6 @@ fun createDeviceProfile(
 			if (!mediaTest.supportsDolbyVision()) ProfileConditionValue.VIDEO_RANGE_TYPE notEquals VideoRangeType.DOVI.serialName
 			if (!mediaTest.supportsHdr10()) ProfileConditionValue.VIDEO_RANGE_TYPE notEquals VideoRangeType.HDR10.serialName
 			if (!mediaTest.supportsHdr10Plus()) {
-				ProfileConditionValue.VIDEO_RANGE_TYPE notEquals VideoRangeType.DOVI_WITH_HDR10_PLUS.serialName
-				ProfileConditionValue.VIDEO_RANGE_TYPE notEquals VideoRangeType.DOVI_WITH_ELHDR10_PLUS.serialName
 			}
 		}
 	}.let {

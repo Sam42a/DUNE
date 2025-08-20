@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.leanback.app.RowsSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -26,18 +28,20 @@ import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwnerKt;
 
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.data.service.BackgroundService;
 import org.jellyfin.androidtv.databinding.FragmentAudioNowPlayingBinding;
-import org.jellyfin.androidtv.ui.itemhandling.AudioQueueBaseRowItem;
+import org.jellyfin.androidtv.ui.AsyncImageView;
 import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem;
+import org.jellyfin.androidtv.ui.itemhandling.ItemRowAdapter;
 import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.presentation.PositionableListRowPresenter;
+import org.jellyfin.androidtv.util.ImageHelper;
 import org.jellyfin.androidtv.util.KeyProcessor;
 import org.jellyfin.androidtv.util.TimeUtils;
+import org.jellyfin.androidtv.util.Utils;
 import org.jellyfin.playback.core.PlaybackManager;
 
 import java.util.List;
@@ -65,6 +69,8 @@ public class AudioNowPlayingFragment extends Fragment {
     private TextView mSongTitle;
     private TextView mAlbumTitle;
     private TextView mCurrentNdx;
+    private AsyncImageView mPoster;
+    private ProgressBar mCurrentProgress;
     private TextView mCurrentPos;
     private TextView mRemainingTime;
     private int mCurrentDuration;
@@ -82,6 +88,7 @@ public class AudioNowPlayingFragment extends Fragment {
     private final Lazy<PlaybackManager> playbackManager = inject(PlaybackManager.class);
     private final Lazy<NavigationRepository> navigationRepository = inject(NavigationRepository.class);
     private final Lazy<KeyProcessor> keyProcessor = inject(KeyProcessor.class);
+    private final Lazy<ImageHelper> imageHelper = inject(ImageHelper.class);
 
     private PopupMenu popupMenu;
 
@@ -93,6 +100,8 @@ public class AudioNowPlayingFragment extends Fragment {
         homeButton = binding.clock.getHomeButton();
         homeButton.setOnFocusChangeListener(mainAreaFocusListener);
 
+        mPoster = binding.poster;
+        mPoster.setClipToOutline(true);
         mArtistName = binding.artistTitle;
         mGenreRow = binding.genreRow;
         mSongTitle = binding.song;
@@ -100,8 +109,7 @@ public class AudioNowPlayingFragment extends Fragment {
         mCurrentNdx = binding.track;
         mScrollView = binding.mainScroller;
         mCounter = binding.counter;
-
-        AudioNowPlayingFragmentHelperKt.initializePreviewView(binding.preview, playbackManager.getValue());
+        AudioNowPlayingFragmentHelperKt.initializeLyricsView(binding.poster, binding.lyrics, playbackManager.getValue());
 
         ImageButton rewindButton = binding.rewindBtn;
         rewindButton.setContentDescription(getString(R.string.rewind));
@@ -199,9 +207,7 @@ public class AudioNowPlayingFragment extends Fragment {
         });
         mArtistButton.setOnFocusChangeListener(mainAreaFocusListener);
 
-        AudioNowPlayingFragmentHelperKt.initializePlayerProgress(binding.playerProgress, playbackManager.getValue());
-        binding.playerProgress.setOnFocusChangeListener(mainAreaFocusListener);
-
+        mCurrentProgress = binding.playerProgress;
         mCurrentPos = binding.currentPos;
         mRemainingTime = binding.remainingTime;
 
@@ -228,7 +234,8 @@ public class AudioNowPlayingFragment extends Fragment {
     }
 
     protected void addQueue() {
-        mQueueRow = new ListRow(new HeaderItem(getString(R.string.current_queue)), new AudioQueueBaseRowAdapter(playbackManager.getValue(), LifecycleOwnerKt.getLifecycleScope(this)));
+        mQueueRow = new ListRow(new HeaderItem(getString(R.string.current_queue)), mediaManager.getValue().getCurrentAudioQueue());
+        mediaManager.getValue().getCurrentAudioQueue().setRow(mQueueRow);
         mRowsAdapter.add(mQueueRow);
     }
 
@@ -280,32 +287,43 @@ public class AudioNowPlayingFragment extends Fragment {
         @Override
         public void onQueueReplaced() {
             dismissPopup();
+            mRowsAdapter.remove(mQueueRow);
+            addQueue();
         }
     };
 
     private View.OnFocusChangeListener mainAreaFocusListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if (!mScrollView.hasFocus() && v != homeButton) {
-                if (queueRowHasFocus) return;
+            if (!hasFocus && v != homeButton) {
                 // when the playback control buttons lose focus, and the home button is not focused
                 // the only other focusable object is the queue row.
                 // Scroll to the bottom of the scrollView
                 mScrollView.smoothScrollTo(0, mScrollView.getHeight() - 1);
                 queueRowHasFocus = true;
-            } else {
-                if (!queueRowHasFocus) return;
-                queueRowHasFocus = false;
-                //scroll so entire main area is in view
-                mScrollView.smoothScrollTo(0, 0);
+                return;
             }
+            queueRowHasFocus = false;
+            //scroll so entire main area is in view
+            mScrollView.smoothScrollTo(0, 0);
         }
     };
+
+    private void updatePoster() {
+        // Figure image size
+        Double aspect = imageHelper.getValue().getImageAspectRatio(mBaseItem, false);
+        int posterHeight = aspect > 1 ? Utils.convertDpToPixel(requireContext(), 150) : Utils.convertDpToPixel(requireActivity(), 250);
+
+        String primaryImageUrl = imageHelper.getValue().getPrimaryImageUrl(mBaseItem, false, null, posterHeight);
+        Timber.d("Audio Poster url: %s", primaryImageUrl);
+        mPoster.load(primaryImageUrl, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_album), aspect, 0);
+    }
 
     private void loadItem() {
         dismissPopup();
         mBaseItem = mediaManager.getValue().getCurrentAudioItem();
         if (mBaseItem != null) {
+            updatePoster();
             updateInfo(mBaseItem);
         } else {
             if (navigationRepository.getValue().getCanGoBack()) navigationRepository.getValue().goBack();
@@ -358,6 +376,8 @@ public class AudioNowPlayingFragment extends Fragment {
             }
             mCurrentNdx.setText(getString(R.string.lbl_now_playing_track, mediaManager.getValue().getCurrentAudioQueueDisplayPosition(), mediaManager.getValue().getCurrentAudioQueueDisplaySize()));
             mCurrentDuration = ((Long) ((item.getRunTimeTicks() != null ? item.getRunTimeTicks() : 0) / 10000)).intValue();
+            //set progress to match duration
+            mCurrentProgress.setMax(mCurrentDuration);
             addGenres(mGenreRow);
             backgroundService.getValue().setBackground(item);
         }
@@ -366,6 +386,7 @@ public class AudioNowPlayingFragment extends Fragment {
     public void setCurrentTime(long time) {
         // Round the current time as otherwise the time played and time remaining will not be in sync
         time = Math.round(time / 1000L) * 1000L;
+        mCurrentProgress.setProgress(((Long) time).intValue());
         mCurrentPos.setText(TimeUtils.formatMillis(time));
         mRemainingTime.setText(mCurrentDuration > 0 ? "-" + TimeUtils.formatMillis(mCurrentDuration - time) : "");
     }
@@ -390,10 +411,10 @@ public class AudioNowPlayingFragment extends Fragment {
         public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item,
                                    RowPresenter.ViewHolder rowViewHolder, Row row) {
 
-            if (item instanceof AudioQueueBaseRowItem) {
+            if (item instanceof BaseRowItem) {
                 // Keep counter
-                AudioQueueBaseRowAdapter adapter = (AudioQueueBaseRowAdapter) mQueueRow.getAdapter();
-                mCounter.setText((adapter.indexOf((AudioQueueBaseRowItem) item) + 1) + " | " + adapter.size());
+                ItemRowAdapter adapter = (ItemRowAdapter) mQueueRow.getAdapter();
+                mCounter.setText((adapter.indexOf(item) + 1) + " | " + adapter.size());
             }
         }
     }

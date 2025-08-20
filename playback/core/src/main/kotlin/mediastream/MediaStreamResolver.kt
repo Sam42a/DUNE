@@ -1,6 +1,7 @@
 package org.jellyfin.playback.core.mediastream
 
 import org.jellyfin.playback.core.queue.QueueEntry
+import org.jellyfin.playback.core.support.PlaySupportReport
 
 /**
  * Determine the media stream for a given queue item.
@@ -11,5 +12,6 @@ interface MediaStreamResolver {
 	 */
 	suspend fun getStream(
 		queueEntry: QueueEntry,
+		testStream: (stream: MediaStream) -> PlaySupportReport,
 	): PlayableMediaStream?
 }

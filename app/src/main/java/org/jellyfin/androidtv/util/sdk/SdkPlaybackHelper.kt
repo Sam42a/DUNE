@@ -26,6 +26,7 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemSortBy
 import org.jellyfin.sdk.model.api.MediaType
+import org.jellyfin.sdk.model.extensions.inWholeTicks
 import org.jellyfin.sdk.model.extensions.ticks
 import java.util.UUID
 import kotlin.time.Duration
@@ -88,30 +89,7 @@ class SdkPlaybackHelper(
 				}
 			}
 
-			BaseItemKind.SERIES -> {
-				val response by api.tvShowsApi.getEpisodes(
-					seriesId = mainItem.id,
-					isMissing = false,
-					sortBy = if (shuffle) ItemSortBy.RANDOM else ItemSortBy.SORT_NAME,
-					limit = ITEM_QUERY_LIMIT,
-					fields = ItemRepository.itemFields,
-				)
-				response.items
-			}
-
-			BaseItemKind.SEASON -> {
-				val response by api.tvShowsApi.getEpisodes(
-					seriesId = requireNotNull(mainItem.seriesId),
-					seasonId = mainItem.id,
-					isMissing = false,
-					sortBy = if (shuffle) ItemSortBy.RANDOM else ItemSortBy.SORT_NAME,
-					limit = ITEM_QUERY_LIMIT,
-					fields = ItemRepository.itemFields,
-				)
-				response.items
-			}
-
-			BaseItemKind.FOLDER -> {
+			BaseItemKind.SERIES, BaseItemKind.SEASON, BaseItemKind.BOX_SET, BaseItemKind.FOLDER -> {
 				val response by api.itemsApi.getItems(
 					parentId = mainItem.id,
 					isMissing = false,
@@ -121,24 +99,6 @@ class SdkPlaybackHelper(
 						BaseItemKind.VIDEO
 					),
 					sortBy = if (shuffle) listOf(ItemSortBy.RANDOM) else listOf(ItemSortBy.SORT_NAME),
-					recursive = true,
-					limit = ITEM_QUERY_LIMIT,
-					fields = ItemRepository.itemFields
-				)
-
-				response.items
-			}
-
-			BaseItemKind.BOX_SET -> {
-				val response by api.itemsApi.getItems(
-					parentId = mainItem.id,
-					isMissing = false,
-					includeItemTypes = listOf(
-						BaseItemKind.EPISODE,
-						BaseItemKind.MOVIE,
-						BaseItemKind.VIDEO
-					),
-					sortBy = if (shuffle) listOf(ItemSortBy.RANDOM) else null,
 					recursive = true,
 					limit = ITEM_QUERY_LIMIT,
 					fields = ItemRepository.itemFields

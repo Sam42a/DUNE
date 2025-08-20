@@ -3,6 +3,7 @@ package org.jellyfin.playback.core.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.SurfaceView
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import org.jellyfin.playback.core.PlaybackManager
 
@@ -19,7 +20,7 @@ class PlayerSurfaceView @JvmOverloads constructor(
 	lateinit var playbackManager: PlaybackManager
 
 	val surface = SurfaceView(context, attrs).apply {
-		addView(this, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+		addView(this, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 	}
 
 	override fun onAttachedToWindow() {

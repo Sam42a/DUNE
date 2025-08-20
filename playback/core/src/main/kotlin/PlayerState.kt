@@ -21,7 +21,6 @@ interface PlayerState {
 	val videoSize: StateFlow<VideoSize>
 	val playbackOrder: StateFlow<PlaybackOrder>
 	val repeatMode: StateFlow<RepeatMode>
-	val scrubbing: StateFlow<Boolean>
 
 	/**
 	 * The position information for the currently playing item or [PositionInfo.EMPTY]. This
@@ -44,7 +43,6 @@ interface PlayerState {
 	fun seek(to: Duration)
 	fun fastForward(amount: Duration? = null)
 	fun rewind(amount: Duration? = null)
-	fun setScrubbing(scrubbing: Boolean)
 
 	// Playback properties
 
@@ -76,9 +74,6 @@ class MutablePlayerState(
 
 	private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
 	override val repeatMode: StateFlow<RepeatMode> get() = _repeatMode.asStateFlow()
-
-	private val _scrubbing = MutableStateFlow(false)
-	override val scrubbing: StateFlow<Boolean> get() = _scrubbing.asStateFlow()
 
 	override val positionInfo: PositionInfo
 		get() = backendService.backend?.getPositionInfo() ?: PositionInfo.EMPTY
@@ -138,11 +133,6 @@ class MutablePlayerState(
 
 	override fun rewind(amount: Duration?) {
 		seekRelative(-(amount ?: options.defaultRewindAmount()))
-	}
-
-	override fun setScrubbing(scrubbing: Boolean) {
-		_scrubbing.value = scrubbing
-		backendService.backend?.setScrubbing(scrubbing)
 	}
 
 	override fun setSpeed(speed: Float) {

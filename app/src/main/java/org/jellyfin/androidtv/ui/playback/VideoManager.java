@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
-import androidx.core.graphics.TypefaceCompat;
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
 import androidx.media3.common.MediaItem;
@@ -43,6 +42,7 @@ import androidx.media3.extractor.ts.TsExtractor;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.CaptionStyleCompat;
 import androidx.media3.ui.PlayerView;
+import androidx.core.graphics.TypefaceCompat;
 
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.data.compat.StreamInfo;
@@ -58,13 +58,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import io.github.peerless2012.ass.media.AssHandler;
-import io.github.peerless2012.ass.media.factory.AssRenderersFactory;
 import io.github.peerless2012.ass.media.kt.AssPlayerKt;
 import io.github.peerless2012.ass.media.parser.AssSubtitleParserFactory;
 import io.github.peerless2012.ass.media.type.AssRenderType;
+import io.github.peerless2012.ass.media.factory.AssRenderersFactory;
 import io.github.peerless2012.ass.media.widget.AssSubtitleView;
+
 import timber.log.Timber;
 
 @OptIn(markerClass = UnstableApi.class)
@@ -116,23 +116,21 @@ public class VideoManager {
         mExoPlayerView = view.findViewById(R.id.exoPlayerView);
         mExoPlayerView.setPlayer(mExoPlayer);
         int strokeColor = userPreferences.get(UserPreferences.Companion.getSubtitleTextStrokeColor()).intValue();
-        int textWeight = userPreferences.get(UserPreferences.Companion.getSubtitlesTextWeight());
+        int textWeight = userPreferences.get(UserPreferences.Companion.getSubtitlesTextWeightValue());
         CaptionStyleCompat subtitleStyle = new CaptionStyleCompat(
                 userPreferences.get(UserPreferences.Companion.getSubtitlesTextColor()).intValue(),
                 userPreferences.get(UserPreferences.Companion.getSubtitlesBackgroundColor()).intValue(),
                 Color.TRANSPARENT,
                 Color.alpha(strokeColor) == 0 ? CaptionStyleCompat.EDGE_TYPE_NONE : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
                 strokeColor,
-                TypefaceCompat.create(activity, Typeface.DEFAULT, textWeight, false)
+                TypefaceCompat.create(mActivity, Typeface.DEFAULT, textWeight, false)
         );
         mExoPlayerView.getSubtitleView().setFractionalTextSize(0.0533f * userPreferences.get(UserPreferences.Companion.getSubtitlesTextSize()));
         mExoPlayerView.getSubtitleView().setStyle(subtitleStyle);
-
         if (assHandler != null) {
             assHandler.init(mExoPlayer);
             mExoPlayerView.getSubtitleView().addView(new AssSubtitleView(mActivity, assHandler));
         }
-
         mExoPlayer.addListener(new Player.Listener() {
             @Override
             public void onPlayerError(@NonNull PlaybackException error) {
@@ -223,7 +221,6 @@ public class VideoManager {
                         .setAudioOffloadMode(TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
                         .build()
                 )
-                .setAllowInvalidateSelectionsOnRendererCapabilitiesChange(true)
                 .build()
         );
         exoPlayerBuilder.setTrackSelector(trackSelector);
@@ -243,7 +240,6 @@ public class VideoManager {
             exoPlayerBuilder.setRenderersFactory(defaultRendererFactory);
             exoPlayerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory, extractorsFactory));
         }
-
         return exoPlayerBuilder;
     }
 
@@ -351,6 +347,7 @@ public class VideoManager {
 
         Timber.i("Exo length in seek is: %d", getDuration());
         mExoPlayer.seekTo(pos);
+        mExoPlayer.setPlayWhenReady(true);
         return pos;
     }
 

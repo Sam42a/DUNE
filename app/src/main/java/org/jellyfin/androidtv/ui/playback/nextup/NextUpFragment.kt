@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -126,6 +127,7 @@ fun NextUpScreen(
 	}
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NextUpOverlay(
 	modifier: Modifier = Modifier,
