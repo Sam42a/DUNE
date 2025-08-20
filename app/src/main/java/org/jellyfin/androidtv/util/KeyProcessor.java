@@ -90,14 +90,14 @@ public class KeyProcessor {
                             case SERIES:
                             case SEASON:
                             case BOX_SET:
-                                createPlayMenu(rowItem, false, activity);
+                                createPlayMenu(rowItem.getBaseItem(), false, activity);
                                 return true;
                             case MUSIC_ALBUM:
                             case MUSIC_ARTIST:
-                                createPlayMenu(rowItem, true, activity);
+                                createPlayMenu(rowItem.getBaseItem(), true, activity);
                                 return true;
                             case PLAYLIST:
-                                createPlayMenu(rowItem, MediaType.AUDIO.equals(item.getMediaType()), activity);
+                                createPlayMenu(rowItem.getBaseItem(), MediaType.AUDIO.equals(item.getMediaType()), activity);
                                 return true;
                             case PHOTO:
                                 navigationRepository.getValue().navigate(Destinations.INSTANCE.pictureViewer(
@@ -185,7 +185,7 @@ public class KeyProcessor {
                 menu.getMenu().add(0, MENU_ADVANCE_QUEUE, order++, R.string.lbl_play_from_here);
             menu.getMenu().add(0, MENU_GOTO_NOW_PLAYING, order++, R.string.lbl_goto_now_playing);
 
-            if (mediaManager.getValue().getCurrentAudioQueueSize() > 1) {
+            if (mediaManager.getValue().getCurrentAudioQueue().size() > 1) {
                 menu.getMenu().add(0, MENU_TOGGLE_SHUFFLE, order++, R.string.lbl_shuffle_queue);
             }
 
@@ -197,7 +197,10 @@ public class KeyProcessor {
                 }
             }
 
-            menu.getMenu().add(0, MENU_REMOVE_FROM_QUEUE, order++, R.string.lbl_remove_from_queue);
+            // don't allow removal of last item - framework will crash trying to animate an empty row
+            if (mediaManager.getValue().getCurrentAudioQueue().size() > 1) {
+                menu.getMenu().add(0, MENU_REMOVE_FROM_QUEUE, order++, R.string.lbl_remove_from_queue);
+            }
 
             if (mediaManager.getValue().hasAudioQueueItems()) {
                 menu.getMenu().add(0, MENU_CLEAR_QUEUE, order++, R.string.lbl_clear_queue);
@@ -250,15 +253,15 @@ public class KeyProcessor {
             }
         }
 
-        menu.setOnMenuItemClickListener(new KeyProcessorItemMenuClickListener(activity, rowItem));
+        menu.setOnMenuItemClickListener(new KeyProcessorItemMenuClickListener(activity, rowItem.getBaseItem()));
         menu.show();
         return menu;
     }
 
-    private void createPlayMenu(BaseRowItem rowItem, boolean isMusic, FragmentActivity activity) {
+    private void createPlayMenu(BaseItemDto item, boolean isMusic, FragmentActivity activity) {
         PopupMenu menu = new PopupMenu(activity, activity.getCurrentFocus(), Gravity.END);
         int order = 0;
-        if (!isMusic && rowItem.getBaseItem().getType() != BaseItemKind.PLAYLIST) {
+        if (!isMusic && item.getType() != BaseItemKind.PLAYLIST) {
             menu.getMenu().add(0, MENU_PLAY_FIRST_UNWATCHED, order++, R.string.lbl_play_first_unwatched);
         }
         menu.getMenu().add(0, MENU_PLAY, order++, R.string.lbl_play_all);
@@ -267,18 +270,16 @@ public class KeyProcessor {
             menu.getMenu().add(0, MENU_ADD_QUEUE, order, R.string.lbl_add_to_queue);
         }
 
-        menu.setOnMenuItemClickListener(new KeyProcessorItemMenuClickListener(activity, rowItem));
+        menu.setOnMenuItemClickListener(new KeyProcessorItemMenuClickListener(activity, item));
         menu.show();
     }
 
     private class KeyProcessorItemMenuClickListener implements PopupMenu.OnMenuItemClickListener {
-        private final BaseRowItem rowItem;
-        private final BaseItemDto item;
-        private final FragmentActivity activity;
+        private BaseItemDto item;
+        private FragmentActivity activity;
 
-        private KeyProcessorItemMenuClickListener(FragmentActivity activity, BaseRowItem rowItem) {
-            this.rowItem = rowItem;
-            this.item = rowItem.getBaseItem();
+        private KeyProcessorItemMenuClickListener(FragmentActivity activity, BaseItemDto item) {
+            this.item = item;
             this.activity = activity;
         }
 
@@ -326,12 +327,10 @@ public class KeyProcessor {
                     mediaManager.getValue().shuffleAudioQueue();
                     return true;
                 case MENU_REMOVE_FROM_QUEUE:
-                    if (rowItem instanceof AudioQueueBaseRowItem) {
-                        mediaManager.getValue().removeFromAudioQueue(((AudioQueueBaseRowItem) rowItem).getQueueEntry());
-                    }
+                    mediaManager.getValue().removeFromAudioQueue(item);
                     return true;
                 case MENU_ADVANCE_QUEUE:
-                    mediaManager.getValue().playFrom(((AudioQueueBaseRowItem) rowItem).getQueueEntry());
+                    mediaManager.getValue().playFrom(item);
                     return true;
                 case MENU_CLEAR_QUEUE:
                     mediaManager.getValue().clearAudioQueue();
