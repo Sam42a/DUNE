@@ -1,8 +1,12 @@
 package org.jellyfin.androidtv.ui.itemhandling;
 
 import android.content.Context;
+import android.os.Looper;
+import android.os.SystemClock;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import org.jellyfin.androidtv.constant.LiveTvOption;
 import org.jellyfin.androidtv.constant.QueryType;
@@ -14,8 +18,9 @@ import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.playback.MediaManager;
 import org.jellyfin.androidtv.ui.playback.PlaybackLauncher;
-import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter;
 import org.jellyfin.androidtv.util.PlaybackHelper;
+import org.jellyfin.androidtv.ui.browsing.MainActivity;
+import org.jellyfin.androidtv.ui.home.HomeFragment;
 import org.jellyfin.androidtv.util.Utils;
 import org.jellyfin.androidtv.util.apiclient.Response;
 import org.jellyfin.androidtv.util.sdk.compat.JavaCompat;
@@ -32,11 +37,46 @@ import kotlin.Lazy;
 import timber.log.Timber;
 
 public class ItemLauncher {
+    // Minimum time between clicks (500ms)
+    private static final long MIN_CLICK_INTERVAL = 500;
+    private static long lastClickTime = 0;
     private final Lazy<NavigationRepository> navigationRepository = KoinJavaComponent.<NavigationRepository>inject(NavigationRepository.class);
     private final Lazy<PreferencesRepository> preferencesRepository = KoinJavaComponent.<PreferencesRepository>inject(org.jellyfin.androidtv.preference.PreferencesRepository .class);
     private final Lazy<MediaManager> mediaManager = KoinJavaComponent.<MediaManager>inject(MediaManager.class);
     private final Lazy<PlaybackLauncher> playbackLauncher = KoinJavaComponent.<PlaybackLauncher>inject(PlaybackLauncher.class);
     private final Lazy<PlaybackHelper> playbackHelper = KoinJavaComponent.<PlaybackHelper>inject(PlaybackHelper.class);
+    
+    private boolean isInteractionAllowed(Context context) {
+        // Fast path - if context is null, allow interaction to prevent crashes
+        if (context == null) return true;
+        
+        // Fast path - if not a FragmentActivity, allow interaction
+        if (!(context instanceof FragmentActivity)) return true;
+        
+        // Only check for HomeFragment on the UI thread to prevent ANR
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            Timber.w("Interaction check called off main thread - allowing by default");
+            return true;
+        }
+        
+        try {
+            FragmentActivity activity = (FragmentActivity) context;
+            
+            // Check if the current fragment is HomeFragment using the fragment manager
+            Fragment currentFragment = activity.getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+                
+            // Only block if current fragment is HomeFragment and it's not ready
+            if (currentFragment instanceof HomeFragment) {
+                return ((HomeFragment) currentFragment).isReadyForInteraction;
+            }
+        } catch (Exception e) {
+            Timber.e(e, "Error checking interaction permission");
+        }
+        
+        // Default to allowing interaction
+        return true;
+    }
 
     public void launchUserView(@Nullable final BaseItemDto baseItem) {
         Timber.d("**** Collection type: %s", baseItem.getCollectionType());
@@ -66,7 +106,21 @@ public class ItemLauncher {
         }
     }
 
-    public void launch(final BaseRowItem rowItem, MutableObjectAdapter<Object> adapter, final Context context) {
+    public void launch(final BaseRowItem rowItem, ItemRowAdapter adapter, final Context context) {
+        // Prevent multiple clicks in quick succession
+        long currentClickTime = SystemClock.elapsedRealtime();
+        if (currentClickTime - lastClickTime < MIN_CLICK_INTERVAL) {
+            Timber.d("Click throttled - too fast");
+            return;
+        }
+        
+        // Check if interaction is allowed (home screen loaded)
+        if (!isInteractionAllowed(context)) {
+            Timber.d("Interaction blocked - home screen still loading");
+            return;
+        }
+        lastClickTime = currentClickTime;
+
         switch (rowItem.getBaseRowType()) {
             case BaseItem:
                 BaseItemDto baseItem = rowItem.getBaseItem();
@@ -101,8 +155,8 @@ public class ItemLauncher {
                             navigationRepository.getValue().navigate(Destinations.INSTANCE.getNowPlaying());
                         } else if (mediaManager.getValue().hasAudioQueueItems() && rowItem instanceof AudioQueueBaseRowItem && adapter.indexOf(rowItem) < mediaManager.getValue().getCurrentAudioQueueSize()) {
                             Timber.d("playing audio queue item");
-                            mediaManager.getValue().playFrom(((AudioQueueBaseRowItem) rowItem).getQueueEntry());
-                        } else if (adapter instanceof ItemRowAdapter && ((ItemRowAdapter)adapter).getQueryType() == QueryType.Search) {
+                            mediaManager.getValue().playFrom(rowItem.getBaseItem());
+                        } else if (adapter.getQueryType() == QueryType.Search) {
                             playbackLauncher.getValue().launch(context, Arrays.asList(rowItem.getBaseItem()));
                         } else {
                             Timber.d("playing audio item");
@@ -126,14 +180,12 @@ public class ItemLauncher {
                         return;
 
                     case PHOTO:
-                        if (adapter instanceof ItemRowAdapter) {
-                            navigationRepository.getValue().navigate(Destinations.INSTANCE.pictureViewer(
-                                    baseItem.getId(),
-                                    false,
-                                    ((ItemRowAdapter) adapter).getSortBy(),
-                                    ((ItemRowAdapter) adapter).getSortOrder()
-                            ));
-                        }
+                        navigationRepository.getValue().navigate(Destinations.INSTANCE.pictureViewer(
+                                baseItem.getId(),
+                                false,
+                                adapter.getSortBy(),
+                                adapter.getSortOrder()
+                        ));
                         return;
 
                 }
