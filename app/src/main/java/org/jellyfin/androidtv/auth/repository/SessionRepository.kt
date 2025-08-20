@@ -64,25 +64,54 @@ class SessionRepositoryImpl(
 
 	override suspend fun restoreSession(destroyOnly: Boolean): Unit = withContext(NonCancellable) {
 		currentSessionMutex.withLock {
-			Timber.i("Restoring session")
+			Timber.i("Restoring session (destroyOnly: $destroyOnly)")
 
 			_state.value = SessionRepositoryState.RESTORING_SESSION
 
 			val alwaysAuthenticate = authenticationPreferences[AuthenticationPreferences.alwaysAuthenticate]
 			val autoLoginBehavior = authenticationPreferences[AuthenticationPreferences.autoLoginUserBehavior]
 
-			when {
-				alwaysAuthenticate -> destroyCurrentSession()
-				autoLoginBehavior == DISABLED -> destroyCurrentSession()
-				autoLoginBehavior == LAST_USER && !destroyOnly -> setCurrentSession(createLastUserSession())
-				autoLoginBehavior == SPECIFIC_USER && !destroyOnly -> {
-					val serverId = authenticationPreferences[AuthenticationPreferences.autoLoginServerId].toUUIDOrNull()
-					val userId = authenticationPreferences[AuthenticationPreferences.autoLoginUserId].toUUIDOrNull()
-					if (serverId != null && userId != null) setCurrentSession(createUserSession(serverId, userId))
-				}
-			}
+			Timber.d("Auto-login behavior: $autoLoginBehavior, alwaysAuthenticate: $alwaysAuthenticate")
 
-			_state.value = SessionRepositoryState.READY
+			try {
+				when {
+					alwaysAuthenticate || autoLoginBehavior == DISABLED -> {
+						Timber.i("Auto-login disabled or always authenticate is enabled - clearing session")
+						destroyCurrentSession()
+						authenticationPreferences[AuthenticationPreferences.lastServerId] = ""
+						authenticationPreferences[AuthenticationPreferences.lastUserId] = ""
+					}
+					autoLoginBehavior == LAST_USER && !destroyOnly -> {
+						Timber.i("Attempting to restore last user session")
+						val session = createLastUserSession()
+						if (session != null) {
+							Timber.d("Found last user session for user ${session.userId}")
+							setCurrentSession(session)
+						} else {
+							Timber.d("No last user session found")
+						}
+					}
+					autoLoginBehavior == SPECIFIC_USER && !destroyOnly -> {
+						val serverId = authenticationPreferences[AuthenticationPreferences.autoLoginServerId].toUUIDOrNull()
+						val userId = authenticationPreferences[AuthenticationPreferences.autoLoginUserId].toUUIDOrNull()
+						if (serverId != null && userId != null) {
+							Timber.d("Attempting to restore specific user session for user $userId")
+							val session = createUserSession(serverId, userId)
+							if (session != null) {
+								Timber.d("Found specific user session for user $userId")
+								setCurrentSession(session)
+							} else {
+								Timber.d("No specific user session found for user $userId")
+							}
+						}
+					}
+				}
+			} catch (e: Exception) {
+				Timber.e(e, "Error during session restoration")
+			} finally {
+				_state.value = SessionRepositoryState.READY
+				Timber.d("Session restoration complete. Current user: ${currentSession.value?.userId}")
+			}
 		}
 	}
 
@@ -117,17 +146,26 @@ class SessionRepositoryImpl(
 	}
 
 	private suspend fun setCurrentSession(session: Session?): Boolean {
+		Timber.d("Setting current session: ${session?.userId} (current: ${currentSession.value?.userId})")
+
 		if (session != null) {
 			// No change in session - don't switch
-			if (currentSession.value?.userId == session.userId) return true
+			if (currentSession.value?.userId == session.userId) {
+				Timber.d("Session already active for user ${session.userId}")
+				return true
+			}
 
 			// Update last active user
+			Timber.d("Updating last active user to ${session.userId}")
 			authenticationPreferences[AuthenticationPreferences.lastServerId] = session.serverId.toString()
 			authenticationPreferences[AuthenticationPreferences.lastUserId] = session.userId.toString()
 
 			// Check if server version is supported
-			val server = serverRepository.getServer(session.serverId, true)
-			if (server == null || !server.versionSupported) return false
+			val server = serverRepository.getServer(session.serverId)
+			if (server == null || !server.versionSupported) {
+				Timber.w("Server ${session.serverId} not found or version not supported")
+				return false
+			}
 		}
 
 		// Update session after binding the apiclient settings
@@ -140,22 +178,33 @@ class SessionRepositoryImpl(
 				val user = withContext(Dispatchers.IO) {
 					userApiClient.userApi.getCurrentUser().content
 				}
+				Timber.d("Successfully authenticated user ${user.id}")
 				userRepository.updateCurrentUser(user)
+
+				// Update crash reporting URL
+				val crashReportUrl = userApiClient.clientLogApi.logFileUrl()
+				telemetryPreferences[TelemetryPreferences.crashReportUrl] = crashReportUrl
+				telemetryPreferences[TelemetryPreferences.crashReportToken] = session.accessToken
+
+				// Important: Update the current session value after successful authentication
+				_currentSession.value = session
+				Timber.d("Session updated successfully for user ${user.id}")
+
+				// Notify preferences after session is fully established
+				preferencesRepository.onSessionChanged()
+				return true
 			} catch (err: ApiClientException) {
 				Timber.e(err, "Unable to authenticate: bad response when getting user info")
 				destroyCurrentSession()
 				return false
 			}
-
-			// Update crash reporting URL
-			val crashReportUrl = userApiClient.clientLogApi.logFileUrl()
-			telemetryPreferences[TelemetryPreferences.crashReportUrl] = crashReportUrl
-			telemetryPreferences[TelemetryPreferences.crashReportToken] = session.accessToken
 		} else {
+			Timber.w("Failed to apply session or session is null")
 			userRepository.updateCurrentUser(null)
+			_currentSession.value = null
+			preferencesRepository.onSessionChanged()
+			return false
 		}
-		preferencesRepository.onSessionChanged()
-		_currentSession.value = session
 
 		return true
 	}

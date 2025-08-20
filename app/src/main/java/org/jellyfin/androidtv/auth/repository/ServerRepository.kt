@@ -26,7 +26,7 @@ import org.jellyfin.sdk.api.client.extensions.systemApi
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.model.ServerVersion
-import org.jellyfin.sdk.model.api.BrandingOptionsDto
+import org.jellyfin.sdk.model.api.BrandingOptions
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 import org.jellyfin.sdk.model.serializer.toUUID
 import timber.log.Timber
@@ -44,8 +44,8 @@ interface ServerRepository {
 	suspend fun loadDiscoveryServers()
 
 	fun addServer(address: String): Flow<ServerAdditionState>
-	suspend fun getServer(id: UUID, eagerUpdate: Boolean = false): Server?
-	suspend fun updateServer(server: Server, force: Boolean = false): Boolean
+	suspend fun getServer(id: UUID): Server?
+	suspend fun updateServer(server: Server): Boolean
 	suspend fun deleteServer(server: UUID): Boolean
 
 	companion object {
@@ -105,7 +105,6 @@ class ServerRepositoryImpl(
 					goodRecommendations += recommendedServer
 					false
 				}
-
 				else -> {
 					badRecommendations += recommendedServer
 					false
@@ -165,15 +164,11 @@ class ServerRepositoryImpl(
 		}
 	}.flowOn(Dispatchers.IO)
 
-	override suspend fun getServer(id: UUID, eagerUpdate: Boolean): Server? {
+	override suspend fun getServer(id: UUID): Server? {
 		val server = authenticationStore.getServer(id) ?: return null
 
 		val updatedServer = try {
-			val forceUpdate = eagerUpdate && server.version
-				?.let(ServerVersion::fromString)
-				?.let { version -> version < ServerRepository.minimumServerVersion } == true
-
-			updateServerInternal(id, server, forceUpdate)
+			updateServerInternal(id, server)
 		} catch (err: ApiClientException) {
 			Timber.e(err, "Unable to update server")
 			null
@@ -182,12 +177,12 @@ class ServerRepositoryImpl(
 		return (updatedServer ?: server).asServer(id)
 	}
 
-	override suspend fun updateServer(server: Server, force: Boolean): Boolean {
+	override suspend fun updateServer(server: Server): Boolean {
 		// Only update existing servers
 		val serverInfo = authenticationStore.getServer(server.id) ?: return false
 
 		return try {
-			updateServerInternal(server.id, serverInfo, force) != null
+			updateServerInternal(server.id, serverInfo) != null
 		} catch (err: ApiClientException) {
 			Timber.e(err, "Unable to update server")
 
@@ -195,15 +190,11 @@ class ServerRepositoryImpl(
 		}
 	}
 
-	private suspend fun updateServerInternal(
-		id: UUID,
-		server: AuthenticationStoreServer,
-		forceUpdate: Boolean
-	): AuthenticationStoreServer? {
+	private suspend fun updateServerInternal(id: UUID, server: AuthenticationStoreServer): AuthenticationStoreServer? {
 		val now = Instant.now().toEpochMilli()
 
 		// Only update every 10 minutes
-		if (now - server.lastRefreshed < 600000 && server.version != null && !forceUpdate) return null
+		if (now - server.lastRefreshed < 600000 && server.version != null) return null
 
 		val newServer = withContext(Dispatchers.IO) {
 			val api = jellyfin.createApi(server.address)
@@ -252,7 +243,7 @@ class ServerRepositoryImpl(
 		brandingApi.getBrandingOptions().content
 	} catch (exception: InvalidContentException) {
 		Timber.w(exception, "Invalid branding options response, using default value")
-		BrandingOptionsDto(
+		BrandingOptions(
 			loginDisclaimer = null,
 			customCss = null,
 			splashscreenEnabled = false,
