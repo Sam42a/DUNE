@@ -33,6 +33,8 @@ abstract class SharedPreferenceStore(
 	 */
 	protected val sharedPreferences: SharedPreferences
 ) : PreferenceStore<SharedPreferences.Editor, SharedPreferences>() {
+
+
 	// Internal helpers
 	private fun transaction(body: SharedPreferences.Editor.() -> Unit) {
 		val editor = sharedPreferences.edit()

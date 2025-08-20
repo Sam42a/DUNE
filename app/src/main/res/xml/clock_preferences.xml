@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        android:key="pref_show_white_border"
+        android:title="Show White Border"
+        android:summary="Toggle white border on profile images"
+        android:defaultValue="true"
+        app:iconSpaceReserved="false"/>
+
+</PreferenceScreen>
