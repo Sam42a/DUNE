@@ -4,14 +4,10 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Build
 import android.widget.Toast
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jellyfin.androidtv.data.model.DataRefreshService
@@ -54,32 +50,32 @@ class SocketHandler(
 	private val audioManager: AudioManager,
 	private val itemLauncher: ItemLauncher,
 	private val playbackHelper: PlaybackHelper,
-	private val lifecycle: Lifecycle,
 ) {
-	init {
-		lifecycle.coroutineScope.launch(Dispatchers.IO) {
-			lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-				subscribe(this)
-			}
-		}
-	}
+	private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 	suspend fun updateSession() {
 		try {
+			Timber.i("Updating WebSocket session capabilities")
 			withContext(Dispatchers.IO) {
-				api.sessionApi.postCapabilities(
+				val capabilities = api.sessionApi.postCapabilities(
 					playableMediaTypes = listOf(MediaType.VIDEO, MediaType.AUDIO),
 					supportsMediaControl = true,
 					supportedCommands = buildList {
+						Timber.d("Adding capability: DISPLAY_CONTENT")
 						add(GeneralCommandType.DISPLAY_CONTENT)
+						Timber.d("Adding capability: SET_SUBTITLE_STREAM_INDEX")
 						add(GeneralCommandType.SET_SUBTITLE_STREAM_INDEX)
+						Timber.d("Adding capability: SET_AUDIO_STREAM_INDEX")
 						add(GeneralCommandType.SET_AUDIO_STREAM_INDEX)
 
+						Timber.d("Adding capability: DISPLAY_MESSAGE")
 						add(GeneralCommandType.DISPLAY_MESSAGE)
+						Timber.d("Adding capability: SEND_STRING")
 						add(GeneralCommandType.SEND_STRING)
 
 						// Note: These are used in the PlaySessionSocketService
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !audioManager.isVolumeFixed) {
+							Timber.d("Adding volume control capabilities")
 							add(GeneralCommandType.VOLUME_UP)
 							add(GeneralCommandType.VOLUME_DOWN)
 							add(GeneralCommandType.SET_VOLUME)
@@ -90,73 +86,84 @@ class SocketHandler(
 						}
 					},
 				)
+				Timber.i("Successfully updated WebSocket capabilities: $capabilities")
 			}
 		} catch (err: ApiClientException) {
 			Timber.e(err, "Unable to update capabilities")
 		}
 	}
 
-	private fun subscribe(coroutineScope: CoroutineScope) = api.webSocket.apply {
-		// Library
-		subscribe<LibraryChangedMessage>()
-			.onEach { message -> message.data?.let(::onLibraryChanged) }
-			.launchIn(coroutineScope)
+	init {
+		Timber.i("Initializing WebSocket handlers")
+		api.webSocket.apply {
+			// Library
+			subscribe<LibraryChangedMessage>()
+				.onEach { message -> message.data?.let(::onLibraryChanged) }
+				.launchIn(coroutineScope)
 
-		// Media playback
-		subscribe<PlayMessage>()
-			.onEach { message -> onPlayMessage(message) }
-			.launchIn(coroutineScope)
+			// Media playback
+			subscribe<PlayMessage>()
+				.onEach { message -> onPlayMessage(message) }
+				.launchIn(coroutineScope)
 
-		subscribe<PlaystateMessage>()
-			.onEach { message -> onPlayStateMessage(message) }
-			.launchIn(coroutineScope)
+			subscribe<PlaystateMessage>()
+				.onEach { message -> onPlayStateMessage(message) }
+				.launchIn(coroutineScope)
 
-		subscribeGeneralCommand(GeneralCommandType.SET_SUBTITLE_STREAM_INDEX)
-			.onEach { message ->
-				val index = message["index"]?.toIntOrNull() ?: return@onEach
+			subscribeGeneralCommand(GeneralCommandType.SET_SUBTITLE_STREAM_INDEX)
+				.onEach { message ->
+					val index = message["index"]?.toIntOrNull() ?: return@onEach
 
-				withContext(Dispatchers.Main) {
-					playbackControllerContainer.playbackController?.setSubtitleIndex(index)
-				}
-			}
-			.launchIn(coroutineScope)
-
-		subscribeGeneralCommand(GeneralCommandType.SET_AUDIO_STREAM_INDEX)
-			.onEach { message ->
-				val index = message["index"]?.toIntOrNull() ?: return@onEach
-
-				withContext(Dispatchers.Main) {
-					playbackControllerContainer.playbackController?.switchAudioStream(index)
-				}
-			}
-			.launchIn(coroutineScope)
-
-		// General commands
-		subscribeGeneralCommand(GeneralCommandType.DISPLAY_CONTENT)
-			.onEach { message ->
-				val itemId by message
-				val itemType by message
-
-				val itemUuid = itemId?.toUUIDOrNull()
-				val itemKind = itemType?.let { type ->
-					BaseItemKind.entries.find { value ->
-						value.serialName.equals(type, true)
+					withContext(Dispatchers.Main) {
+						playbackControllerContainer.playbackController?.setSubtitleIndex(index)
 					}
 				}
+				.launchIn(coroutineScope)
 
-				if (itemUuid != null && itemKind != null) onDisplayContent(itemUuid, itemKind)
-			}
-			.launchIn(coroutineScope)
+			subscribeGeneralCommand(GeneralCommandType.SET_AUDIO_STREAM_INDEX)
+				.onEach { message ->
+					val index = message["index"]?.toIntOrNull() ?: return@onEach
 
-		subscribeGeneralCommands(setOf(GeneralCommandType.DISPLAY_MESSAGE, GeneralCommandType.SEND_STRING))
-			.onEach { message ->
-				val header by message
-				val text by message
-				val string by message
+					withContext(Dispatchers.Main) {
+						playbackControllerContainer.playbackController?.switchAudioStream(index)
+					}
+				}
+				.launchIn(coroutineScope)
 
-				onDisplayMessage(header, text ?: string)
-			}
-			.launchIn(coroutineScope)
+			// General commands
+			subscribeGeneralCommand(GeneralCommandType.DISPLAY_CONTENT)
+				.onEach { message ->
+					val itemId by message
+					val itemType by message
+
+					val itemUuid = itemId?.toUUIDOrNull()
+					val itemKind = itemType?.let { type ->
+						BaseItemKind.entries.find { value ->
+							value.serialName.equals(type, true)
+						}
+					}
+
+					if (itemUuid != null && itemKind != null) onDisplayContent(itemUuid, itemKind)
+				}
+				.launchIn(coroutineScope)
+
+			subscribeGeneralCommand(GeneralCommandType.DISPLAY_MESSAGE)
+				.onEach { message ->
+					val header by message
+					val text by message
+
+					onDisplayMessage(header, text)
+				}
+				.launchIn(coroutineScope)
+
+			subscribeGeneralCommand(GeneralCommandType.SEND_STRING)
+				.onEach { message ->
+					val string by message
+
+					onDisplayMessage(null, string)
+				}
+				.launchIn(coroutineScope)
+		}
 	}
 
 	private fun onLibraryChanged(info: LibraryUpdateInfo) {
@@ -238,13 +245,27 @@ class SocketHandler(
 	}
 
 	private fun onDisplayMessage(header: String?, text: String?) {
+		Timber.i("Received message - Header: $header, Text: $text")
+
+		if (text.isNullOrBlank()) {
+			Timber.w("Message text is null or empty")
+			return
+		}
+
 		val toastMessage = buildString {
 			if (!header.isNullOrBlank()) append(header, ": ")
 			append(text)
 		}
 
+		Timber.d("Showing toast message: $toastMessage")
 		runBlocking(Dispatchers.Main) {
-			Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+			try {
+				val toast = Toast.makeText(context, toastMessage, Toast.LENGTH_LONG)
+				toast.show()
+				Timber.d("Toast shown successfully")
+			} catch (e: Exception) {
+				Timber.e(e, "Failed to show toast message")
+			}
 		}
 	}
 
