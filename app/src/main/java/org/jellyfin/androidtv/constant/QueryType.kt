@@ -18,6 +18,7 @@ enum class QueryType {
 	LiveTvProgram,
 	LiveTvRecording,
 	StaticItems,
+	StaticAudioQueueItems,
 	Artists,
 	AlbumArtists,
 	AudioPlaylists,
