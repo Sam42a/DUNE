@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ExitDialogButtonBar" parent="Widget.AppCompat.ButtonBar.AlertDialog">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:showDividers">none</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:paddingHorizontal">8dp</item>
+    </style>
+</resources>

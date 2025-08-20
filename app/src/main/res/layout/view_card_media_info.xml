@@ -8,17 +8,27 @@
 
     <TextView
         android:id="@+id/title"
+        android:background="@drawable/title_blur_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
         android:padding="5sp"
+        android:shadowColor="#1A000000"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="4"
         tools:text="Title" />
 
     <TextView
         android:id="@+id/entries"
+        android:background="@drawable/info_blur_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:shadowColor="#1A000000"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="4"
         tools:text="Content" />
 </LinearLayout>

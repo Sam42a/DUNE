@@ -90,13 +90,13 @@
 
         <!-- Focus Border Color -->
         <item name="focusBorderColor">@color/muted_purple_accent</item>
-        
+
         <!-- Media Folders Buttons -->
         <item name="mediaFolderButtonBackground">@android:color/transparent</item>
         <item name="mediaFolderButtonFocusedBackground">@color/muted_purple_button_highlight</item>
         <item name="mediaFolderButtonTextColor">@color/muted_purple_text_primary</item>
         <item name="mediaFolderButtonFocusedTextColor">@color/muted_purple_text_primary</item>
-        
+
         <!-- Disable card scaling by setting state list animator to null -->
         <item name="android:stateListAnimator">@null</item>
         <item name="android:background">@color/transparent</item>
@@ -106,7 +106,6 @@
 
         <!-- Other -->
         <item name="overlayDimDimmedLevel">30%</item>
-        <item name="cardBorderDrawable">@drawable/purplehaze_card_border</item>
 
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/muted_purple_background_filter</item>

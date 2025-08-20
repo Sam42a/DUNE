@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/dark_backgrounds"
+    android:scaleType="centerCrop"
+    android:tileMode="disabled"
+    android:dither="true"
+    android:filter="true"
+    android:antialias="true"
+    android:alpha="0.7" />

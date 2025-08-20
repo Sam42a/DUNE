@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:clickable="false"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:padding="16dp">
+
+    <!-- Profile Image Container -->
+    <FrameLayout
+        android:id="@+id/profile_container"
+        android:layout_width="126dp"
+        android:layout_height="126dp"
+        android:background="@drawable/profile_background_selector"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:padding="3dp">
+
+        <org.jellyfin.androidtv.ui.AsyncImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:contentDescription="@string/profile_picture"
+            app:circleCrop="true"
+            tools:src="@drawable/tile_user" />
+    </FrameLayout>
+    <!-- Username -->
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="2"
+        android:maxLines="2"
+        android:minHeight="48dp"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:shadowColor="#CC000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="6"
+        android:gravity="center"
+        android:includeFontPadding="true"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textStyle="bold"
+        android:visibility="visible"
+        tools:text="Very Long Username Example" />
+
+</LinearLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:duplicateParentState="true"
+    android:orientation="vertical"
+    android:paddingHorizontal="4dp"
+    android:paddingVertical="8dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:stateListAnimator="@animator/focus_transition"
+>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/card_background_selector">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/banner_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:duplicateParentState="true"
+                app:cardCornerRadius="1.0dp"
+                app:cardElevation="1dp"
+                app:cardMaxElevation="5dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                android:foreground="@drawable/card_foreground_selector"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:stateListAnimator="@animator/card_elevation_animator"
+                android:outlineProvider="none">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_border">
+                    <org.jellyfin.androidtv.ui.AsyncImageView
+                        android:id="@+id/banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/shimmer_placeholder"
+                        tools:src="@drawable/shimmer_placeholder"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:duplicateParentState="true"
+                        android:clickable="false"
+                        android:contentDescription="@null" />
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
+        </FrameLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        tools:text="Username" />
+</LinearLayout>
