@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
@@ -140,7 +141,6 @@ class SelectServerFragment : Fragment() {
 					binding.storedServersTitle.isVisible = servers.isNotEmpty()
 					binding.storedServers.isVisible = servers.isNotEmpty()
 					binding.storedServers.isFocusable = servers.isNotEmpty()
-					binding.welcomeTitle.isVisible = servers.isEmpty()
 					binding.welcomeContent.isVisible = servers.isEmpty()
 
 					// Make sure focus is properly set when no servers exist
@@ -196,7 +196,7 @@ class SelectServerFragment : Fragment() {
 
 		// App info
 		@Suppress("SetTextI18n")
-		binding.appVersion.text = "jellyfin-androidtv ${BuildConfig.VERSION_NAME} ${BuildConfig.BUILD_TYPE}"
+		binding.appVersion.text = "jellyfin-androidtv-Enhanced ${BuildConfig.VERSION_NAME} ${BuildConfig.BUILD_TYPE}"
 
 		// Set focus to fragment
 		binding.root.requestFocus()
