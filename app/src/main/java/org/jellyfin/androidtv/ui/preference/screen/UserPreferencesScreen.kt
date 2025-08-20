@@ -11,10 +11,11 @@ class UserPreferencesScreen : OptionsFragment() {
 		setTitle(R.string.settings_title)
 
 		category {
+
 			link {
 				setTitle(R.string.pref_login)
 				setContent(R.string.pref_login_description)
-				icon = R.drawable.ic_users
+				icon = R.drawable.ic_login
 				withFragment<AuthPreferencesScreen>()
 			}
 
@@ -28,14 +29,14 @@ class UserPreferencesScreen : OptionsFragment() {
 			link {
 				setTitle(R.string.pref_playback)
 				setContent(R.string.pref_playback_description)
-				icon = R.drawable.ic_next
+				icon = R.drawable.ic_playback
 				withFragment<PlaybackPreferencesScreen>()
 			}
 
 			link {
 				setTitle(R.string.pref_telemetry_category)
 				setContent(R.string.pref_telemetry_description)
-				icon = R.drawable.ic_error
+				icon = R.drawable.ic_crash
 				withFragment<CrashReportingPreferencesScreen>()
 			}
 
@@ -45,6 +46,7 @@ class UserPreferencesScreen : OptionsFragment() {
 				icon = R.drawable.ic_flask
 				withFragment<DeveloperPreferencesScreen>()
 			}
+
 		}
 
 		aboutCategory()
