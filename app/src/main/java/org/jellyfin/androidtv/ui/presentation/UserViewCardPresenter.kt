@@ -13,14 +13,18 @@ import org.jellyfin.androidtv.util.apiclient.itemImages
 import org.jellyfin.sdk.model.api.ImageType
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.jellyfin.androidtv.preference.UserPreferences
+
+import org.jellyfin.androidtv.util.ImagePreloader
 
 class UserViewCardPresenter(
 	val small: Boolean,
 ) : Presenter(), KoinComponent {
 	private val imageHelper by inject<ImageHelper>()
 
+
 	inner class ViewHolder(
-		private val cardView: LegacyImageCardView,
+		private val cardView: LegacyImageCardView
 	) : Presenter.ViewHolder(cardView) {
 		fun setItem(rowItem: BaseRowItem?) {
 			val baseItem = rowItem?.baseItem
@@ -61,13 +65,16 @@ class UserViewCardPresenter(
 		return ViewHolder(cardView)
 	}
 
-	override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
+	override fun onBindViewHolder(viewHolder: Presenter.ViewHolder?, item: Any?) {
 		if (item !is BaseRowItem) return
+		if (viewHolder !is ViewHolder) return
 
-		(viewHolder as? ViewHolder)?.setItem(item)
+		viewHolder.setItem(item)
+
+
 	}
 
-	override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {
+	override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder?) {
 		(viewHolder as? ViewHolder)?.setItem(null)
 	}
 }
