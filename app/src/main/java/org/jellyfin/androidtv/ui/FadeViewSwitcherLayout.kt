@@ -49,13 +49,13 @@ class FadeViewSwitcherLayout @JvmOverloads constructor(
 	private fun View.fadeIn() {
 		alpha = 1f
 		startAnimation(AlphaAnimation(0f, 1f).apply {
-			duration = 1_000
+			duration = 75
 			fillAfter = true
 		})
 	}
 
 	private fun View.fadeOut() = startAnimation(AlphaAnimation(1f, 0f).apply {
-		duration = 1_000
+		duration = 75
 		fillAfter = true
 	})
 }
