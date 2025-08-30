@@ -56,6 +56,7 @@ This project uses the same translation system as the original Jellyfin Android T
 - 🚀 Reduced memory usage
 - ⚡ Faster app startup
 - 📦 Side-by-side installation with official client
+- 🔃 Built-in auto-update support
 
 
 ## 🛠️ Building from Source
