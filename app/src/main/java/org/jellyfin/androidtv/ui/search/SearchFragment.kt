@@ -81,17 +81,17 @@ class SearchFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		// Clear any existing backdrops when search is opened
+		// Disable backdrops when search is opened
 		try {
-			backgroundService.clearBackgrounds()
+			backgroundService.disable()
 		} catch (e: Exception) {
-			Timber.e(e, "Error clearing backdrops in SearchFragment")
+			Timber.e(e, "Error disabling backdrops in SearchFragment")
 		}
 
 		// Focus handling for voice search icon
 		val voiceIconFrame = binding.root.findViewById<android.widget.FrameLayout>(R.id.voice_search_icon_frame)
 		val voiceSearchIcon = binding.voiceSearchIcon
-		
+
 		// Set up focus change listener for the microphone icon
 		voiceSearchIcon.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
 			// The color will be handled by the color state list we defined in XML
@@ -130,29 +130,29 @@ class SearchFragment : Fragment() {
 			.onEach { results: Collection<SearchResultGroup> ->
 				searchFragmentDelegate.showResults(results)
 				// Preload images for all visible and next 5 items
-                // Import required classes
-                // import org.jellyfin.androidtv.util.ImageHelper
-                // import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem
-                // import org.jellyfin.androidtv.constant.ImageType
-                // import org.jellyfin.androidtv.util.ImagePreloader
+				// Import required classes
+				// import org.jellyfin.androidtv.util.ImageHelper
+				// import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem
+				// import org.jellyfin.androidtv.constant.ImageType
+				// import org.jellyfin.androidtv.util.ImagePreloader
 
-                val imageHelper: ImageHelper by inject()
-                val width: Int = 300 // or whatever your card width is
-                val height: Int = 450 // or whatever your card height is
-                for (rowIdx in 0 until searchFragmentDelegate.rowsAdapter.size()) {
-                    val row = searchFragmentDelegate.rowsAdapter.get(rowIdx)
-                    val listRow = row as? androidx.leanback.widget.ListRow ?: continue
-                    val adapter = listRow.adapter as? androidx.leanback.widget.ObjectAdapter ?: continue
-                    val items = (0 until adapter.size()).mapNotNull { idx: Int ->
-    adapter.get(idx) as? BaseRowItem
-}
-                    val urls = items.take(5).mapNotNull { item ->
-                        item.getImageUrl(requireContext(), imageHelper, ImageType.POSTER, width, height)
-                    }
-                    if (urls.isNotEmpty()) {
-                        ImagePreloader.preloadImages(requireContext(), urls)
-                    }
-                }
+				val imageHelper: ImageHelper by inject()
+				val width: Int = 300 // or whatever your card width is
+				val height: Int = 450 // or whatever your card height is
+				for (rowIdx in 0 until searchFragmentDelegate.rowsAdapter.size()) {
+					val row = searchFragmentDelegate.rowsAdapter.get(rowIdx)
+					val listRow = row as? androidx.leanback.widget.ListRow ?: continue
+					val adapter = listRow.adapter as? androidx.leanback.widget.ObjectAdapter ?: continue
+					val items = (0 until adapter.size()).mapNotNull { idx: Int ->
+						adapter.get(idx) as? BaseRowItem
+					}
+					val urls = items.take(5).mapNotNull { item ->
+						item.getImageUrl(requireContext(), imageHelper, ImageType.POSTER, width, height)
+					}
+					if (urls.isNotEmpty()) {
+						ImagePreloader.preloadImages(requireContext(), urls)
+					}
+				}
 			}
 			.launchIn(lifecycleScope)
 

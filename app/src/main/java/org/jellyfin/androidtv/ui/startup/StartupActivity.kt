@@ -44,6 +44,7 @@ import org.jellyfin.androidtv.ui.startup.fragment.ServerFragment
 import org.jellyfin.androidtv.ui.startup.fragment.SplashFragment
 import org.jellyfin.androidtv.ui.startup.fragment.StartupToolbarFragment
 import org.jellyfin.androidtv.data.eventhandling.SocketHandler
+import org.jellyfin.androidtv.data.service.BackgroundService
 import org.jellyfin.androidtv.util.applyTheme
 import org.jellyfin.androidtv.util.DeviceUtils
 import org.jellyfin.sdk.api.client.ApiClient
@@ -73,6 +74,8 @@ class StartupActivity : FragmentActivity() {
 	private val navigationRepository: NavigationRepository by inject()
 	private val itemLauncher: ItemLauncher by inject()
 	private val socketHandler: SocketHandler by inject()
+
+	private val backgroundService: BackgroundService by inject()
 
 	private lateinit var binding: ActivityStartupBinding
 
@@ -232,6 +235,13 @@ class StartupActivity : FragmentActivity() {
 
 		supportFragmentManager.commit {
 			replace<SplashFragment>(R.id.content_view)
+		}
+
+		// Disable backdrops when select user
+		try {
+			backgroundService.disable()
+		} catch (e: Exception) {
+			Timber.e(e, "Error disabling backdrops in StartupActivity")
 		}
 
 		// Automatically hide splash after delay
