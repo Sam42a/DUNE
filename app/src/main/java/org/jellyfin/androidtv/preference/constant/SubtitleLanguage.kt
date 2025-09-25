@@ -14,7 +14,10 @@ enum class SubtitleLanguage(
      */
     val displayName: String
 ) {
-    // None/Default option (no subtitles by default)
+    // Default option (use video's default or server-side subtitle track)
+    DEFAULT("default", "Default"),
+    
+    // None option (no subtitles)
     NONE("", "None"),
     
     // Supported subtitle languages with format: English (Native)

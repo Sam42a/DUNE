@@ -357,6 +357,8 @@ fun createDeviceProfile(
 	subtitleProfile(Codec.Subtitle.SRT, embedded = true, external = true)
 	subtitleProfile(Codec.Subtitle.SUBRIP, embedded = true, external = true)
 	subtitleProfile(Codec.Subtitle.TTML, embedded = true, external = true)
+	subtitleProfile(Codec.Subtitle.MOV_TEXT, embedded = true, external = true)
+	subtitleProfile(Codec.Subtitle.TX3G, embedded = true, external = true)
 
 	// Not all subtitles can be loaded standalone by the player
 	subtitleProfile(Codec.Subtitle.DVBSUB, embedded = true, encode = true)

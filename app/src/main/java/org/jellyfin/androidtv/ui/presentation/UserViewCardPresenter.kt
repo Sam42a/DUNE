@@ -65,16 +65,28 @@ class UserViewCardPresenter(
 		return ViewHolder(cardView)
 	}
 
-	override fun onBindViewHolder(viewHolder: Presenter.ViewHolder?, item: Any?) {
-		if (item !is BaseRowItem) return
-		if (viewHolder !is ViewHolder) return
+    // This version is called by the framework with payloads
+    override fun onBindViewHolder(
+        viewHolder: Presenter.ViewHolder,
+        item: Any,
+        payloads: MutableList<Any>
+    ) {
+        onBindViewHolder(viewHolder, item)
+    }
 
-		viewHolder.setItem(item)
+    // Main implementation that handles binding
+    override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
+        if (viewHolder !is ViewHolder) return
+        if (item !is BaseRowItem) {
+            viewHolder.setItem(null)
+            return
+        }
 
+        viewHolder.setItem(item)
+    }
 
-	}
-
-	override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder?) {
-		(viewHolder as? ViewHolder)?.setItem(null)
-	}
+    @Suppress("UNUSED_PARAMETER")
+    override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {
+        if (viewHolder is ViewHolder) viewHolder.setItem(null)
+    }
 }

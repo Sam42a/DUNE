@@ -27,6 +27,7 @@ import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 import androidx.leanback.widget.VerticalGridPresenter;
+import androidx.leanback.widget.VerticalGridView;
 import androidx.lifecycle.Lifecycle;
 
 import org.jellyfin.androidtv.R;
@@ -77,6 +78,17 @@ import java.util.UUID;
 import kotlin.Lazy;
 import kotlinx.serialization.json.Json;
 import timber.log.Timber;
+
+class LeftAlignedVerticalGridPresenter extends VerticalGridPresenter {
+    @Override
+    protected void initializeGridViewHolder(ViewHolder vh) {
+        super.initializeGridViewHolder(vh);
+        VerticalGridView gridView = vh.getGridView();
+        ViewGroup.LayoutParams params = gridView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        gridView.setLayoutParams(params);
+    }
+}
 
 public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
     private final static int CHUNK_SIZE_MINIMUM = 25;
@@ -157,6 +169,8 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
 
         if (mGridDirection.equals(GridDirection.VERTICAL))
             setGridPresenter(new VerticalGridPresenter());
+        else if (mGridDirection.equals(GridDirection.LIST))
+            setGridPresenter(new LeftAlignedVerticalGridPresenter());
         else
             setGridPresenter(new HorizontalGridPresenter());
 
@@ -248,8 +262,13 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             mGridView.setPadding(titleMargin.getMarginStart(), mGridPaddingTop, clockMargin.getMarginEnd(), mGridPaddingTop); // prevent initial card cutoffs
         } else if (mGridViewHolder instanceof VerticalGridPresenter.ViewHolder) {
             mGridView = ((VerticalGridPresenter.ViewHolder) mGridViewHolder).getGridView();
-            mGridView.setGravity(Gravity.CENTER_HORIZONTAL);
-            mGridView.setPadding(mGridPaddingLeft, mGridPaddingTop, mGridPaddingLeft, mGridPaddingTop); // prevent initial card cutoffs
+            if (mGridDirection.equals(GridDirection.LIST)) {
+                mGridView.setGravity(Gravity.START);
+                mGridView.setPadding(0, mGridPaddingTop, mGridPaddingLeft, mGridPaddingTop);
+            } else {
+                mGridView.setGravity(Gravity.CENTER_HORIZONTAL);
+                mGridView.setPadding(mGridPaddingLeft, mGridPaddingTop, mGridPaddingLeft, mGridPaddingTop); // prevent initial card cutoffs
+            }
         }
         mGridView.setHorizontalSpacing(mGridItemSpacingHorizontal);
         mGridView.setVerticalSpacing(mGridItemSpacingVertical);
@@ -456,24 +475,29 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         // HINT: use uneven Rows/Cols if possible, so selected middle lines up with TV middle!
         if (mGridPresenter instanceof VerticalGridPresenter) {
             int numCols;
-            switch (posterSize) {
-                case SMALLEST:
-                    numCols = imageType.equals(ImageType.BANNER) ? 6 : imageType.equals(ImageType.THUMB) ? 11 : 15;
-                    break;
-                case SMALL:
-                    numCols = imageType.equals(ImageType.BANNER) ? 5 : imageType.equals(ImageType.THUMB) ? 9 : 13;
-                    break;
-                case MED:
-                    numCols = imageType.equals(ImageType.BANNER) ? 4 : imageType.equals(ImageType.THUMB) ? 7 : 11;
-                    break;
-                case LARGE:
-                    numCols = imageType.equals(ImageType.BANNER) ? 3 : imageType.equals(ImageType.THUMB) ? 5 : 7;
-                    break;
-                case X_LARGE:
-                    numCols = imageType.equals(ImageType.BANNER) ? 2 : imageType.equals(ImageType.THUMB) ? 3 : 5;
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + mPosterSizeSetting);
+            // List layout always uses 1 column regardless of poster size or image type
+            if (mGridDirection.equals(GridDirection.LIST)) {
+                numCols = 1;
+            } else {
+                switch (posterSize) {
+                    case SMALLEST:
+                        numCols = imageType.equals(ImageType.BANNER) ? 6 : imageType.equals(ImageType.THUMB) ? 11 : 15;
+                        break;
+                    case SMALL:
+                        numCols = imageType.equals(ImageType.BANNER) ? 5 : imageType.equals(ImageType.THUMB) ? 9 : 13;
+                        break;
+                    case MED:
+                        numCols = imageType.equals(ImageType.BANNER) ? 4 : imageType.equals(ImageType.THUMB) ? 7 : 11;
+                        break;
+                    case LARGE:
+                        numCols = imageType.equals(ImageType.BANNER) ? 3 : imageType.equals(ImageType.THUMB) ? 5 : 7;
+                        break;
+                    case X_LARGE:
+                        numCols = imageType.equals(ImageType.BANNER) ? 2 : imageType.equals(ImageType.THUMB) ? 3 : 5;
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + mPosterSizeSetting);
+                }
             }
             ((VerticalGridPresenter) mGridPresenter).setNumberOfColumns(numCols);
         } else if (mGridPresenter instanceof HorizontalGridPresenter) {
@@ -508,6 +532,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         }
         double cardScaling = Math.max(mCardFocusScale - 1.0, 0.0);
         int cardHeightInt = 100;
+        int cardWidthInt = 100;
         int spacingHorizontalInt = 0;
         int spacingVerticalInt = 0;
         int paddingLeftInt = 0;
@@ -545,7 +570,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             if (Math.abs(sumSize - mGridHeight) > 2) {
                 Timber.w("setAutoCardGridValues calculation delta > 2, something is off GridHeight <%s> sumSize <%s>!", mGridHeight, sumSize);
             }
-            int cardWidthInt = (int) getCardWidthBy(cardHeightInt, mImageType, mFolder);
+            cardWidthInt = (int) getCardWidthBy(cardHeightInt, mImageType, mFolder);
             paddingLeftInt = (int) Math.round((cardWidthInt * cardScaling) / 2.0);
             spacingHorizontalInt = Math.max((int) (Math.round(paddingLeftInt * CARD_SPACING_PCT)), 0); // round spacing
             if (mImageType == ImageType.BANNER) {
@@ -555,6 +580,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             mCardsScreenEst = numRows * cardsCol;
             mCardsScreenStride = numRows;
         } else if (numCols > 0) {
+            boolean isListLayout = mGridDirection.equals(GridDirection.LIST);
             double paddingPct = cardScaling / numCols;
             double spacingPct = ((paddingPct / 2.0) * CARD_SPACING_PCT) * (numCols - 1);
             if (mImageType == ImageType.BANNER) {
@@ -565,9 +591,31 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             double usableCardSpace = mGridWidth / (1.0 + wastedSpacePct); // decrease size
             double cardWidth = usableCardSpace / numCols;
 
-            // fix any rounding errors and make pixel perfect
-            cardHeightInt = (int) Math.round(getCardHeightBy(cardWidth, mImageType, mFolder));
-            int cardWidthInt = (int) getCardWidthBy(cardHeightInt, mImageType, mFolder);
+            if (isListLayout) {
+                // specific dimensions for List layout
+                switch (mImageType) {
+                    case POSTER:
+                        cardWidthInt = 190;
+                        cardHeightInt = (int) Math.round(getCardHeightBy(cardWidthInt, mImageType, mFolder));
+                        break;
+                    case BANNER:
+                        cardWidthInt = 90;
+                        cardHeightInt = 94;
+                        break;
+                    case THUMB:
+                        cardWidthInt = 328;
+                        cardHeightInt = 222;
+                        break;
+                    default:
+                        cardWidthInt = (int) Math.round(cardWidth);
+                        cardHeightInt = (int) Math.round(getCardHeightBy(cardWidthInt, mImageType, mFolder));
+                        break;
+                }
+            } else {
+                // fix any rounding errors and make pixel perfect
+                cardHeightInt = (int) Math.round(getCardHeightBy(cardWidth, mImageType, mFolder));
+                cardWidthInt = (int) getCardWidthBy(cardHeightInt, mImageType, mFolder);
+            }
             double cardPaddingLeftRightAdj = cardWidthInt * cardScaling;
             spacingHorizontalInt = Math.max((int) (Math.round((cardPaddingLeftRightAdj / 2.0) * CARD_SPACING_PCT)), 0); // round spacing
             if (mImageType == ImageType.BANNER) {
@@ -636,6 +684,8 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                 setGridPresenter(new VerticalGridPresenter());
             } else if (mGridDirection.equals(GridDirection.HORIZONTAL) && (mGridPresenter == null || !(mGridPresenter instanceof HorizontalGridPresenter))) {
                 setGridPresenter(new HorizontalGridPresenter());
+            } else if (mGridDirection.equals(GridDirection.LIST) && (mGridPresenter == null || !(mGridPresenter instanceof VerticalGridPresenter))) {
+                setGridPresenter(new LeftAlignedVerticalGridPresenter());
             }
             setDefaultGridRowCols(mPosterSizeSetting, mImageType);
             setAutoCardGridValues();
@@ -664,7 +714,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
     }
 
     private void buildAdapter() {
-        mCardPresenter = new CardPresenter(false, mImageType, mCardHeight);
+        mCardPresenter = new CardPresenter(false, mImageType, mCardHeight, mGridDirection.equals(GridDirection.LIST));
         mCardPresenter.setUniformAspect(true); // make grid layouts always uniform
 
         Timber.d("buildAdapter cardHeight <%s> getCardWidthBy <%s> chunks <%s> type <%s>", mCardHeight, (int) getCardWidthBy(mCardHeight, mImageType, mFolder), mRowDef.getChunkSize(), mRowDef.getQueryType().toString());
@@ -838,6 +888,8 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         mSortButton.setContentDescription(getString(R.string.lbl_sort_by));
 
         binding.toolBar.addView(mSortButton);
+
+        // Add masks button for genre filtering
         mMasksButton = new ImageButton(requireContext(), null, 0, R.style.Button_Icon);
         mMasksButton.setImageResource(R.drawable.ic_masks);
         mMasksButton.setMaxHeight(size);
@@ -849,23 +901,27 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
 
                 // genre options
                 String[] genres = {
-                    "Action", "Adventure", "Animation", "Anime","Comedy",
-                    "Crime", "Documentary", "Drama", "Family", "Fantasy",
-                    "History", "Horror", "Music", "Mystery", "Romance",
-                    "Science Fiction", "Thriller", "War", "Western", "TV Movie"
+                        "Action", "Adventure", "Animation", "Anime","Comedy",
+                        "Crime", "Documentary", "Drama", "Family", "Fantasy",
+                        "History", "Horror", "Music", "Mystery", "Romance",
+                        "Science Fiction", "Thriller", "War", "Western", "TV Movie"
                 };
 
+                // Make menu items checkable
                 genreMenu.getMenu().setGroupCheckable(0, true, true);
 
                 String currentGenre = mAdapter.getGenreFilter();
+                String normalizedCurrentGenre = currentGenre != null ? normalizeGenreName(currentGenre) : null;
 
                 MenuItem allGenresItem = genreMenu.getMenu().add(0, 0, 0, "All Genres");
-                allGenresItem.setChecked(currentGenre == null || currentGenre.isEmpty());
+                allGenresItem.setChecked(normalizedCurrentGenre == null);
 
                 for (int i = 0; i < genres.length; i++) {
                     MenuItem item = genreMenu.getMenu().add(0, i + 1, i + 1, genres[i]);
                     item.setCheckable(true);
-                    item.setChecked(genres[i].equals(currentGenre));
+                    // Use case-insensitive comparison with normalized names for better accuracy
+                    String normalizedGenre = normalizeGenreName(genres[i]);
+                    item.setChecked(normalizedGenre != null && normalizedGenre.equals(normalizedCurrentGenre));
                 }
 
                 // item click listener
@@ -874,7 +930,9 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (mAdapter != null) {
                             String selectedGenre = item.getItemId() == 0 ? null : item.getTitle().toString();
-                            mAdapter.setGenreFilter(selectedGenre);
+                            // Normalize the genre name for better server-side matching
+                            String normalizedGenre = selectedGenre != null ? normalizeGenreName(selectedGenre) : null;
+                            mAdapter.setGenreFilter(normalizedGenre);
                             mAdapter.Retrieve();
                             updateCounter(mAdapter.getTotalItems() > 0 ? 1 : 0);
 
@@ -883,13 +941,12 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                                 MenuItem menuItem = genreMenu.getMenu().getItem(i);
                                 menuItem.setChecked(menuItem == item);
                             }
-
-                            setStatusText(mainTitle);
                         }
                         return true;
                     }
                 });
 
+                // Show the menu after setting up the listener
                 genreMenu.show();
             }
         });
@@ -973,6 +1030,63 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         });
         mSettingsButton.setContentDescription(getString(R.string.lbl_settings));
         binding.toolBar.addView(mSettingsButton);
+    }
+
+    /**
+     * Normalizes genre names for better matching.
+     * Converts to lowercase, trims whitespace, and handles common variations.
+     */
+    private String normalizeGenreName(String genre) {
+        if (genre == null) return null;
+
+        String normalized = genre.trim().toLowerCase();
+
+        // Handle common genre variations
+        switch (normalized) {
+            case "sci-fi":
+            case "science fiction":
+                return "science fiction";
+            case "sci fi":
+                return "science fiction";
+            case "rom-com":
+            case "rom com":
+                return "romance";
+            case "martial arts":
+                return "action";
+            case "superhero":
+                return "action";
+            case "animated":
+                return "animation";
+            case "doc":
+            case "docu":
+                return "documentary";
+            default:
+                return normalized;
+        }
+    }
+
+    /**
+     * Gets the best matching genre from the hardcoded list for better compatibility.
+     */
+    private String getBestMatchingGenre(String serverGenre) {
+        if (serverGenre == null) return null;
+
+        String normalizedServer = normalizeGenreName(serverGenre);
+        String[] genres = {
+                "action", "adventure", "animation", "anime", "comedy",
+                "crime", "documentary", "drama", "family", "fantasy",
+                "history", "horror", "music", "mystery", "romance",
+                "science fiction", "thriller", "war", "western", "tv movie"
+        };
+
+        for (String genre : genres) {
+            if (genre.equals(normalizedServer)) {
+                return genre.substring(0, 1).toUpperCase() + genre.substring(1);
+            }
+        }
+
+        // If no exact match, return the original genre for dynamic handling
+        return serverGenre;
     }
 
     class JumplistPopup {

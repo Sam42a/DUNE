@@ -1,11 +1,44 @@
 package org.jellyfin.androidtv.util
 
+import android.app.ActivityManager
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.withSign
+
+/**
+ * Device memory utilities for performance optimization
+ */
+object DeviceMemoryUtils {
+	private const val LOW_END_MEMORY_THRESHOLD_BYTES = 2048 * 1024 * 1024L // 2GB in bytes
+	private var isLowEndDeviceCache: Boolean? = null
+
+	/**
+	 * Check if the device is low-end (2GB RAM or less)
+	 * This check is cached for performance
+	 */
+	fun isLowEndDevice(context: Context): Boolean {
+		isLowEndDeviceCache?.let { return it }
+
+		val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+		val memInfo = ActivityManager.MemoryInfo()
+		activityManager?.getMemoryInfo(memInfo)
+
+		val isLowEnd = memInfo.totalMem <= LOW_END_MEMORY_THRESHOLD_BYTES
+		isLowEndDeviceCache = isLowEnd
+
+		return isLowEnd
+	}
+	fun getTotalMemoryMB(context: Context): Long {
+		val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+		val memInfo = ActivityManager.MemoryInfo()
+		activityManager?.getMemoryInfo(memInfo)
+		return (memInfo.totalMem / (1024 * 1024))
+	}
+}
 
 @Suppress("MagicNumber", "NestedBlockDepth")
 object BlurHashDecoder {

@@ -62,10 +62,17 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import org.jellyfin.sdk.Jellyfin as JellyfinSdk
+import android.content.SharedPreferences
+// Removed allowHardware import as it's not available in Coil 3.x
 
 val defaultDeviceInfo = named("defaultDeviceInfo")
 
 val appModule = module {
+	// SharedPreferences
+	single<SharedPreferences> {
+		androidx.preference.PreferenceManager.getDefaultSharedPreferences(androidContext())
+	}
+
 	// Online Subtitles dependencies
 
 
@@ -100,7 +107,7 @@ val appModule = module {
 	// Coil (images)
 	single {
 		val context = androidContext()
-		// Set fixed memory cache size to 700MB (700 * 1024 * 1024 bytes)
+		// Memory cache size (in bytes)
 		val memoryCacheSize = 700L * 1024 * 1024
 		// Set disk cache size to 1GB (1024 * 1024 * 1024 bytes)
 		val diskCacheSize = 1024L * 1024 * 1024
@@ -116,14 +123,14 @@ val appModule = module {
 		ImageLoader.Builder(context).apply {
 			serviceLoaderEnabled(false)
 			logger(CoilTimberLogger(if (BuildConfig.DEBUG) Logger.Level.Warn else Logger.Level.Error))
-			
+
 			// Configure memory cache
 			memoryCache {
 				coil3.memory.MemoryCache.Builder()
 					.maxSizeBytes(memoryCacheSize)
 					.build()
 			}
-			
+
 			// Set disk cache
 			diskCache(diskCache)
 
@@ -161,7 +168,16 @@ val appModule = module {
 	viewModel { SearchViewModel(get()) }
 	viewModel { DreamViewModel(get(), get(), get(), get(), get()) }
 
-	single { BackgroundService(get(), get(), get(), get(), get()) }
+	single {
+        BackgroundService(
+            context = get(),
+            jellyfin = get(),
+            api = get(),
+            userPreferences = get(),
+            imageLoader = get(),
+            imageHelper = get()
+        )
+    }
 
 	single { MarkdownRenderer(get()) }
 	single { ItemLauncher() }

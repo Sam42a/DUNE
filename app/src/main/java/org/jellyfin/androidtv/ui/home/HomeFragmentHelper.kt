@@ -38,13 +38,6 @@ class HomeFragmentHelper(
         private const val ITEM_LIMIT_ON_NOW = 20
     }
 
-
-    fun loadSciFiRow(): HomeFragmentRow = genreRow("Science Fiction")
-    fun loadComedyRow(): HomeFragmentRow = genreRow("Comedy")
-    fun loadRomanceRow(): HomeFragmentRow = genreRow("Romance")
-    fun loadAnimeRow(): HomeFragmentRow = genreRow("Anime")
-    fun loadActionRow(): HomeFragmentRow = genreRow("Action")
-    fun loadActionAdventureRow(): HomeFragmentRow = genreRow("Action & Adventure")
     fun loadMusicRow(): HomeFragmentRow {
 		val currentUserId = userRepository.currentUser.value?.id
         val musicPlaylistQuery = GetItemsRequest(
@@ -53,21 +46,12 @@ class HomeFragmentHelper(
             mediaTypes = setOf(MediaType.AUDIO),
             sortBy = setOf(ItemSortBy.SORT_NAME),
             limit = ITEM_LIMIT,
-                fields = ItemRepository.itemFields,
+            fields = ItemRepository.itemFields,
             recursive = true,
             excludeItemTypes = setOf(BaseItemKind.MOVIE, BaseItemKind.SERIES, BaseItemKind.EPISODE)
         )
         return HomeFragmentBrowseRowDefRow(BrowseRowDef(context.getString(R.string.lbl_music_playlists), musicPlaylistQuery, 50))
     }
-    fun loadMysteryRow(): HomeFragmentRow = genreRow("Mystery")
-    fun loadThrillerRow(): HomeFragmentRow = genreRow("Thriller")
-    fun loadWarRow(): HomeFragmentRow = genreRow("War")
-    fun loadDocumentaryRow(): HomeFragmentRow = genreRow("Documentary")
-    fun loadRealityRow(): HomeFragmentRow? = genreRow("Reality")  // May return null if genre not found
-    fun loadFamilyRow(): HomeFragmentRow = genreRow("Family")
-    fun loadHorrorRow(): HomeFragmentRow = genreRow("Horror")
-    fun loadFantasyRow(): HomeFragmentRow = genreRow("Fantasy")
-    fun loadHistoryRow(): HomeFragmentRow = genreRow("History")
 
     fun loadMusicVideosRow(): HomeFragmentRow {
         return HomeFragmentMusicVideosRow(userRepository)
@@ -114,18 +98,18 @@ class HomeFragmentHelper(
                 cardPresenter: org.jellyfin.androidtv.ui.presentation.CardPresenter,
                 rowsAdapter: org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter<androidx.leanback.widget.Row>
             ) {
-                // Create a custom card presenter that hides info below cards
+                // custom card presenter that hides info below cards
                 val customCardPresenter = object : CardPresenter(
                     false,  // showInfo - set to false to hide info below cards
                     if (useSeriesThumbnails) ImageType.THUMB else ImageType.POSTER,  // Use THUMB or POSTER based on preference
-                    195  // Standard height for no-info cards
+					170  // Standard height for no-info cards
                 ) {
                     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
                         super.onBindViewHolder(viewHolder, item)
 
                         // Set fixed dimensions for all cards in the row
                         (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
-                            cardView.setMainImageDimensions(225, 128) // Standard card dimensions for episode cards
+                            cardView.setMainImageDimensions(220, 128) // Standard card dimensions for episode cards
                             // Set card type to not show info below
                             cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA
                         }
@@ -135,7 +119,6 @@ class HomeFragmentHelper(
                     setUniformAspect(true)
                 }
 
-                // the row with our custom card presenter
                 HomeFragmentBrowseRowDefRow(BrowseRowDef(
                     context.getString(R.string.lbl_next_up),
                     query,
@@ -181,14 +164,14 @@ class HomeFragmentHelper(
                 val continueWatchingPresenter = object : CardPresenter(
                     true,  // showInfo - set to true to show info below cards
                     if (useSeriesThumbnails) ImageType.THUMB else ImageType.THUMB,  // Use THUMB or POSTER etc based on preference
-                    260  // staticHeight
+					220  // staticHeight
                 ) {
                     override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
                         super.onBindViewHolder(viewHolder, item)
 
                         // Set fixed dimensions for all cards in the rows
                         (viewHolder.view as? LegacyImageCardView)?.let { cardView ->
-                            cardView.setMainImageDimensions(225, 128) // Standard card dimensions for episode cards
+                            cardView.setMainImageDimensions(220, 128) // Standard card dimensions for episode cards
                             // Set card type to show info below
                             cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER
                         }
@@ -197,60 +180,14 @@ class HomeFragmentHelper(
                     setHomeScreen(true)
                     setUniformAspect(true)
                 }
-
-
-                // Add the row with our custom card presenter
                 HomeFragmentBrowseRowDefRow(BrowseRowDef(
                     title,
                     query,
                     0,
-                    useSeriesThumbnails, // Pass the series thumbnails preference to prefer series thumb images
+                    useSeriesThumbnails,
                     true,
                     arrayOf(ChangeTriggerType.TvPlayback, ChangeTriggerType.MoviePlayback)
                 )).addToRowsAdapter(context, continueWatchingPresenter, rowsAdapter)
-            }
-        }
-    }
-
-
-
-    // Helper function to create a genre row with consistent styling
-    private fun genreRow(genreName: String): HomeFragmentRow {
-        val query = GetItemsRequest(
-            includeItemTypes = listOf(
-                BaseItemKind.MOVIE,
-                BaseItemKind.SERIES,
-                BaseItemKind.MUSIC_ALBUM,
-                BaseItemKind.MUSIC_ARTIST,
-                BaseItemKind.MUSIC_VIDEO
-            ),
-            excludeItemTypes = listOf(BaseItemKind.EPISODE),
-            genres = listOf(genreName),
-            sortBy = listOf(ItemSortBy.PRODUCTION_YEAR),
-			sortOrder = listOf(SortOrder.DESCENDING),
-			limit = 10,
-            recursive = true,
-            fields = ItemRepository.itemFields,
-            imageTypeLimit = 1,
-            enableTotalRecordCount = false
-        )
-
-        // Create a custom row that will use a card presenter with no info
-        return object : HomeFragmentRow {
-            override fun addToRowsAdapter(
-                context: Context,
-                cardPresenter: CardPresenter,
-                rowsAdapter: MutableObjectAdapter<Row>
-            ) {
-                // Create a CardPresenter with no info and height of 195dp to match Recently Added
-                val noInfoCardPresenter = CardPresenter(false, 195).apply {
-                    setHomeScreen(true)
-                    setUniformAspect(true)
-                }
-
-                // Create and add the row with our custom card presenter
-                HomeFragmentBrowseRowDefRow(BrowseRowDef(genreName, query, 10, false, true))
-                    .addToRowsAdapter(context, noInfoCardPresenter, rowsAdapter)
             }
         }
     }
@@ -263,8 +200,7 @@ class HomeFragmentHelper(
                 cardPresenter: CardPresenter,
                 rowsAdapter: MutableObjectAdapter<Row>
             ) {
-                // Create a standard CardPresenter with no info and height of 195dp to match Recently Added
-                val noInfoCardPresenter = CardPresenter(false, 195).apply {
+                val noInfoCardPresenter = CardPresenter(false, 170).apply {
                     setHomeScreen(true)
                     setUniformAspect(true)
                 }

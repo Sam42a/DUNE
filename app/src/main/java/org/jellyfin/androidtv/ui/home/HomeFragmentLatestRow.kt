@@ -24,7 +24,7 @@ class HomeFragmentLatestRow(
 		val configuration = userRepository.currentUser.value?.configuration
 
 		// Create a custom card presenter with no info for the Recently Added row
-		val noInfoCardPresenter = CardPresenter(false, 195).apply {
+		val noInfoCardPresenter = CardPresenter(false, 170).apply {
 			setHomeScreen(true) // Assuming we want home screen behavior for this row
 			setUniformAspect(true) // Assuming we want uniform aspect ratio
 		}
@@ -66,6 +66,6 @@ class HomeFragmentLatestRow(
 		)
 
 		// Maximum amount of items loaded for a row
-		private const val ITEM_LIMIT = 10
+		private const val ITEM_LIMIT = 20
 	}
 }

@@ -48,7 +48,7 @@ class HomeFragmentMusicVideosRow(
 
                 // Set fixed dimensions for all cards in the row
                 (viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
-                    cardView.setMainImageDimensions(235, 135)
+                    cardView.setMainImageDimensions(220, 128)
                     cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER
                 }
             }
@@ -59,7 +59,7 @@ class HomeFragmentMusicVideosRow(
         val rowDef = BrowseRowDef(
             context.getString(R.string.music_videos),
             query,
-            15, // chunkSize
+            10, // chunkSize
             false, // preferParentThumb
             true, // staticHeight
             arrayOf(ChangeTriggerType.MusicPlayback)

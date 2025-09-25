@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:lb="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="androidx.leanback.widget.BaseCardView">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:clipToOutline="true"
+        android:clipChildren="true">
+
+        <!-- Left side: Main Image -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <org.jellyfin.androidtv.ui.AsyncImageView
+                android:id="@+id/main_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:clipToOutline="true"
+                android:elevation="0dp"
+                app:crossfadeDuration="0"
+                lb:layout_viewType="main" />
+
+            <ProgressBar
+                android:id="@+id/resumeProgress"
+                style="@style/overlay_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/main_image"
+                android:layout_alignEnd="@id/main_image"
+                android:layout_alignBottom="@+id/main_image"
+                android:layout_marginBottom="5dp"
+                android:max="100"
+                android:maxHeight="5sp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <FrameLayout
+                android:id="@+id/watchedIndicator"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignEnd="@id/main_image"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/watched"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/squared_accent"
+                    tools:ignore="ImageContrastCheck" />
+
+                <TextView
+                    android:shadowColor="#1A000000"
+                    android:shadowDx="0"
+                    android:shadowDy="2"
+                    android:shadowRadius="4"
+                    android:id="@+id/unwatchedCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/lbl_unwatched"
+                    android:textAlignment="center"
+                    android:textSize="9sp"
+                    android:gravity="center"
+                    tools:ignore="TextContrastCheck"
+                    tools:text="5"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/checkMark"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_watch"
+                    android:contentDescription="@null"
+                    android:visibility="invisible"/>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <!-- Right side: Info Area -->
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical"
+            android:gravity="start"
+            lb:layout_viewType="info">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed"
+                android:maxLines="2"
+                android:textColor="@color/lb_basic_card_title_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold|italic"
+                tools:text="Movie Title Here" />
+
+            <!-- Summary -->
+            <TextView
+                android:id="@+id/summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="6"
+                android:textAllCaps="false"
+                android:textColor="@color/basic_button_text"
+                android:textSize="12sp"
+                tools:text="This iss a  brief summary of the movie or show, it provides an overview of the plot and main characters to give users an idea of what to expect." />
+
+            <!-- Ratings -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Community Rating -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_star"
+                        android:tint="@color/yellowtown_accent" />
+
+                    <TextView
+                        android:id="@+id/community_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/logo_gradient_stop"
+                        android:textSize="11sp"
+                        tools:text="8.5" />
+
+                </LinearLayout>
+
+                <!-- Critic Rating -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_rt_fresh"
+                        android:tint="@color/transparent" />
+
+                    <TextView
+                        android:id="@+id/critic_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textColor="@color/logo_gradient_stop"
+                        android:textSize="11sp"
+                        tools:text="92%" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Additional Info (Year, Duration, etc.) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textColor="@color/lb_basic_card_content_text_color"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    tools:text="2023" />
+
+                <TextView
+                    android:id="@+id/duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textColor="@color/lb_basic_card_content_text_color"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    tools:text="2h 15m" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</merge>

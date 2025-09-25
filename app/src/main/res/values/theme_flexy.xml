@@ -105,7 +105,6 @@
 
         <!-- Other -->
         <item name="overlayDimDimmedLevel">30%</item>
-        <item name="cardBorderDrawable">@drawable/flexy_card_border</item>
 
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/flexy_background_filter</item>

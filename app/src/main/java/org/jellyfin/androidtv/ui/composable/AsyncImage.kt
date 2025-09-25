@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.viewinterop.AndroidView
 import org.jellyfin.androidtv.ui.AsyncImageView
 import org.jellyfin.androidtv.util.BlurHashDecoder
+import org.jellyfin.androidtv.util.DeviceMemoryUtils
 
 private data class AsyncImageState(
 	val url: String?,
@@ -43,7 +44,10 @@ fun AsyncImage(
 			}
 		},
 		update = { view ->
-			val compositionState = AsyncImageState(url, blurHash)
+			val isLowEndDevice = DeviceMemoryUtils.isLowEndDevice(view.context)
+			val effectiveBlurHash = if (isLowEndDevice) null else blurHash
+
+			val compositionState = AsyncImageState(url, effectiveBlurHash)
 			if (state != compositionState) {
 				state = compositionState
 

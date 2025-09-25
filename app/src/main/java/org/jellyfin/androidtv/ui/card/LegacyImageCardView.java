@@ -1,22 +1,21 @@
 package org.jellyfin.androidtv.ui.card;
 
-import android.app.Activity;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
-import android.view.ViewOutlineProvider;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.BaseCardView;
-import androidx.lifecycle.LifecycleOwner;
 
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.databinding.ViewCardLegacyImageBinding;
@@ -26,9 +25,10 @@ import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem;
 import org.jellyfin.androidtv.util.ContextExtensionsKt;
 import org.jellyfin.androidtv.util.DateTimeExtensionsKt;
 import org.jellyfin.androidtv.util.Utils;
-import timber.log.Timber;
 
 import java.text.NumberFormat;
+
+import timber.log.Timber;
 
 /**
  * Modified ImageCard with no fade on the badge
@@ -41,31 +41,59 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
     private int noIconMargin = Utils.convertDpToPixel(getContext(), 5);
     private NumberFormat nf = NumberFormat.getInstance();
 
+    private float defaultScale = 1.0f;
+    private float focusScale = 1.0f;
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        // Load scale values from resources
+
+        // Apply default scale
+        setScaleX(defaultScale);
+        setScaleY(defaultScale);
+
+        // Ensure no elevation is set after inflation
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            setElevation(0);
+            setTranslationZ(0);
+            setStateListAnimator(null);
+        }
+    }
+
     public LegacyImageCardView(Context context, boolean showInfo) {
         super(context, null, androidx.leanback.R.attr.imageCardViewStyle);
+
+        // Completely disable all elevation animations
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            // Create a custom StateListAnimator that does nothing
+            android.animation.StateListAnimator stateListAnimator = new android.animation.StateListAnimator();
+
+            // Add a default state with no animation
+            stateListAnimator.addState(new int[0], android.animation.AnimatorInflater.loadAnimator(context, android.R.animator.fade_in));
+
+            // Apply the custom StateListAnimator
+            setStateListAnimator(stateListAnimator);
+
+            // Explicitly set elevation to 0
+            setElevation(0);
+            setTranslationZ(0);
+
+            // Disable outline provider
+            setOutlineProvider(null);
+        }
+
+        // Also set important for accessibility to false to prevent any elevation changes
+        setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+
+        // Disable clip to padding and clip children to prevent any clipping issues
+        setClipToPadding(false);
+        setClipChildren(false);
 
         if (!showInfo) {
             setCardType(CARD_TYPE_MAIN_ONLY);
         }
-
-        // Check if we're running on a Fire TV device
-        boolean isFireTv = isFireTvDevice();
-        Timber.d("Device is Fire TV: %s", isFireTv);
-
-        // Ensure proper outline clipping for the main image
-        binding.mainImage.setClipToOutline(true);
-        binding.mainImage.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                float radius = getContext().getResources().getDimension(R.dimen.card_corner_radius);
-                // Fire TV needs the outline to match the parent drawable exactly
-                if (isFireTv) {
-                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
-                } else {
-                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
-                }
-            }
-        });
 
         // "hack" to trigger KeyProcessor to open the menu for this item on long press
         setOnLongClickListener(v -> {
@@ -92,12 +120,6 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
             Timber.d("Clicked, selected: %s", isSelected());
             updateCardBorder();
         });
-
-        // Register for lifecycle events to update the border when preferences change
-        Activity activity = ContextExtensionsKt.getActivity(getContext());
-        if (activity instanceof LifecycleOwner) {
-            ((LifecycleOwner) activity).getLifecycle().addObserver(this);
-        }
     }
 
     private boolean isFocusedState = false;
@@ -106,9 +128,9 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
     private void updateCardBorder() {
         // Always show white borders when focused or selected
         boolean shouldShowBorder = isFocused() || isSelected();
-        
+
         Timber.d("Card border state - focused: %s, selected: %s, showing border: %s",
-            isFocused(), isSelected(), shouldShowBorder);
+                isFocused(), isSelected(), shouldShowBorder);
 
         // Skip if state hasn't changed
         if (isFocusedState == shouldShowBorder) return;
@@ -119,18 +141,22 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
             Drawable border = ContextCompat.getDrawable(getContext(), R.drawable.card_focused_border);
             int padding = (int) getContext().getResources().getDimension(R.dimen.card_border_padding);
 
-            // Special handling for Fire TV devices
-            if (isFireTvDevice()) {
-                // Fire TV needs zero padding to avoid clipping issues
+            // Set the border as the foreground of the main image
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 binding.mainImage.setForeground(border);
-                binding.mainImage.setPadding(0, 0, 0, 0);
             } else {
-                binding.mainImage.setForeground(border);
+                // For API < 23, use a different approach with padding and background
                 binding.mainImage.setPadding(padding, padding, padding, padding);
+                binding.mainImage.setBackground(border);
             }
         } else {
-            binding.mainImage.setForeground(null);
-            binding.mainImage.setPadding(0, 0, 0, 0);
+            // Remove border
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                binding.mainImage.setForeground(null);
+            } else {
+                binding.mainImage.setPadding(0, 0, 0, 0);
+                binding.mainImage.setBackground(null);
+            }
         }
 
         // Invalidate the view to ensure the border is redrawn
@@ -139,14 +165,91 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, android.graphics.Rect previouslyFocusedRect) {
+        // Apply scale based on focus
+        if (gainFocus) {
+            animate().scaleX(focusScale).scaleY(focusScale).setDuration(150).start();
+        } else {
+            animate().scaleX(defaultScale).scaleY(defaultScale).setDuration(150).start();
+        }
+
+        // Store current elevation
+        float currentElevation = getElevation();
+
+        // Call super
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+
+        // Restore elevation to 0 and update border
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            setElevation(0);
+            setTranslationZ(0);
+        }
+
         updateCardBorder();
     }
 
     @Override
     public void setSelected(boolean selected) {
+        // Store current state
+        boolean wasSelected = isSelected();
+
+        // Call super
         super.setSelected(selected);
-        updateCardBorder();
+
+        // Only update the border if the selection state actually changed
+        if (wasSelected != selected) {
+            updateCardBorder();
+        }
+
+        // Ensure no elevation is set and no animations are running
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            // Clear any running animations
+            clearAnimation();
+
+            // Reset elevation and translation
+            setElevation(0);
+            setTranslationZ(0);
+
+            // Ensure no outline provider is set
+            setOutlineProvider(null);
+
+            // Force a redraw
+            invalidateOutline();
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        // Reset scale to default when reattached
+        setScaleX(defaultScale);
+        setScaleY(defaultScale);
+
+        // Disable elevation in parent if it's a view group
+        ViewParent parent = getParent();
+        if (parent instanceof ViewGroup) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                ((ViewGroup) parent).setClipToPadding(false);
+                ((ViewGroup) parent).setClipChildren(false);
+                ((ViewGroup) parent).setElevation(0);
+                ((ViewGroup) parent).setTranslationZ(0);
+                ((ViewGroup) parent).setStateListAnimator(null);
+            }
+        }
+
+        // Ensure no outline provider is set
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            setOutlineProvider(null);
+            invalidateOutline();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        // Reset scale when detached to prevent animation issues
+        setScaleX(1.0f);
+        setScaleY(1.0f);
+        super.onDetachedFromWindow();
     }
 
     @androidx.lifecycle.OnLifecycleEvent(androidx.lifecycle.Lifecycle.Event.ON_RESUME)
@@ -315,29 +418,17 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
     }
 
     private void setTextMaxLines() {
-        if (binding.title != null) {
-            binding.title.setMaxLines(1);
-        }
-        if (binding.contentText != null) {
+        if (TextUtils.isEmpty(getTitle())) {
+            binding.contentText.setMaxLines(2);
+        } else {
             binding.contentText.setMaxLines(1);
         }
-    }
 
-    /**
-     * Detects if the current device is a Fire TV device
-     * Fire TV devices have specific model names or brand identifiers
-     */
-    private boolean isFireTvDevice() {
-        String deviceModel = android.os.Build.MODEL.toLowerCase();
-        String deviceManufacturer = android.os.Build.MANUFACTURER.toLowerCase();
-
-        // Check for common Fire TV device identifiers
-        return deviceModel.contains("aftb") ||
-               deviceModel.contains("aftt") ||
-               deviceModel.contains("aftn") ||
-               deviceModel.contains("afts") ||
-               deviceModel.contains("firetv") ||
-               deviceManufacturer.contains("amazon");
+        if (TextUtils.isEmpty(getContentText())) {
+            binding.title.setMaxLines(2);
+        } else {
+            binding.title.setMaxLines(1);
+        }
     }
 
     public void clearBanner() {

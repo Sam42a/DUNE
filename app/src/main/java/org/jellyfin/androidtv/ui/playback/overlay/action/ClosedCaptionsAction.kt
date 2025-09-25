@@ -59,16 +59,7 @@ class ClosedCaptionsAction(
 				popup = null
 			}
 			setOnMenuItemClickListener { item ->
-				// Only trigger subtitle change if the selection is different from current
-				val currentIndex = playbackController.subtitleStreamIndex
-				val newIndex = item.itemId
-				
-				if (currentIndex != newIndex) {
-					Timber.d("Changing subtitle from $currentIndex to $newIndex")
-					playbackController.setSubtitleIndex(newIndex)
-				} else {
-					Timber.d("Ignoring duplicate subtitle selection: $newIndex")
-				}
+				playbackController.setSubtitleIndex(item.itemId)
 				true
 			}
 		}

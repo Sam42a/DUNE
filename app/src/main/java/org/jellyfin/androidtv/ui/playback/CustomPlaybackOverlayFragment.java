@@ -60,6 +60,7 @@ import org.jellyfin.androidtv.ui.livetv.TvManager;
 import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.playback.overlay.LeanbackOverlayFragment;
+import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentRepository;
 import org.jellyfin.androidtv.ui.presentation.CardPresenter;
 import org.jellyfin.androidtv.ui.presentation.ChannelCardPresenter;
 import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter;
@@ -88,6 +89,7 @@ import timber.log.Timber;
 public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGuide, View.OnKeyListener {
     protected VlcPlayerInterfaceBinding binding;
     private OverlayTvGuideBinding tvGuideBinding;
+    private final MediaSegmentRepository mediaSegmentRepository = (MediaSegmentRepository) org.koin.java.KoinJavaComponent.inject(MediaSegmentRepository.class).getValue();
 
     private RowsSupportFragment mPopupRowsFragment;
     private ListRow mChapterRow;
@@ -121,6 +123,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     private AudioManager mAudioManager;
 
     private boolean mFadeEnabled = false;
+    private boolean mSkipOperationInProgress = false;
     private boolean mIsVisible = false;
     private boolean mPopupPanelVisible = false;
     private boolean navigating = false;
@@ -176,6 +179,8 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = VlcPlayerInterfaceBinding.inflate(inflater, container, false);
         binding.textClock.setVideoPlayer(true);
+
+        binding.skipOverlay.setMediaSegmentRepository(mediaSegmentRepository);
 
         // inject the RowsSupportFragment in the popup container
         if (getChildFragmentManager().findFragmentById(R.id.rows_area) == null) {
@@ -485,9 +490,12 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
 
                     // Hide with seek
                     if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
+                        setSkipOperationInProgress(true);
                         playbackControllerContainer.getValue().getPlaybackController().seek(binding.skipOverlay.getTargetPositionMs(), true);
                         leanbackOverlayFragment.setShouldShowOverlay(false);
                         if (binding != null) clearSkipOverlay();
+                        // Clear flag after delay to ensure seek completes
+                        mHandler.postDelayed(() -> setSkipOperationInProgress(false), 100);
                         return true;
                     }
                 }
@@ -1323,5 +1331,13 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
             params.preferredDisplayModeId = 0;
             getActivity().getWindow().setAttributes(params);
         }
+    }
+
+    public boolean isSkipOperationInProgress() {
+        return mSkipOperationInProgress;
+    }
+
+    public void setSkipOperationInProgress(boolean skipOperationInProgress) {
+        mSkipOperationInProgress = skipOperationInProgress;
     }
 }

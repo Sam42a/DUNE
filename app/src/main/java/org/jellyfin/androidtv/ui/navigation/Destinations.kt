@@ -6,11 +6,8 @@ import org.jellyfin.androidtv.ui.browsing.BrowseGridFragment
 import org.jellyfin.androidtv.ui.browsing.BrowseRecordingsFragment
 import org.jellyfin.androidtv.ui.browsing.BrowseScheduleFragment
 import org.jellyfin.androidtv.ui.browsing.BrowseViewFragment
-import org.jellyfin.androidtv.ui.browsing.ByGenreFragment
-import org.jellyfin.androidtv.ui.browsing.ByLetterFragment
 import org.jellyfin.androidtv.ui.browsing.CollectionFragment
 import org.jellyfin.androidtv.ui.browsing.GenericFolderFragment
-import org.jellyfin.androidtv.ui.browsing.SuggestedMoviesFragment
 import org.jellyfin.androidtv.ui.home.HomeFragment
 import org.jellyfin.androidtv.ui.itemdetail.FullDetailsFragment
 import org.jellyfin.androidtv.ui.itemdetail.ItemListFragment
@@ -62,27 +59,6 @@ object Destinations {
 	fun folderBrowser(item: BaseItemDto) = fragmentDestination<GenericFolderFragment>(
 		Extras.Folder to Json.Default.encodeToString(item),
 	)
-
-	// TODO only pass item id instead of complete JSON to browsing destinations
-	fun libraryByGenres(item: BaseItemDto, includeType: String) =
-		fragmentDestination<ByGenreFragment>(
-			Extras.Folder to Json.Default.encodeToString(item),
-			Extras.IncludeType to includeType,
-		)
-
-	// TODO only pass item id instead of complete JSON to browsing destinations
-	fun libraryByLetter(item: BaseItemDto, includeType: String) =
-		fragmentDestination<ByLetterFragment>(
-			Extras.Folder to Json.Default.encodeToString(item),
-			Extras.IncludeType to includeType,
-		)
-
-	// TODO only pass item id instead of complete JSON to browsing destinations
-	fun librarySuggestions(item: BaseItemDto) =
-		fragmentDestination<SuggestedMoviesFragment>(
-			Extras.Folder to Json.Default.encodeToString(item),
-		)
-
 	// Item details
 	fun itemDetails(item: UUID) = fragmentDestination<FullDetailsFragment>(
 		"ItemId" to item.toString(),

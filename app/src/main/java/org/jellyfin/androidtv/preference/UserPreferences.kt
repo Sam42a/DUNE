@@ -7,9 +7,11 @@ import org.jellyfin.androidtv.preference.constant.AppLanguage
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
+import org.jellyfin.androidtv.preference.constant.GenreSortBy
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
 import org.jellyfin.androidtv.preference.constant.RatingType
 import org.jellyfin.androidtv.preference.constant.RefreshRateSwitchingBehavior
+import org.jellyfin.androidtv.preference.constant.SkipDuration
 import org.jellyfin.androidtv.preference.constant.SubtitleLanguage
 import org.jellyfin.androidtv.preference.UserPreferences.Companion.screensaverInAppEnabled
 import org.jellyfin.androidtv.preference.constant.AudioLanguage
@@ -49,7 +51,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		/**
 		 * Image quality preference: low, normal, high
 		 */
-		var imageQuality = stringPreference("image_quality", "low")
+		var imageQuality = stringPreference("image_quality", "normal")
 		/**
 		 * Select the app theme
 		 */
@@ -60,20 +62,15 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var backdropEnabled = booleanPreference("pref_show_backdrop", true)
 
-		/**
-		 * Backdrop blur intensity from 0.0 (no blur) to 1.0 (full blur)
-		 */
-		var backdropBlurIntensity = floatPreference("pref_backdrop_blur_intensity", 0.0f)
-
-		/**
+/**
 		 * Backdrop dimming intensity from 0 (no dimming) to 1.0 (full black)
 		 */
-		var backdropDimmingIntensity = floatPreference("pref_backdrop_dimming_intensity", 0.1f)
+		var backdropDimmingIntensity = floatPreference("pref_backdrop_dimming_intensity", 0.0f)
 
 		/**
 		 * Backdrop fading intensity from 0 (no fade) to 1.0 (full fade)
 		 */
-		var backdropFadingIntensity = floatPreference("pref_backdrop_fading_intensity", 0.7f)
+		var backdropFadingIntensity = floatPreference("pref_backdrop_fading_intensity", 0.6f)
 
 		/**
 		 * Card size for home screen and library browsing
@@ -95,7 +92,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		/**
 		 * Maximum bitrate in megabit for playback.
 		 */
-		var maxBitrate = stringPreference("pref_max_bitrate", "100")
+		var maxBitrate = stringPreference("pref_max_bitrate", "200")
 
 		/**
 		 * Auto-play next item
@@ -213,6 +210,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var seriesThumbnailsEnabled = booleanPreference("pref_enable_series_thumbnails", true)
 
 		/**
+		 * Genre sorting method for home screen genre rows
+		 */
+		var genreSortBy = enumPreference("genre_sort_by", GenreSortBy.DEFAULT)
+
+		/**
 		 * Subtitles foreground color
 		 */
 		var subtitlesBackgroundColor = longPreference("subtitles_background_color", 0x00FFFFFF)
@@ -239,12 +241,12 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 
 		/**
 		 * Default subtitle language
-		 * Default is set to English
+		 * Default is set to use video's default Set Subtitle
 		 */
-		var defaultSubtitleLanguage = enumPreference("default_subtitle_language", SubtitleLanguage.ENGLISH)
+		var defaultSubtitleLanguage = enumPreference("default_subtitle_language", SubtitleLanguage.DEFAULT)
 
 		/**
-		 * Default audio language 
+		 * Default audio language
 		 * Default is set to English
 		 */
 		var defaultAudioLanguage = enumPreference("default_audio_language", AudioLanguage.ENGLISH)
@@ -284,6 +286,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 				MediaSegmentType.OUTRO to MediaSegmentAction.ASK_TO_SKIP,
 			).toMediaSegmentActionsString()
 		)
+
+		/**
+		 * Duration for the skip button visibility timer.
+		 */
+		var skipDuration = enumPreference("skip_duration", SkipDuration.DEFAULT_8_SECONDS)
 
 		/**
 		 * Preferred behavior for player aspect ratio (zoom mode).

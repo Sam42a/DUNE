@@ -15,4 +15,9 @@ enum class GridDirection(
 	 * Vertical.
 	 */
 	VERTICAL(R.string.grid_direction_vertical),
+
+	/**
+	 * List.
+	 */
+	LIST(R.string.grid_direction_list),
 }

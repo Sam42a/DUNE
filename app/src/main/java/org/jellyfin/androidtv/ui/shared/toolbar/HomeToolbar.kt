@@ -19,9 +19,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
@@ -42,6 +45,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -65,6 +69,7 @@ import org.jellyfin.sdk.model.api.ItemSortBy
 import org.koin.compose.koinInject
 import timber.log.Timber
 import org.jellyfin.androidtv.data.repository.UserViewsRepository
+import org.jellyfin.androidtv.ui.base.Text
 
 @Composable
 fun HomeToolbar(
@@ -119,7 +124,7 @@ fun HomeToolbar(
                     .size(36.dp) // 40dp - 10%
                     .clip(CircleShape)
                     .background(
-                        if (isFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
+                        if (isFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent,
                         CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -165,25 +170,67 @@ fun HomeToolbar(
 
             Box(
                 modifier = Modifier
-                    .size(36.dp) // 40dp - 10%
-                    .clip(CircleShape)
+                    .let { modifier ->
+                        if (isSearchFocused) {
+                            modifier
+                                .width(100.dp)
+                                .height(25.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                        } else {
+                            modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                        }
+                    }
                     .background(
-                        if (isSearchFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
-                        CircleShape
+                        if (isSearchFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = openSearch,
-                    interactionSource = searchInteractionSource,
-                    modifier = Modifier.size(40.dp) // 42dp - 5%
+                Row(
+                    modifier = Modifier
+                        .let { modifier ->
+                            if (isSearchFocused) {
+                                modifier
+                                    .width(100.dp)
+                                    .padding(horizontal = 12.dp)
+                            } else {
+                                modifier
+                                    .size(36.dp)
+                            }
+                        }
+                        .clickable(
+                            onClick = openSearch,
+                            interactionSource = searchInteractionSource,
+                            indication = null
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
                         contentDescription = stringResource(R.string.lbl_search),
-                        tint = Color.White,
-                        modifier = Modifier.size(21.dp) // 22dp - 5%
+                        tint = if (isSearchFocused) Color.Black else Color.White,
+                        modifier = Modifier
+                            .let { modifier ->
+                                if (isSearchFocused) {
+                                    modifier.size(16.dp)
+                                } else {
+                                    modifier.size(21.dp)
+                                }
+                            }
                     )
+
+
+                    if (isSearchFocused) {
+                        Text(
+                            text = "Search",
+                            color = if (isSearchFocused) Color.Black else Color.White,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        )
+                    }
                 }
             }
 
@@ -194,25 +241,67 @@ fun HomeToolbar(
 
             Box(
                 modifier = Modifier
-                    .size(36.dp) // 40dp - 10%
-                    .clip(CircleShape)
+                    .let { modifier ->
+                        if (isLibraryFocused) {
+                            modifier
+                                .width(100.dp)
+                                .height(25.dp)
+                                .clip(RoundedCornerShape(12.5.dp))
+                        } else {
+                            modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                        }
+                    }
                     .background(
-                        if (isLibraryFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
-                        CircleShape
+                        if (isLibraryFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = openLibrary,
-                    interactionSource = libraryInteractionSource,
-                    modifier = Modifier.size(40.dp) // 42dp - 5%
+                Row(
+                    modifier = Modifier
+                        .let { modifier ->
+                            if (isLibraryFocused) {
+                                modifier
+                                    .width(100.dp)
+                                    .padding(horizontal = 12.dp)
+                            } else {
+                                modifier
+                                    .size(36.dp)
+                            }
+                        }
+                        .clickable(
+                            onClick = openLibrary,
+                            interactionSource = libraryInteractionSource,
+                            indication = null
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_loop),
                         contentDescription = stringResource(R.string.lbl_library),
-                        tint = Color.White,
-                        modifier = Modifier.size(21.dp) // 22dp - 5%
+                        tint = if (isLibraryFocused) Color.Black else Color.White,
+                        modifier = Modifier
+                            .let { modifier ->
+                                if (isLibraryFocused) {
+                                    modifier.size(16.dp)
+                                } else {
+                                    modifier.size(21.dp)
+                                }
+                            }
                     )
+
+
+                    if (isLibraryFocused) {
+                        Text(
+                            text = "Home",
+                            color = if (isLibraryFocused) Color.Black else Color.White,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        )
+                    }
                 }
             }
 
@@ -224,25 +313,67 @@ fun HomeToolbar(
 
                 Box(
                     modifier = Modifier
-                        .size(34.dp) // 38dp - 10%
-                        .clip(CircleShape)
+                        .let { modifier ->
+                            if (isLiveTvFocused) {
+                                modifier
+                                    .width(100.dp)
+                                    .height(25.dp)
+                                    .clip(RoundedCornerShape(12.5.dp))
+                            } else {
+                                modifier
+                                    .size(34.dp)
+                                    .clip(CircleShape)
+                            }
+                        }
                         .background(
-                            if (isLiveTvFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
-                            CircleShape
+                            if (isLiveTvFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    IconButton(
-                        onClick = openLiveTv,
-                        interactionSource = liveTvInteractionSource,
-                        modifier = Modifier.size(40.dp) // 42dp - 5%
+                    Row(
+                        modifier = Modifier
+                            .let { modifier ->
+                                if (isLiveTvFocused) {
+                                    modifier
+                                        .width(100.dp)
+                                        .padding(horizontal = 12.dp)
+                                } else {
+                                    modifier
+                                        .size(34.dp)
+                                }
+                            }
+                            .clickable(
+                                onClick = openLiveTv,
+                                interactionSource = liveTvInteractionSource,
+                                indication = null
+                            ),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_livetv),
                             contentDescription = stringResource(R.string.lbl_live_tv),
-                            tint = Color.White,
-                            modifier = Modifier.size(22.dp) // 22dp - 5%
+                            tint = if (isLiveTvFocused) Color.Black else Color.White,
+                            modifier = Modifier
+                                .let { modifier ->
+                                    if (isLiveTvFocused) {
+                                        modifier.size(16.dp)
+                                    } else {
+                                        modifier.size(22.dp)
+                                    }
+                                }
                         )
+
+                        // Show text when focused
+                        if (isLiveTvFocused) {
+                            Text(
+                                text = "Live",
+                                color = if (isLiveTvFocused) Color.Black else Color.White,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -304,25 +435,67 @@ fun HomeToolbar(
 
                 Box(
                     modifier = Modifier
-                        .size(36.dp) // Match other buttons
-                        .clip(CircleShape)
+                        .let { modifier ->
+                            if (isMasksFocused) {
+                                modifier
+                                    .width(100.dp)
+                                    .height(25.dp)
+                                    .clip(RoundedCornerShape(12.5.dp))
+                            } else {
+                                modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                            }
+                        }
                         .background(
-                            if (isMasksFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
-                            CircleShape
+                            if (isMasksFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    IconButton(
-                        onClick = { getRandomMovie() },
-                        interactionSource = masksInteractionSource,
-                        modifier = Modifier.size(40.dp) // Match other buttons
+                    Row(
+                        modifier = Modifier
+                            .let { modifier ->
+                                if (isMasksFocused) {
+                                    modifier
+                                        .width(100.dp)
+                                        .padding(horizontal = 12.dp)
+                                } else {
+                                    modifier
+                                        .size(36.dp)
+                                }
+                            }
+                            .clickable(
+                                onClick = { getRandomMovie() },
+                                interactionSource = masksInteractionSource,
+                                indication = null
+                            ),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_masks),
                             contentDescription = stringResource(R.string.show_random_button_summary),
-                            tint = Color.White,
-                            modifier = Modifier.size(21.dp) // 22dp - 5%
+                            tint = if (isMasksFocused) Color.Black else Color.White.copy(alpha = 0.7f),
+                            modifier = Modifier
+                                .let { modifier ->
+                                    if (isMasksFocused) {
+                                        modifier.size(16.dp)
+                                    } else {
+                                        modifier.size(21.dp)
+                                    }
+                                }
                         )
+
+                        // Show text when focused
+                        if (isMasksFocused) {
+                            Text(
+                                text = "Random",
+                                color = if (isMasksFocused) Color.Black else Color.White,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -333,25 +506,67 @@ fun HomeToolbar(
 
             Box(
                 modifier = Modifier
-                    .size(36.dp) // 40dp - 10%
-                    .clip(CircleShape)
+                    .let { modifier ->
+                        if (isSettingsFocused) {
+                            modifier
+                                .width(100.dp)
+                                .height(25.dp)
+                                .clip(RoundedCornerShape(12.5.dp))
+                        } else {
+                            modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                        }
+                    }
                     .background(
-                        if (isSettingsFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
-                        CircleShape
+                        if (isSettingsFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = openSettings,
-                    interactionSource = settingsInteractionSource,
-                    modifier = Modifier.size(40.dp)
+                Row(
+                    modifier = Modifier
+                        .let { modifier ->
+                            if (isSettingsFocused) {
+                                modifier
+                                    .width(100.dp)
+                                    .padding(horizontal = 12.dp)
+                            } else {
+                                modifier
+                                    .size(36.dp)
+                            }
+                        }
+                        .clickable(
+                            onClick = openSettings,
+                            interactionSource = settingsInteractionSource,
+                            indication = null
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_settings),
                         contentDescription = stringResource(R.string.lbl_settings),
-                        tint = if (isSettingsFocused) Color.White else Color.White.copy(alpha = 0.7f),
-                        modifier = Modifier.size(24.dp)
+                        tint = if (isSettingsFocused) Color.Black else Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier
+                            .let { modifier ->
+                                if (isSettingsFocused) {
+                                    modifier.size(16.dp)
+                                } else {
+                                    modifier.size(24.dp)
+                                }
+                            }
                     )
+
+
+                    if (isSettingsFocused) {
+                        Text(
+                            text = "Settings",
+                            color = if (isSettingsFocused) Color.Black else Color.White,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        )
+                    }
                 }
             }
 
@@ -361,25 +576,66 @@ fun HomeToolbar(
 
             Box(
                 modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
+                    .let { modifier ->
+                        if (isFavoritesFocused) {
+                            modifier
+                                .width(110.dp)
+                                .height(25.dp)
+                                .clip(RoundedCornerShape(12.5.dp))
+                        } else {
+                            modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                        }
+                    }
                     .background(
-                        if (isFavoritesFocused) Color.White.copy(alpha = 0.35f) else Color.Transparent,
-                        CircleShape
+                        if (isFavoritesFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = onFavoritesClick,
-                    interactionSource = favoritesInteractionSource,
-                    modifier = Modifier.size(40.dp)
+                Row(
+                    modifier = Modifier
+                        .let { modifier ->
+                            if (isFavoritesFocused) {
+                                modifier
+                                    .width(114.dp)
+                                    .padding(horizontal = 13.dp)
+                            } else {
+                                modifier
+                                    .size(36.dp)
+                            }
+                        }
+                        .clickable(
+                            onClick = onFavoritesClick,
+                            interactionSource = favoritesInteractionSource,
+                            indication = null
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_heart),
                         contentDescription = stringResource(R.string.lbl_favorites),
-                        tint = if (isFavoritesFocused) Color.White else Color.White.copy(alpha = 0.7f),
-                        modifier = Modifier.size(24.dp)
+                        tint = if (isFavoritesFocused) Color.Red else Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier
+                            .let { modifier ->
+                                if (isFavoritesFocused) {
+                                    modifier.size(16.dp)
+                                } else {
+                                    modifier.size(24.dp)
+                                }
+                            }
                     )
+
+                    if (isFavoritesFocused) {
+                        Text(
+                            text = "Favorites",
+                            color = if (isFavoritesFocused) Color.Black else Color.White,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        )
+                    }
                 }
             }
         }

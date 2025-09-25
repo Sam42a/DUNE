@@ -19,7 +19,15 @@ val authModule = module {
 	single { AuthenticationPreferences(get()) }
 
 	single<AuthenticationRepository> {
-		AuthenticationRepositoryImpl(get(), get(), get(), get(), get(), get(defaultDeviceInfo))
+		AuthenticationRepositoryImpl(
+			jellyfin = get(),
+			sessionRepository = get(),
+			authenticationStore = get(),
+			userApiClient = get(),
+		authenticationPreferences = get(),
+			defaultDeviceInfo = get(defaultDeviceInfo),
+			imageHelper = get()
+		)
 	}
 	single<ServerRepository> { ServerRepositoryImpl(get(), get()) }
 	single<ServerUserRepository> { ServerUserRepositoryImpl(get(), get()) }

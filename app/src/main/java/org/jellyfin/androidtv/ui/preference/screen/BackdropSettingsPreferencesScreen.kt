@@ -51,30 +51,7 @@ class BackdropSettingsPreferencesScreen : OptionsFragment() {
             }
 
 
-            list {
-                setTitle(R.string.lbl_backdrop_blur)
-                entries = mapOf(
-                    "0.0" to "0%",
-                    "0.1" to "10%",
-                    "0.2" to "20%",
-                    "0.3" to "30%",
-                    "0.4" to "40%",
-                    "0.5" to "50%",
-                    "0.6" to "60%",
-                    "0.7" to "70%",
-                    "0.8" to "80%",
-                    "0.9" to "90%",
-                    "1.0" to "100%"
-                )
-                bind {
-                    get { userPreferences[UserPreferences.backdropBlurIntensity].toString() }
-                    set { value -> userPreferences[UserPreferences.backdropBlurIntensity] = value.toFloat() }
-                    default { UserPreferences.backdropBlurIntensity.defaultValue.toString() }
-                }
-            }
-
-
-            list {
+list {
                 setTitle(R.string.lbl_backdrop_dimming)
                 entries = mapOf(
                     "0.0" to "0%",

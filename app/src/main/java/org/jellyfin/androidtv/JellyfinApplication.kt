@@ -114,14 +114,15 @@ class JellyfinApplication : Application() {
 				applicationContext.createConfigurationContext(config)
 			} else {
 				@Suppress("DEPRECATION")
+				val config = Configuration(resources.configuration)
+				@Suppress("DEPRECATION")
 				config.locale = locale
-				resources.updateConfiguration(config, resources.displayMetrics)
 
-				val context = applicationContext
+				val context = createConfigurationContext(config)
 				val resources = context.resources
-				val configuration = resources.configuration
-				configuration.locale = locale
-				resources.updateConfiguration(configuration, resources.displayMetrics)
+				val configuration = Configuration(config)
+
+				super.getResources().updateConfiguration(configuration, resources.displayMetrics)
 			}
 
 			Locale.setDefault(locale)
@@ -207,8 +208,9 @@ class JellyfinApplication : Application() {
 
 			// Update the resources configuration
 			val resources = context.resources
-			@Suppress("DEPRECATION")
-			resources.updateConfiguration(config, resources.displayMetrics)
+			val metrics = resources.displayMetrics
+			resources.configuration.setTo(config)
+			resources.updateConfiguration(resources.configuration, metrics)
 
 			Timber.d("Applied locale configuration (legacy): $locale")
 		}

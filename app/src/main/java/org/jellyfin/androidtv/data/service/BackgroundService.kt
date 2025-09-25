@@ -34,6 +34,7 @@ class BackgroundService(
 	private val api: ApiClient,
 	private val userPreferences: UserPreferences,
 	private val imageLoader: ImageLoader,
+	private val imageHelper: ImageHelper,
 ) {
 	companion object {
 		val SLIDESHOW_DURATION = 30.seconds
@@ -50,85 +51,72 @@ class BackgroundService(
 	private var _backgrounds = emptyList<ImageBitmap>()
 	private var _currentIndex = 0
 	private var _currentBackground = MutableStateFlow<ImageBitmap?>(null)
-	private var _blurBackground = MutableStateFlow(false)
-	private var _blurIntensity = MutableStateFlow(0.5f)
 	private var _enabled = MutableStateFlow(true)
 	private var _preventLoginBackgroundOverride = MutableStateFlow(false)
 	val currentBackground get() = _currentBackground.asStateFlow()
-	val blurBackground get() = _blurBackground.asStateFlow()
-	val blurIntensity get() = _blurIntensity.asStateFlow()
 	val enabled get() = _enabled.asStateFlow()
 	private var _dimmingIntensity = MutableStateFlow(0.5f)
-val backdropDimmingIntensity get() = _dimmingIntensity.asStateFlow()
-private var _fadingIntensity = MutableStateFlow(0.7f)
-val backdropFadingIntensity get() = _fadingIntensity.asStateFlow()
+	val backdropDimmingIntensity get() = _dimmingIntensity.asStateFlow()
+	private var _fadingIntensity = MutableStateFlow(0.7f)
+	val backdropFadingIntensity get() = _fadingIntensity.asStateFlow()
 
 	/**
- * Use splashscreen from [server] as background.
- */
-fun setBackground(server: Server) {
-    // Check if item is set and backgrounds are enabled
-    if (!userPreferences[UserPreferences.backdropEnabled] || _preventLoginBackgroundOverride.value)
-        return clearBackgrounds()
+	 * Use splashscreen from [server] as background.
+	 */
+	fun setBackground(server: Server) {
+		// Check if item is set and backgrounds are enabled
+		if (!userPreferences[UserPreferences.backdropEnabled] || _preventLoginBackgroundOverride.value)
+			return clearBackgrounds()
 
-    // Check if splashscreen is enabled in (cached) branding options
-    if (!server.splashscreenEnabled)
-        return clearBackgrounds()
+		// Check if splashscreen is enabled in (cached) branding options
+		if (!server.splashscreenEnabled)
+			return clearBackgrounds()
 
-    // Disable blur on splashscreen
-    _blurBackground.value = false
-    _blurIntensity.value = 0f
-    
-    // Reset dimming and fading for login screen
-    _dimmingIntensity.value = 0f
-    _fadingIntensity.value = 0f
+		// Reset dimming and fading for login screen
+		_dimmingIntensity.value = 0f
+		_fadingIntensity.value = 0f
 
-    // Manually grab the backdrop URL
-    val api = jellyfin.createApi(baseUrl = server.address)
-    val splashscreenUrl = api.imageApi.getSplashscreenUrl()
+		// Manually grab the backdrop URL
+		val api = jellyfin.createApi(baseUrl = server.address)
+		val splashscreenUrl = api.imageApi.getSplashscreenUrl()
 
-    loadBackgrounds(setOf(splashscreenUrl))
-}
+		loadBackgrounds(setOf(splashscreenUrl))
+	}
 
 
 	/**
- * Use all available backdrops from [baseItem] as background.
- * For Media Folders, use primary image as backdrop if no backdrops are available.
- */
-fun setBackground(baseItem: BaseItemDto?) {
-    // Check if item is set and backgrounds are enabled
-    if (baseItem == null || !userPreferences[UserPreferences.backdropEnabled])
-        return clearBackgrounds()
+	 * Use all available backdrops from [baseItem] as background.
+	 * For Media Folders, use primary image as backdrop if no backdrops are available.
+	 */
+	fun setBackground(baseItem: BaseItemDto?) {
+		// Check if item is set and backgrounds are enabled
+		if (baseItem == null || !userPreferences[UserPreferences.backdropEnabled])
+			return clearBackgrounds()
 
-    // Set blur for backdrops
-    _blurBackground.value = userPreferences[UserPreferences.backdropEnabled]
-    _blurIntensity.value = userPreferences[UserPreferences.backdropBlurIntensity]
-    
-    // Set dimming and fading intensity
-    _dimmingIntensity.value = userPreferences[UserPreferences.backdropDimmingIntensity]
-    _fadingIntensity.value = userPreferences[UserPreferences.backdropFadingIntensity]
+		// Set dimming and fading intensity
+		_dimmingIntensity.value = userPreferences[UserPreferences.backdropDimmingIntensity]
+		_fadingIntensity.value = userPreferences[UserPreferences.backdropFadingIntensity]
 
-    // Get all backdrop URLs
-    val backdropUrls = (baseItem.itemBackdropImages + baseItem.parentBackdropImages)
-        .map { it.getUrl(api) }
-        .toMutableSet()
-        
-    // If no backdrops are available, use the primary image as fallback
-    if (backdropUrls.isEmpty()) {
-        val imageHelper = ImageHelper(api)
-        val primaryImageUrl = imageHelper.getPrimaryImageUrl(
-            item = baseItem,
-            width = 1920,
-            height = 1080
-        )
-        
-        if (primaryImageUrl != null) {
-            backdropUrls.add(primaryImageUrl)
-        }
-    }
+		// Get all backdrop URLs
+		val backdropUrls = (baseItem.itemBackdropImages + baseItem.parentBackdropImages)
+			.map { it.getUrl(api) }
+			.toMutableSet()
 
-    loadBackgrounds(backdropUrls)
-}
+		// If no backdrops are available, use the primary image as fallback
+		if (backdropUrls.isEmpty()) {
+			val primaryImageUrl = imageHelper.getPrimaryImageUrl(
+				item = baseItem,
+				width = 1920,
+				height = 1080
+			)
+
+			if (primaryImageUrl != null) {
+				backdropUrls.add(primaryImageUrl)
+			}
+		}
+
+		loadBackgrounds(backdropUrls)
+	}
 
 	private fun loadBackgrounds(backdropUrls: Set<String>) {
 		if (backdropUrls.isEmpty()) return clearBackgrounds()
@@ -140,9 +128,13 @@ fun setBackground(baseItem: BaseItemDto?) {
 		loadBackgroundsJob?.cancel()
 		loadBackgroundsJob = scope.launch(Dispatchers.IO) {
 			_backgrounds = backdropUrls.mapNotNull { url ->
-				imageLoader.execute(
-					request = ImageRequest.Builder(context).data(url).build()
-				).image?.toBitmap()?.asImageBitmap()
+				try {
+					imageLoader.execute(
+						request = ImageRequest.Builder(context).data(url).build()
+					).image?.toBitmap()?.asImageBitmap()
+				} catch (e: Exception) {
+					null
+				}
 			}
 
 			// Go to first background

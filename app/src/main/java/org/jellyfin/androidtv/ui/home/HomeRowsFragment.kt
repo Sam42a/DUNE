@@ -41,7 +41,6 @@ import org.jellyfin.androidtv.data.repository.NotificationsRepository
 import org.jellyfin.androidtv.data.repository.UserViewsRepository
 import org.jellyfin.androidtv.data.service.BackgroundService
 import org.jellyfin.androidtv.preference.UserSettingPreferences
-import org.jellyfin.androidtv.preference.GenreRowPreferences
 import org.jellyfin.androidtv.ui.browsing.CompositeClickedListener
 import org.jellyfin.androidtv.ui.browsing.CompositeSelectedListener
 import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem
@@ -78,7 +77,6 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 	private val navigationRepository by inject<NavigationRepository>()
 	private val itemLauncher by inject<ItemLauncher>()
 	private val keyProcessor by inject<KeyProcessor>()
-	private val genreRowPreferences by inject<GenreRowPreferences>()
 
 	private val userPreferences by inject<UserPreferences>()
 	private val helper by lazy { HomeFragmentHelper(requireContext(), userRepository, userPreferences) }
@@ -143,7 +141,6 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 			// Check for coroutine cancellation
 			if (!isActive) return@launch
 
-			// Actually add the sections
 			for (section in homesections) when (section) {
 				HomeSectionType.LATEST_MEDIA -> rows.add(helper.loadRecentlyAdded(userViewsRepository.views.first()))
 				HomeSectionType.LIBRARY_TILES_SMALL -> rows.add(HomeFragmentViewsRow(small = false))
@@ -163,19 +160,15 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 
 			// Add sections to layout
 			withContext(Dispatchers.Main) {
-				// Create the CardPresenter with the desired size
-				val cardPresenter = CardPresenter(true, 195).apply {
-                    // Set home screen flag to adjust episode card sizes
+				val cardPresenter = CardPresenter(true, 170).apply {
                     setHomeScreen(true)
-                } // 150px * 1.3 = 195px height (30% increase)
+                }
 
 				val rowsAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
 
-				// Add notification and now playing rows first
 				notificationsRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
 				nowPlaying.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
 
-				// Add main content rows
 				rows.forEach { row ->
 					try {
 						row.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
@@ -183,10 +176,6 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 						Timber.e(e, "Error adding row to adapter")
 					}
 				}
-
-				// Additional rows can be added here if needed in the future
-
-                // Add Music Videos row if enabled
                 if (userSettingPreferences.get(userSettingPreferences.showMusicVideosRow)) {
                     try {
                         Timber.d("Adding Music Videos row")
@@ -195,69 +184,12 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
                         Timber.e(e, "Error adding Music Videos row")
                     }
                 }
-				if (userSettingPreferences.get(userSettingPreferences.showSciFiRow)) {
-                    helper.loadSciFiRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-                }
-                if (userSettingPreferences.get(userSettingPreferences.showComedyRow)) {
-                    helper.loadComedyRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-                }
-				if (userSettingPreferences.get(userSettingPreferences.showRomanceRow)) {
-					helper.loadRomanceRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showAnimeRow)) {
-					helper.loadAnimeRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showActionRow)) {
-					helper.loadActionRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showActionAdventureRow)) {
-					helper.loadActionAdventureRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				}
-
-				if (userSettingPreferences.get(userSettingPreferences.showDocumentaryRow)) {
-					helper.loadDocumentaryRow().addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showRealityRow)) {
-					val realityRow = helper.loadRealityRow()
-					if (realityRow != null) {
-						realityRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
-					} else {
-						Timber.d("No matching Reality genre found in library")
-					}
-				}
-				val mutableAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
-
-				if (userSettingPreferences.get(userSettingPreferences.showFamilyRow)) {
-					Timber.d("Adding Family row: ${userSettingPreferences.get(userSettingPreferences.showFamilyRow)}")
-					helper.loadFamilyRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showHorrorRow)) {
-					Timber.d("Adding Horror row: ${userSettingPreferences.get(userSettingPreferences.showHorrorRow)}")
-					helper.loadHorrorRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showFantasyRow)) {
-					Timber.d("Adding Fantasy row: ${userSettingPreferences.get(userSettingPreferences.showFantasyRow)}")
-					helper.loadFantasyRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showHistoryRow)) {
-					Timber.d("Adding History row: ${userSettingPreferences.get(userSettingPreferences.showHistoryRow)}")
-					helper.loadHistoryRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showMusicRow)) {
-					Timber.d("Adding Music row: ${userSettingPreferences.get(userSettingPreferences.showMusicRow)}")
-					helper.loadMusicRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showMysteryRow)) {
-					Timber.d("Adding Mystery row: ${userSettingPreferences.get(userSettingPreferences.showMysteryRow)}")
-					helper.loadMysteryRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showThrillerRow)) {
-					Timber.d("Adding Thriller row: ${userSettingPreferences.get(userSettingPreferences.showThrillerRow)}")
-					helper.loadThrillerRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
-				}
-				if (userSettingPreferences.get(userSettingPreferences.showWarRow)) {
-					Timber.d("Adding War row: ${userSettingPreferences.get(userSettingPreferences.showWarRow)}")
-					helper.loadWarRow().addToRowsAdapter(requireContext(), cardPresenter, mutableAdapter)
+				// Load genre rows using New GenreManager
+				val genreManager = GenreManager(requireContext(), userRepository, userPreferences, userSettingPreferences)
+				if (genreManager.hasEnabledGenres()) {
+					genreManager.loadGenreRows(cardPresenter, rowsAdapter)
+				} else {
+					Timber.d("No genre rows enabled")
 				}
 
 			}
@@ -320,10 +252,8 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 		} else {
 			justLoaded = false
 		}
-
 		// Ensure views are updated when fragment is resumed
 		ensureViewsInitialized()
-
 		// Update audio queue
 		Timber.i("Updating audio queue in HomeFragment (onResume)")
 		(adapter as? MutableObjectAdapter<Row>)?.let { mutableAdapter ->
@@ -350,12 +280,10 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 					val row = adapter[i] as? ListRow ?: return@repeat
 					val rowAdapter = row.adapter as? ItemRowAdapter ?: return@repeat
 
-					// Add a small delay between row refreshes to prevent UI freezing
-					if (i > 0) delay(50)
+					// small delay between row refreshes to prevent UI freezing
+					if (i > 0) delay(90)
 
 					try {
-						// Instead of clearing immediately, let's preserve the current items
-						// and let the refresh update them in place
 						if (force) {
 							rowAdapter.Retrieve()
 						} else {

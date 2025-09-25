@@ -24,7 +24,6 @@ android {
 		applicationId = "dune.enhanced.tv"
 		versionName = project.getVersionName()
 		versionCode = getVersionCode(versionName!!)
-		setProperty("archivesBaseName", "Dune.androidtv-${versionName}")
 	}
 
 	buildFeatures {
@@ -95,9 +94,6 @@ android {
 			resValue("string", "app_id", applicationId!!)
 			resValue("string", "app_search_suggest_authority", "${applicationId}.content")
 			resValue("string", "app_search_suggest_intent_data", "content://${applicationId}.content/intent")
-
-			// Set custom APK filename
-			setProperty("archivesBaseName", "Dune.androidtv-0.0.8")
 		}
 	}
 
@@ -106,6 +102,22 @@ android {
 		abortOnError = false
 		sarifReport = true
 		checkDependencies = true
+	}
+
+	// Configure output file names for APKs
+	applicationVariants.all {
+		val variant = this
+		val variantName = variant.name
+		val versionName = variant.versionName
+		
+		variant.outputs.all {
+			val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+			if (variantName == "enhanced") {
+				output.outputFileName = "Dune.androidtv-0.0.8.apk"
+			} else {
+				output.outputFileName = "Dune.androidtv-${versionName}.apk"
+			}
+		}
 	}
 
 	testOptions.unitTests.all {

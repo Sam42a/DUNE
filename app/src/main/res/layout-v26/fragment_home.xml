@@ -1,49 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--suppress AndroidUnresolvableTag -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-
-    <!-- Info Panel (Title, Info Row, Summary) -->
-
-
-    <TextClock
-        android:id="@+id/textClock3"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="856sp"
-        android:layout_marginTop="7sp"
-        android:fontFamily="sans-serif-thin"
-        android:textAlignment="textEnd"
-        android:textAllCaps="true"
-        android:textColor="@color/basic_button_text"
-        android:textStyle="bold"
-        tools:ignore="VisualLintBounds,TextSizeCheck" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/toolbar"
-        android:layout_width="368dp"
+        android:layout_width="0dp"
         android:layout_height="58dp"
-        android:layout_marginStart="2sp"
-        android:layout_marginTop="-25sp"
-        android:visibility="visible" />
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="0dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Extra spacing below info panel -->
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="570sp"
+        android:layout_width="917dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27sp"
-        android:layout_marginTop="14sp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="80dp"
         android:ellipsize="end"
         android:fontFamily="@font/bebas_neue"
         android:letterSpacing="0.02"
-        android:lineSpacingExtra="2sp"
+        android:lineSpacingExtra="2dp"
         android:maxLines="1"
         android:text=""
         android:textAllCaps="false"
@@ -52,59 +37,60 @@
         android:textStyle="bold"
         android:typeface="monospace"
         android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="VisualLintBounds" />
 
     <LinearLayout
         android:id="@+id/infoRow"
-        android:layout_width="572dp"
-        android:layout_height="18.5sp"
-        android:layout_marginStart="27sp"
-        android:layout_marginTop="15sp"
-        android:layout_toStartOf="@id/summary"
+        android:layout_width="500dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="124dp"
         android:orientation="horizontal"
         android:visibility="visible"
-        tools:ignore="ObsoleteLayoutParam,VisualLintBounds" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="VisualLintBounds" />
 
     <TextView
         android:id="@+id/summary"
-        android:layout_width="452dp"
-        android:layout_height="79dp"
-        android:layout_marginStart="27sp"
-        android:layout_marginTop="11sp"
-        android:layout_marginBottom="9.8dp"
+        android:layout_width="432dp"
+        android:layout_height="74dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginEnd="504dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="1sp"
+        android:lineSpacingExtra="1dp"
         android:maxLines="4"
         android:text=""
         android:textAlignment="textStart"
         android:textSize="13.8sp"
         android:typeface="monospace"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="VisualLintBounds" />
-
-    <!-- Row Header Dock -->
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/content_view"
         android:name="org.jellyfin.androidtv.ui.home.HomeRowsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="-27sp"
-        android:baselineAligned="true"
+        android:layout_width="986dp"
+        android:layout_height="303dp"
+        android:layout_marginTop="223dp"
+        android:layout_marginEnd="4dp"
         android:contentDescription="@string/home_content_description"
         android:descendantFocusability="afterDescendants"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:focusedByDefault="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:ignore="VisualLintBounds">
 
         <requestFocus />
     </androidx.fragment.app.FragmentContainerView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/popup_menu_semi_transparent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:text="Subtitle Management"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:layout_marginEnd="24dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
+        tools:ignore="HardcodedText" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_above="@+id/button_layout"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <!-- Current Subtitles Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Available Subtitles"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <ListView
+                android:id="@+id/current_subtitles_list"
+                android:layout_width="match_parent"
+                android:layout_height="114dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/card_focused_glow" />
+
+            <!-- Language Selection Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginBottom="16dp"
+                android:text="Select Language"
+                android:background="@drawable/popup_menu_blur"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:id="@+id/language_spinner"
+                android:background="@drawable/card_focused_glow"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Search Button -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Search Subtitles"
+                android:id="@+id/search_button"
+                android:background="@drawable/jellyfin_button"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:layout_marginBottom="24dp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Available Subtitles Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Available Subtitles"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:background="@drawable/card_focused_glow"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                android:id="@+id/available_subtitles_label"
+                tools:ignore="HardcodedText" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/available_subtitles_list"
+                android:background="@drawable/card_focused_glow"
+                android:visibility="gone" />
+
+            <!-- Progress Indicator -->
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progress_bar"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_marginTop="24dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:id="@+id/button_layout">
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:text="@string/lbl_cancel"
+            android:id="@+id/cancel_button"
+            android:background="@drawable/jellyfin_button"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

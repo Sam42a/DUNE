@@ -1,6 +1,8 @@
 package org.jellyfin.androidtv.ui.home
 
 import android.content.Intent
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -18,6 +21,7 @@ import org.jellyfin.androidtv.auth.repository.UserRepository
 import org.jellyfin.androidtv.data.repository.NotificationsRepository
 import org.jellyfin.androidtv.databinding.FragmentHomeBinding
 import org.jellyfin.androidtv.preference.UserPreferences
+import org.jellyfin.androidtv.ui.AsyncImageView
 import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.ui.navigation.Destinations
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository
@@ -32,23 +36,141 @@ import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.UUID
-import kotlin.math.min
-
-// Removed interface as we'll use direct field access
 
 class HomeFragment : Fragment() {
     private val api: ApiClient by inject()
     private val imageHelper: ImageHelper by inject()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private val scrollListeners = mutableListOf<RecyclerView.OnScrollListener>()
+    private var isScrolling = false
+    private val scrollHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private var scrollCheckRunnable: Runnable? = null
+    private val scrollCheckDelay = 350L // ms to wait after scroll stops
+    private var interactionDelayRunnable: Runnable? = null
+
+    /**
+     * Set up scroll listeners for all RecyclerViews in the fragment
+     */
+    private fun setupScrollListeners() {
+        // Check if binding is still valid (fragment view not destroyed)
+        val binding = _binding ?: return
+
+        binding.root.post {
+            val currentBinding = _binding ?: return@post
+
+            findRecyclerViews(currentBinding.root).forEach { recyclerView ->
+                val scrollListener = object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+
+                        when (newState) {
+                            RecyclerView.SCROLL_STATE_DRAGGING,
+                            RecyclerView.SCROLL_STATE_SETTLING -> {
+                                // Started scrolling
+                                setScrolling(true)
+                            }
+                            RecyclerView.SCROLL_STATE_IDLE -> {
+                                // Stopped scrolling
+                                postScrollCheck()
+                            }
+                        }
+                    }
+                }
+
+                recyclerView.addOnScrollListener(scrollListener)
+                scrollListeners.add(scrollListener)
+            }
+        }
+    }
+
+    private fun findRecyclerViews(viewGroup: ViewGroup): List<RecyclerView> {
+        val recyclerViews = mutableListOf<RecyclerView>()
+
+        for (i in 0 until viewGroup.childCount) {
+            val child = viewGroup.getChildAt(i)
+            when (child) {
+                is RecyclerView -> recyclerViews.add(child)
+                is ViewGroup -> recyclerViews.addAll(findRecyclerViews(child))
+            }
+        }
+
+        return recyclerViews
+    }
+
+    private fun setScrolling(scrolling: Boolean) {
+        if (isScrolling != scrolling) {
+            isScrolling = scrolling
+
+            // Notify all AsyncImageViews in the fragment
+            notifyAsyncImageViewsOfScrollState(scrolling)
+        }
+    }
+    private fun postScrollCheck() {
+        scrollCheckRunnable?.let {
+            scrollHandler.removeCallbacks(it)
+        }
+
+        scrollCheckRunnable = Runnable {
+            setScrolling(false)
+            scrollCheckRunnable = null
+        }
+
+        scrollHandler.postDelayed(scrollCheckRunnable!!, scrollCheckDelay)
+    }
+
+    private fun notifyAsyncImageViewsOfScrollState(scrolling: Boolean) {
+        // Check if binding is still valid (fragment view not destroyed)
+        val binding = _binding ?: return
+
+        binding.root.post {
+            // Check binding again in case fragment was destroyed during post delay
+            val currentBinding = _binding ?: return@post
+
+            findAsyncImageViews(currentBinding.root).forEach { asyncImageView ->
+                asyncImageView.setScrollState(scrolling)
+            }
+        }
+    }
+    private fun findAsyncImageViews(viewGroup: ViewGroup): List<AsyncImageView> {
+        val asyncImageViews = mutableListOf<AsyncImageView>()
+
+        for (i in 0 until viewGroup.childCount) {
+            val child = viewGroup.getChildAt(i)
+            when (child) {
+                is AsyncImageView -> asyncImageViews.add(child)
+                is ViewGroup -> asyncImageViews.addAll(findAsyncImageViews(child))
+            }
+        }
+
+        return asyncImageViews
+    }
+
+    /**
+     * Clean up scroll listeners
+     */
+    private fun cleanupScrollListeners() {
+        // Check if binding is still valid (fragment view not destroyed)
+        val binding = _binding ?: return
+
+        scrollListeners.forEach { listener ->
+            // Remove listener from all RecyclerViews
+            findRecyclerViews(binding.root).forEach { recyclerView ->
+                recyclerView.removeOnScrollListener(listener)
+            }
+        }
+        scrollListeners.clear()
+
+        scrollCheckRunnable?.let {
+            scrollHandler.removeCallbacks(it)
+            scrollCheckRunnable = null
+        }
+    }
 
     @JvmField
     var isReadyForInteraction = false
 
     private val sessionRepository by inject<SessionRepository>()
-    private val userRepository by inject<UserRepository>()
-    private val serverRepository by inject<ServerRepository>()
-    private val notificationRepository by inject<NotificationsRepository>()
     private val navigationRepository by inject<NavigationRepository>()
     private val mediaManager by inject<MediaManager>()
     private val playbackLauncher: PlaybackLauncher by inject()
@@ -93,7 +215,6 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            // Clear coroutine jobs if view is still available
             if (view != null && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
                 try {
                     viewLifecycleOwner.lifecycleScope.coroutineContext[Job]?.cancel()
@@ -101,6 +222,9 @@ class HomeFragment : Fragment() {
                     Timber.e(e, "Error clearing coroutine jobs")
                 }
             }
+
+            // Clean up scroll listeners
+            cleanupScrollListeners()
 
             // Clear binding
             _binding = null
@@ -139,8 +263,34 @@ class HomeFragment : Fragment() {
      */
     private fun clearReferences() {
         try {
+            // Clean up scroll handler and runnables
+            scrollCheckRunnable?.let {
+                scrollHandler.removeCallbacks(it)
+                scrollCheckRunnable = null
+            }
+
+            // Clean up interaction delay runnable
+            interactionDelayRunnable?.let {
+                view?.removeCallbacks(it)
+                interactionDelayRunnable = null
+            }
+
+            // Clean up viewTreeObserver
+            view?.let { v ->
+                if (v.isAttachedToWindow) {
+                    v.viewTreeObserver.removeOnWindowFocusChangeListener { /* no-op */ }
+                }
+            }
+
+            // Clean up scroll listeners
+            cleanupScrollListeners()
+
             // Clear any remaining listeners or callbacks
-            // Add any additional cleanup needed for your fragment
+            view?.let { v ->
+                v.setOnClickListener(null)
+                v.setOnKeyListener(null)
+                v.removeCallbacks(null)
+            }
 
             // Clear coroutine jobs if view is still available
             if (view != null && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
@@ -158,59 +308,54 @@ class HomeFragment : Fragment() {
     private fun preloadHomeScreenImages() {
         if (!userPreferences[UserPreferences.preloadImages]) return
 
+        // Check if fragment is still in a valid state
+        if (!isAdded || view == null || activity == null) return
+
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                // Get the first 20 items from each row for preloading
+                if (!isReadyForInteraction) return@launch
+
+                if (!isAdded || view == null || activity == null) return@launch
+
+                // a lightweight approach - collect URLs from visible rows only
                 val urls = mutableListOf<String>()
 
-                // Get all fragments that might contain rows
-                childFragmentManager.fragments.forEach { fragment ->
+                // Get only the first few visible fragments instead of all fragments
+                val visibleFragments = try {
+                    childFragmentManager.fragments.take(3)
+                } catch (e: Exception) {
+                    Timber.e(e, "Error getting child fragments")
+                    return@launch
+                }
+
+                visibleFragments.forEach { fragment ->
                     try {
-                        // Try to get rows using reflection
-                        val rowsField = fragment.javaClass.declaredFields
-                            .firstOrNull { it.name == "rows" }
-                            ?.apply { isAccessible = true }
-
-                        @Suppress("UNCHECKED_CAST")
-                        val rows = rowsField?.get(fragment) as? List<Any> ?: return@forEach
-
-                        rows.forEach { row ->
-                            try {
-                                // Try to get the adapter
-                                val adapterField = row.javaClass.declaredFields
-                                    .firstOrNull { it.name == "adapter" }
-                                    ?.apply { isAccessible = true }
-
-                                val adapter = adapterField?.get(row) as? androidx.leanback.widget.ItemBridgeAdapter
-                                    ?: return@forEach
-
-                                // Get the wrapped adapter using getWrapper() method
-                                val wrapperMethod = adapter.javaClass.getMethod("getWrapper")
-                                val wrapper = wrapperMethod.invoke(adapter) as? androidx.leanback.widget.ObjectAdapter
-                                    ?: return@forEach
-
-                                // Get items safely
-                                val count = min(20, wrapper.size())
-                                for (i in 0 until count) {
-                                    try {
-                                        val item = wrapper.get(i)
-                                        // Example: if (item is BaseRowItem) item.imageUrl?.let { urls.add(it) }
-                                    } catch (e: Exception) {
-                                        Timber.e(e, "Error getting item at index $i")
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                Timber.e(e, "Error accessing row adapter")
-                            }
+                        if (fragment::class.java.simpleName.contains("Row")) {
+                            // The AsyncImageView optimizations will handle the rest
+                            return@forEach
                         }
                     } catch (e: Exception) {
-                        Timber.e(e, "Error accessing rows")
+                        Timber.e(e, "Error checking fragment type")
                     }
                 }
 
-                // Preload the collected URLs if we have any
+                // Only preload if we have URLs and the system is not under heavy load
                 if (urls.isNotEmpty()) {
-                    imagePreloader.preloadImages(requireContext(), urls)
+                    try {
+                        val activityManager = requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                        val memoryInfo = ActivityManager.MemoryInfo()
+                        activityManager.getMemoryInfo(memoryInfo)
+
+                        // Only preload if we have sufficient memory available
+                        if (memoryInfo.availMem > memoryInfo.totalMem * 0.3) {
+                            // Check if context is still valid
+                            if (isAdded && context != null) {
+                                imagePreloader.preloadImages(requireContext(), urls)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Timber.e(e, "Error checking memory or preloading images")
+                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Error in preloadHomeScreenImages")
@@ -223,24 +368,23 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initially block interactions
         view.isFocusableInTouchMode = false
         view.isClickable = false
 
-        // Set a delay to enable interactions after initial load
-        view.postDelayed({
+        interactionDelayRunnable = Runnable {
             isReadyForInteraction = true
             view.isFocusableInTouchMode = true
             view.isClickable = true
-        }, 1000) // 1 second delay, adjust based on your needs
+
+            setupScrollListeners()
+        }
+        view.postDelayed(interactionDelayRunnable!!, 2000) // 2 second delay
 
         binding.toolbar.setContent {
             val searchAction = {
-                // Navigate to search screen
                 navigationRepository.navigate(Destinations.search())
             }
             val settingsAction = {
-                // Open preferences/settings activity
                 val intent = Intent(requireContext(), org.jellyfin.androidtv.ui.preference.PreferencesActivity::class.java)
                 startActivity(intent)
             }

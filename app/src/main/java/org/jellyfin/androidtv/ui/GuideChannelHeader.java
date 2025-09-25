@@ -56,7 +56,7 @@ public class GuideChannelHeader extends RelativeLayout {
     public void loadImage() {
         ImageHelper imageHelper = KoinJavaComponent.<ImageHelper>get(ImageHelper.class);
         mChannelImage.load(
-                imageHelper.getPrimaryImageUrl(mChannel,null, ImageHelper.MAX_PRIMARY_IMAGE_HEIGHT),
+                imageHelper.getPrimaryImageUrl(mChannel, null, null),
                 null,
                 null,
                 0.0,

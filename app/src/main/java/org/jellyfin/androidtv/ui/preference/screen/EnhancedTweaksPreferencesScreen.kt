@@ -5,6 +5,7 @@ import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.preference.constant.AppTheme
+import org.jellyfin.androidtv.preference.constant.GenreSortBy
 import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
 import org.jellyfin.androidtv.ui.preference.dsl.checkbox
 import org.jellyfin.androidtv.ui.preference.dsl.enum
@@ -53,10 +54,23 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
 
         category {
             setTitle(R.string.genre_rows)
+
+			// Genre sorting method
+			enum<GenreSortBy> {
+				setTitle(R.string.pref_genre_sort_by)
+				bind(userPreferences, UserPreferences.genreSortBy)
+			}
+
 			// Music Videos
             checkbox {
                 setTitle(R.string.show_music_videos_row)
                 bind(userSettingPreferences, userSettingPreferences.showMusicVideosRow)
+            }
+
+            // Collections
+            checkbox {
+                setTitle(R.string.show_collections_row)
+                bind(userSettingPreferences, userSettingPreferences.showCollectionsRow)
             }
 
             // Genre rows in specified order

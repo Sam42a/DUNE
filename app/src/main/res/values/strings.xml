@@ -21,6 +21,7 @@
     <string name="chapters">Chapters</string>
     <string name="state_disabled">Disabled</string>
     <string name="lbl_settings">Settings</string>
+    <string name="lbl_Subtitles">Subtitles</string>
     <string name="lbl_home">Home</string>
     <string name="lbl_masks">Masks</string>
     <string name="lbl_continue_watching">Continue watching</string>
@@ -319,6 +320,7 @@
     <string name="grid_direction">Grid direction</string>
     <string name="grid_direction_horizontal">Horizontal</string>
     <string name="grid_direction_vertical">Vertical</string>
+    <string name="grid_direction_list">List</string>
     <string name="lbl_unknown_key">Unknown (%1s)</string>
     <string name="pref_audio_track_button">Audio track button</string>
     <string name="pref_subtitle_track_button">Subtitle Track</string>
@@ -606,6 +608,12 @@
     <string name="segment_type_outro">Outros</string>
     <string name="segment_type_preview">Previews</string>
     <string name="segment_type_recap">Recaps</string>
+    <string name="pref_skip_duration">Skip Duration</string>
+    <string name="pref_skip_duration_summary">Choose how long the skip button remains visible</string>
+    <string name="skip_duration_default">Default</string>
+    <string name="skip_duration_10_seconds">10 Seconds</string>
+    <string name="skip_duration_15_seconds">15 Seconds</string>
+    <string name="skip_duration_20_seconds">20 Seconds</string>
     <string name="segment_type_unknown">Unknown segments</string>
     <string name="skip_forward_length">Skip forward length</string>
     <string name="preference_enable_trickplay">Enable trickplay in video player</string>
@@ -727,6 +735,7 @@
     <string name="show_reality_row">Show Reality Row</string>
     <string name="show_thriller_row">Show Thriller Row</string>
     <string name="show_war_row">Show War Row</string>
+    <string name="show_collections_row">Show Collections Row</string>
     <string name="show_music_videos_row">Show Music Videos Row</string>
     <string name="music_videos">Music Videos</string>
 
@@ -740,7 +749,7 @@
     <string name="move_down">Move Down</string>
     <string name="enhanced_tweaks">Enhanced Tweaks</string>
     <string name="enhanced_tweaks_description">Backdrop Settings,Genre Rows,App Themes,And more...</string>
-    
+
     <!-- Language preference strings -->
     <string name="pref_language">App Language</string>
     <string name="pref_language_header">Language Settings</string>
@@ -754,8 +763,6 @@
     <string name="pref_audio_language_none">(Default)</string>
 <string name="pref_subtitle_default_language">Default Subtitle Language</string>
     <string name="pref_subtitle_default_language_summary">Set the default language for subtitles</string>
-    <string name="pref_subtitle_default_secondary_language">Secondary Subtitle Language</string>
-    <string name="pref_subtitle_default_secondary_language_description">Fallback language when the primary is not available</string>
     <string name="pref_subtitle_language_none">None (Disabled)</string>
     <string name="pref_subtitle_language_ara">العربية (Arabic)</string>
     <string name="pref_subtitle_language_zho">中文 (Chinese)</string>
@@ -787,4 +794,19 @@
     <string name="pref_subtitle_language_tur">Türkçe (Turkish)</string>
 <string name="pref_subtitle_language_ukr">Українська (Ukrainian)</string>
     <string name="pref_subtitle_language_vie">Tiếng Việt (Vietnamese)</string>
+
+    <!-- Genre sorting options -->
+    <string name="sort_default">Default</string>
+    <string name="sort_random">Random</string>
+    <string name="sort_name">Name (A-Z)</string>
+    <string name="sort_date_released">Release Date</string>
+    <string name="sort_date_added">Date Added</string>
+    <string name="sort_rating">Community Rating</string>
+    <string name="sort_critic_rating">Critic Rating</string>
+    <string name="sort_play_count">Most Played</string>
+    <string name="sort_runtime">Runtime</string>
+    <string name="sort_official_rating">Official Rating</string>
+    <string name="sort_date_created">Date Created</string>
+    <string name="sort_parent_rating">Parent Rating</string>
+    <string name="pref_genre_sort_by">Sort Genre</string>
 </resources>

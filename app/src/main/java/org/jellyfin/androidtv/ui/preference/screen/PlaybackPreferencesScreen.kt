@@ -10,6 +10,7 @@ import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
 import org.jellyfin.androidtv.preference.constant.NEXTUP_TIMER_DISABLED
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
+import org.jellyfin.androidtv.preference.constant.SkipDuration
 import org.jellyfin.androidtv.preference.constant.SubtitleLanguage
 import org.jellyfin.androidtv.preference.constant.AudioLanguage
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentAction
@@ -285,6 +286,11 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 						default { MediaSegmentAction.NOTHING }
 					}
 				}
+			}
+
+			enum<SkipDuration> {
+				setTitle(R.string.pref_skip_duration)
+				bind(userPreferences, UserPreferences.skipDuration)
 			}
 		}
 

@@ -53,6 +53,7 @@ import org.jellyfin.androidtv.preference.UserPreferences;
 import org.jellyfin.androidtv.preference.constant.ClockBehavior;
 import org.jellyfin.androidtv.ui.RecordPopup;
 import org.jellyfin.androidtv.ui.RecordingIndicatorView;
+import org.jellyfin.androidtv.ui.SubtitleManagementPopup;
 import org.jellyfin.androidtv.ui.TextUnderButton;
 import org.jellyfin.androidtv.ui.browsing.BrowsingUtils;
 import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem;
@@ -98,6 +99,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -500,8 +502,11 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             bgWidth = 1920;
             bgHeight = 1080;
         }
-        // Revert: Only use original item-based background
-        backgroundService.getValue().setBackground(item);
+        if (item.getType() != BaseItemKind.PERSON && item.getType() != BaseItemKind.MUSIC_ARTIST) {
+            backgroundService.getValue().setBackground(item);
+        } else {
+            backgroundService.getValue().clearBackgrounds();
+        }
         if (mBaseItem != null) {
             if (mChannelId != null) {
                 mBaseItem = JavaCompat.copyWithParentId(mBaseItem, mChannelId);
@@ -804,8 +809,8 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
             // Add External Player button
             if (BaseItemExtensionsKt.canPlay(mBaseItem) && mBaseItem.getMediaSources() != null && !mBaseItem.getMediaSources().isEmpty()) {
-                TextUnderButton externalPlayerButton = TextUnderButton.create(requireContext(), 
-                    R.drawable.ic_external_player, buttonSize, 2, 
+                TextUnderButton externalPlayerButton = TextUnderButton.create(requireContext(),
+                    R.drawable.ic_external_player, buttonSize, 2,
                     getString(R.string.lbl_play_external), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -824,12 +829,10 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
                                     Utils.showToast(requireContext(), getString(R.string.msg_no_playable_items));
                                     return;
                                 }
-                                
                                 // Log the item being played
                                 BaseItemDto item = items.get(0);
-                                Timber.d("Attempting to play item in external player: %s (ID: %s, Type: %s)", 
+                                Timber.d("Attempting to play item in external player: %s (ID: %s, Type: %s)",
                                     item.getName(), item.getId(), item.getType());
-                                
                                 play(items, 0, false);
                                 Timber.d("Successfully launched external player");
                             } catch (Exception e) {
@@ -843,6 +846,18 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
                         }
                     });
                 mDetailsOverviewRow.addAction(externalPlayerButton);
+            }
+
+            if (BaseItemExtensionsKt.canPlay(mBaseItem) && mBaseItem.getId() != null) {
+                TextUnderButton pluginButton = TextUnderButton.create(requireContext(),
+                        R.drawable.ic_select_subtitle, buttonSize, 2,
+                    getString(R.string.lbl_Subtitles), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            interactWithServerPlugin();
+                        }
+                    });
+                mDetailsOverviewRow.addAction(pluginButton);
             }
 
             if (resumeButtonVisible) {
@@ -1266,5 +1281,36 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
         if (items.isEmpty()) return;
         if (shuffle) Collections.shuffle(items);
         KoinJavaComponent.<PlaybackLauncher>get(PlaybackLauncher.class).launch(getContext(), items, pos);
+    }
+
+    private void interactWithServerPlugin() {
+        if (mBaseItem == null || mBaseItem.getId() == null) {
+            Utils.showToast(requireContext(), "Item not available");
+            return;
+        }
+
+        SubtitleManagementPopup popup = new SubtitleManagementPopup(
+            requireContext(),
+            getLifecycle(),
+            mRowsFragment.getView(),
+            mBaseItem
+        );
+        popup.show();
+    }
+
+    private void refreshItemDetails() {
+        if (mBaseItem == null || mBaseItem.getId() == null) return;
+
+        FullDetailsFragmentHelperKt.getItem(this, mBaseItem.getId(), updatedItem -> {
+            if (updatedItem != null) {
+                mBaseItem = updatedItem;
+                // Refresh the UI with updated item information
+                if (mDorPresenter != null && mDetailsOverviewRow != null) {
+                    mDorPresenter.getViewHolder().setItem(mDetailsOverviewRow);
+                }
+                Utils.showToast(requireContext(), "Item details refreshed");
+            }
+            return null;
+        });
     }
 }

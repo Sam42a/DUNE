@@ -168,7 +168,7 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
         // Clear the backdrop when the fragment is stopped
         clearBackdrop();
     }
-    
+
     private void clearBackdrop() {
         try {
             if (backgroundService.getValue() != null) {
@@ -184,11 +184,6 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
         super.onDestroyView();
         mClickedListener.removeListeners();
         mSelectedListener.removeListeners();
-        
-        // Clear the backdrop when the view is destroyed
-        if (backgroundService.getValue() != null) {
-            backgroundService.getValue().clearBackgrounds();
-        }
     }
 
     protected void setupQueries(RowLoader rowLoader) {
@@ -310,7 +305,6 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
 
         switch (itemType) {
             case MOVIE:
-                gridRowAdapter.add(new GridButton(SUGGESTED, getString(R.string.lbl_suggested)));
                 addStandardViewButtons(gridRowAdapter);
                 gridRowAdapter.add(new GridButton(RANDOM, getString(R.string.random)));
                 break;
@@ -319,8 +313,6 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
                 gridRowAdapter.add(new GridButton(ALBUMS, getString(R.string.lbl_albums)));
                 gridRowAdapter.add(new GridButton(ALBUM_ARTISTS, getString(R.string.lbl_album_artists)));
                 gridRowAdapter.add(new GridButton(ARTISTS, getString(R.string.lbl_artists)));
-                gridRowAdapter.add(new GridButton(GENRES, getString(R.string.lbl_genres)));
-                gridRowAdapter.add(new GridButton(RANDOM, getString(R.string.random)));
                 break;
 
             case SERIES:
@@ -338,8 +330,6 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
 
     protected void addStandardViewButtons(ArrayObjectAdapter gridRowAdapter) {
         gridRowAdapter.add(new GridButton(GRID, getString(R.string.lbl_all_items)));
-        gridRowAdapter.add(new GridButton(BY_LETTER, getString(R.string.lbl_by_letter)));
-        gridRowAdapter.add(new GridButton(GENRES, getString(R.string.lbl_genres)));
         // Disabled because the screen doesn't behave properly
         // gridRowAdapter.add(new GridButton(PERSONS, getString(R.string.lbl_performers)));
     }
@@ -412,18 +402,6 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
                         }
                         break;
 
-                    case BY_LETTER:
-                        if (mFolder != null && itemType != null) {
-                            navRepo.navigate(Destinations.INSTANCE.libraryByLetter(mFolder, itemType.getSerialName()));
-                        }
-                        break;
-
-                    case GENRES:
-                        if (mFolder != null && itemType != null) {
-                            navRepo.navigate(Destinations.INSTANCE.libraryByGenres(mFolder, itemType.getSerialName()));
-                        }
-                        break;
-
                     case RANDOM:
                         if (mFolder != null && itemType != null && api.getValue() != null) {
                             BrowsingUtils.getRandomItem(api.getValue(), getViewLifecycleOwner(), mFolder, itemType, randomItem -> {
@@ -436,12 +414,6 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
                                 }
                                 return null;
                             });
-                        }
-                        break;
-
-                    case SUGGESTED:
-                        if (mFolder != null) {
-                            navRepo.navigate(Destinations.INSTANCE.librarySuggestions(mFolder));
                         }
                         break;
 

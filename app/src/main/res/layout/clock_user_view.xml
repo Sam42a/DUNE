@@ -29,7 +29,7 @@
 
     <org.jellyfin.androidtv.ui.AsyncImageView
         android:id="@+id/clock_user_image"
-        android:layout_width="wrap_content"
+        android:layout_width="34dp"
         android:layout_height="34dp"
         android:padding="3dp"
         app:circleCrop="true"

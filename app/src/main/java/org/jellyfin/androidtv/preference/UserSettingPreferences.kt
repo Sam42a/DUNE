@@ -31,6 +31,7 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     val showThrillerRow = booleanPreference("showThrillerRow", false)
     val showWarRow = booleanPreference("showWarRow", false)
     val showMusicVideosRow = booleanPreference("showMusicVideosRow", false)
+    val showCollectionsRow = booleanPreference("showCollectionsRow", false)
 
     private val defaultGenreOrder = listOf(
         "Comedy",

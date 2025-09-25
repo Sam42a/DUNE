@@ -15,8 +15,8 @@
     <fraction name="lb_focus_zoom_factor_large">@fraction/card_scale_focus</fraction>
 
     <!-- Card corner radius -->
-    <dimen name="card_corner_radius">3dp</dimen>
-    <dimen name="card_border_padding">2dp</dimen>
+    <dimen name="card_corner_radius">0dp</dimen>
+    <dimen name="card_border_padding">0dp</dimen>
 
     <!-- Custom row spacing -->
     <dimen name="home_row_spacing">5dp</dimen>

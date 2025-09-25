@@ -139,20 +139,6 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 			isMusicVideo = true
 		))
 
-
-		// 5. Playlists & Albums (combined)
-		mRows.add(createRow(
-			getString(R.string.lbl_playlists_and_albums),
-			GetItemsRequest(
-				includeItemTypes = setOf(BaseItemKind.PLAYLIST, BaseItemKind.MUSIC_ALBUM),
-				filters = setOf(ItemFilter.IS_FAVORITE),
-				sortBy = setOf(ItemSortBy.DATE_CREATED),
-				sortOrder = setOf(SortOrder.DESCENDING),
-				recursive = true,
-				limit = 20
-			)
-		))
-
 		// 4. Music Videos
 		mRows.add(createRow(
 			header = getString(R.string.lbl_music_videos),
@@ -195,42 +181,64 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 	 * @param isMusicVideo Whether to use the custom card size (also used for collections)
 	 */
 	private fun createRow(header: String, query: GetItemsRequest, isMusicVideo: Boolean = false): Any {
-		if (!isMusicVideo) {
-			return BrowseRowDef(header, query, 20, false, true)
-		}
+		if (isMusicVideo) {
+			// Music videos use a custom card presenter with info text
+			val musicVideoCardPresenter = object : CardPresenter(false, ImageType.THUMB, 165) {
+				init {
+					setHomeScreen(true)
+					setUniformAspect(true)
+				}
 
-		//  music videos, custom CardPresenter with fixed dimensions
-		val musicVideoCardPresenter = object : CardPresenter(false, ImageType.THUMB, 165) {
-			init {
-				setHomeScreen(true)
-				setUniformAspect(true)
+				override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
+					super.onBindViewHolder(viewHolder, item)
+					// Fixed dimensions for music video cards
+					(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
+						cardView.setMainImageDimensions(210, 120)
+						cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA
+					}
+				}
 			}
 
-			override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
-				super.onBindViewHolder(viewHolder, item)
-
-				//  fixed dimensions for all cards in the row
-				(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
-					cardView.setMainImageDimensions(210, 120)
-					cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA
+			return object : HomeFragmentRow {
+				override fun addToRowsAdapter(context: Context, cardPresenter: CardPresenter, rowsAdapter: MutableObjectAdapter<Row>) {
+					HomeFragmentBrowseRowDefRow(
+						BrowseRowDef(
+							header,
+							query,
+							6, // chunkSize
+							false, // preferParentThumb
+							true, // staticHeight
+							arrayOf(ChangeTriggerType.LibraryUpdated)
+						)
+					).addToRowsAdapter(context, musicVideoCardPresenter, rowsAdapter)
 				}
 			}
 		}
 
-		//  a row definition
-		val rowDef = BrowseRowDef(
-			header,
-			query,
-			6, // chunkSize
-			false, // preferParentThumb
-			true, // staticHeight
-			arrayOf(ChangeTriggerType.LibraryUpdated)
-		)
-
-		// Return a custom row that uses our presenter
 		return object : HomeFragmentRow {
-			override fun addToRowsAdapter(context: Context, cardPresenter: CardPresenter, rowsAdapter: MutableObjectAdapter<Row>) {
-				HomeFragmentBrowseRowDefRow(rowDef).addToRowsAdapter(context, musicVideoCardPresenter, rowsAdapter)
+			override fun addToRowsAdapter(context: Context, defaultPresenter: CardPresenter, rowsAdapter: MutableObjectAdapter<Row>) {
+				val noInfoPresenter = object : CardPresenter(false, 170) {
+					init {
+						setHomeScreen(true)
+						setUniformAspect(true)
+					}
+
+					override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
+						super.onBindViewHolder(viewHolder, item)
+						(viewHolder.view as? BaseCardView)?.cardType = BaseCardView.CARD_TYPE_MAIN_ONLY
+					}
+				}
+
+				HomeFragmentBrowseRowDefRow(
+					BrowseRowDef(
+						header,
+						query,
+						8, // chunkSize
+						false, // preferParentThumb
+						true, // staticHeight
+						arrayOf(ChangeTriggerType.LibraryUpdated)
+					)
+				).addToRowsAdapter(context, noInfoPresenter, rowsAdapter)
 			}
 		}
 	}
