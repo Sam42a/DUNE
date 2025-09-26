@@ -1,15 +1,14 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="38dp">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/title_text"
-            style="@style/Widget.Leanback.Title.Text"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -18,25 +17,22 @@
             android:id="@+id/buttons_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" >
+            app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.leanback.widget.SearchOrbView
                 android:id="@+id/title_orb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:transitionGroup="true"
-                android:visibility="invisible"
-                tools:ignore="UnusedAttribute" />
+                android:visibility="gone" />
 
             <org.jellyfin.androidtv.ui.ClockUserView
                 android:id="@+id/toolbar_actions"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

@@ -121,7 +121,7 @@
             app:layout_constraintStart_toStartOf="@id/guide_main_start"
             tools:text="fdGenreRow" />
 
-        <org.jellyfin.androidtv.ui.ExpandableTextView
+        <org.jellyfin.androidtv.ui.shared.ShadowedTextView
             android:id="@+id/fdSummaryText"
             android:layout_width="570dp"
             android:layout_height="202dp"
@@ -132,11 +132,16 @@
             android:maxLines="8"
             android:textColorHighlight="#1B1A1A"
             android:textSize="20sp"
+            android:justificationMode="inter_word"
+            android:textAlignment="viewStart"
+            android:paddingEnd="16dp"
+            android:gravity="fill_horizontal"
             app:layout_constraintEnd_toStartOf="@+id/guide_main_end"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guide_main_start"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="fdSummaryText" />
+            tools:text="fdSummaryText"
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:id="@+id/infoValue2"

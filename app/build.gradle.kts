@@ -109,7 +109,7 @@ android {
 		val variant = this
 		val variantName = variant.name
 		val versionName = variant.versionName
-		
+
 		variant.outputs.all {
 			val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
 			if (variantName == "enhanced") {
@@ -231,6 +231,8 @@ dependencies {
 
 	// Network
 	implementation("com.squareup.okhttp3:okhttp:4.11.0")
+	implementation(libs.androidx.compose.ui.unit)
+	implementation(libs.androidx.compose.animation)
 
 	// Compatibility (desugaring)
 	coreLibraryDesugaring(libs.android.desugar)

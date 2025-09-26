@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="85dp"
+        android:layout_width="81dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageButton"
         android:layout_centerHorizontal="true"

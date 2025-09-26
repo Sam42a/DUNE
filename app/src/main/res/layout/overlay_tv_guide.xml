@@ -98,20 +98,22 @@
         android:maxLines="1"
         android:layout_alignParentEnd="false"
         android:gravity="center_vertical"
-        android:layout_toStartOf="@+id/textClock2"
+        android:layout_toStartOf="@+id/textClock3"
         android:fontFamily="sans-serif-light" />
 
-    <TextClock
+    <org.jellyfin.androidtv.ui.shared.ShadowedClock
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textClock2"
+        android:id="@+id/textClock3"
+        android:textAllCaps="true"
         android:layout_marginEnd="20sp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="25dp"
         android:format12Hour="h:mm"
         android:format24Hour="k:mm"
         android:gravity="end"
-        android:textSize="26sp" />
+        android:textStyle="bold"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -120,7 +122,7 @@
         android:layout_alignParentEnd="false"
         android:layout_below="@+id/guideTitle"
         android:layout_alignStart="@+id/guideTitle"
-        android:layout_alignEnd="@+id/textClock2"
+        android:layout_alignEnd="@+id/textClock3"
         android:id="@+id/guideInfoRow"/>
 
     <TextView
