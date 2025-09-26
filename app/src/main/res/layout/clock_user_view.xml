@@ -12,8 +12,9 @@
     <ImageButton
         android:id="@+id/home"
         style="@style/Button.Icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="-3dp"
         android:contentDescription="@string/lbl_home"
         android:src="@drawable/ic_house" />
 
@@ -22,6 +23,7 @@
         style="@style/Button.Icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginTop="-3dp"
         android:contentDescription="@string/lbl_live_tv"
         android:src="@drawable/ic_tv"
         android:visibility="gone"
@@ -31,22 +33,20 @@
         android:id="@+id/clock_user_image"
         android:layout_width="34dp"
         android:layout_height="34dp"
+        android:layout_marginTop="-3dp"
         android:padding="3dp"
         app:circleCrop="true"
         tools:src="@drawable/ic_user" />
 
-    <TextClock
-        android:id="@+id/clock"
+    <org.jellyfin.androidtv.ui.shared.ShadowedClock
+        android:id="@+id/textClock3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-thin"
-        android:format12Hour="h:mm"
-        android:format24Hour="k:mm"
-        android:paddingStart="8dp"
-        android:shadowColor="@color/black"
-        android:textAlignment="viewStart"
-        android:textColor="@color/white"
-        android:textSize="15sp"
+        android:padding="8dp"
+        android:textAllCaps="true"
+        android:textSize="20sp"
+        android:textStyle="bold"
         tools:ignore="RtlSymmetry"
         tools:text="13:37" />
 

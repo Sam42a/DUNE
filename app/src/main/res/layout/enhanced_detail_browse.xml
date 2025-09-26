@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
@@ -27,19 +28,25 @@
         android:layout_alignStart="@+id/title"
         android:layout_marginTop="3sp"
         android:id="@+id/infoRow"
-        android:layout_toStartOf="@+id/clock"/>
+        android:layout_toStartOf="@+id/fdClock"/>
 
-    <TextView
+    <org.jellyfin.androidtv.ui.shared.ShadowedTextView
+        android:id="@+id/summary"
         android:layout_width="500sp"
         android:layout_height="130sp"
-        android:id="@+id/summary"
         android:layout_below="@+id/infoRow"
         android:layout_alignStart="@+id/infoRow"
         android:ellipsize="end"
         android:textSize="16sp"
         android:layout_marginTop="12sp"
-        android:maxLines="3"
-        android:textColor="@android:color/white" />
+        android:maxLines="6"
+        android:textColor="@android:color/white"
+        android:justificationMode="inter_word"
+        android:textAlignment="viewStart"
+        android:gravity="fill_horizontal"
+        android:paddingEnd="16dp"
+        tools:ignore="RtlCompat" />
+
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -51,20 +58,20 @@
         android:layout_marginTop="5sp"/>
 
     <org.jellyfin.androidtv.ui.ClockUserView
+        android:id="@+id/fdClock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/clock"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp" />
+        android:layout_alignParentTop="false"
+        android:layout_marginEnd="40sp"
+        android:layout_marginTop="20dp" />
 
     <org.jellyfin.androidtv.ui.NowPlayingWrapperView
+        android:id="@+id/npBug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/npBug"
-        android:layout_alignBottom="@+id/clock"
-        android:layout_marginEnd="25dp"
-        android:layout_toStartOf="@+id/clock" />
+        android:layout_alignBottom="@id/fdClock"
+        android:layout_toStartOf="@id/fdClock"
+        android:layout_marginEnd="25dp" />
 
 </RelativeLayout>

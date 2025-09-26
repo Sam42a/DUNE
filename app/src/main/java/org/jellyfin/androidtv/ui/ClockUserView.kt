@@ -20,6 +20,7 @@ import org.jellyfin.sdk.api.client.extensions.imageApi
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.java.KoinJavaComponent.inject
+import setButtonShadow
 import timber.log.Timber
 
 class ClockUserView @JvmOverloads constructor(
@@ -46,7 +47,10 @@ class ClockUserView @JvmOverloads constructor(
     init {
         updateClockVisibility()
 
-        // Load current user's profile image
+		// Add shadow to home button
+		binding.home.setButtonShadow(R.drawable.ic_house)
+
+		// Load current user's profile image
         updateUserProfileImage()
 
         binding.home.setOnClickListener {
@@ -99,7 +103,7 @@ class ClockUserView @JvmOverloads constructor(
     private fun updateClockVisibility() {
         val showClock = userPreferences[UserPreferences.clockBehavior]
 
-        binding.clock.isVisible = when (showClock) {
+        binding.textClock3.isVisible = when (showClock) {
             ClockBehavior.ALWAYS -> true
             ClockBehavior.NEVER -> false
             ClockBehavior.IN_MENUS -> !isVideoPlayer
