@@ -1,6 +1,8 @@
 package org.jellyfin.androidtv.util.profile
 
+import android.content.Context
 import androidx.media3.common.MimeTypes
+import org.jellyfin.androidtv.util.HdrHelper
 import org.jellyfin.androidtv.constant.Codec
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
@@ -51,7 +53,8 @@ private fun UserPreferences.getMaxBitrate(): Int {
 	return maxBitrate * 1_000_000
 }
 
-fun createDeviceProfile(userPreferences: UserPreferences, disableDirectPlay: Boolean) = createDeviceProfile(
+fun createDeviceProfile(context: Context, userPreferences: UserPreferences, disableDirectPlay: Boolean) = createDeviceProfile(
+	context = context,
 	maxBitrate = userPreferences.getMaxBitrate(),
 	disableDirectPlay = disableDirectPlay,
 	isAC3Enabled = userPreferences[UserPreferences.ac3Enabled],
@@ -61,6 +64,7 @@ fun createDeviceProfile(userPreferences: UserPreferences, disableDirectPlay: Boo
 )
 
 fun createDeviceProfile(
+	context: Context,
 	maxBitrate: Int,
 	disableDirectPlay: Boolean,
 	isAC3Enabled: Boolean,
@@ -89,6 +93,7 @@ fun createDeviceProfile(
 	val maxResolutionHevc = mediaTest.getMaxResolution(MimeTypes.VIDEO_H265)
 	val maxResolutionAV1 = mediaTest.getMaxResolution(MimeTypes.VIDEO_AV1)
 
+	// Set device profile name
 	name = "AndroidTV-Default"
 
 	/// Bitrate
@@ -99,8 +104,6 @@ fun createDeviceProfile(
 	// Video
 	transcodingProfile {
 		type = DlnaProfileType.VIDEO
-		context = EncodingContext.STREAMING
-
 		container = Codec.Container.TS
 		protocol = MediaStreamProtocol.HLS
 
@@ -116,7 +119,6 @@ fun createDeviceProfile(
 	// Audio
 	transcodingProfile {
 		type = DlnaProfileType.AUDIO
-		context = EncodingContext.STREAMING
 
 		container = Codec.Container.MP3
 
@@ -255,10 +257,25 @@ fun createDeviceProfile(
 		conditions {
 			when {
 				!supportsHevc -> ProfileConditionValue.VIDEO_PROFILE equals "none"
-				else -> ProfileConditionValue.VIDEO_PROFILE inCollection listOfNotNull(
-					"main",
-					if (supportsHevcMain10) "main 10" else null
-				)
+				else -> {
+					val supportedProfiles = mutableListOf("main")
+					if (supportsHevcMain10) supportedProfiles.add("main 10")
+
+					// Check DV support
+					val hasDolbyVision = HdrHelper.supportsDolbyVision(context)
+					if (hasDolbyVision) {
+						// Add generic Dolby Vision profile
+						supportedProfiles.add("dolby vision")
+						
+						// Get specific DV profile support from HdrHelper
+						val supportedDVProfiles = HdrHelper.getSupportedDolbyVisionProfiles(context)
+						supportedDVProfiles.forEach { profile ->
+							supportedProfiles.add(profile)
+						}
+					}
+					
+					ProfileConditionValue.VIDEO_PROFILE inCollection supportedProfiles
+				}
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
+import org.jellyfin.androidtv.util.HdrHelper
 import androidx.core.app.NotificationManagerCompat
 import androidx.media3.datasource.HttpDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
@@ -87,7 +88,10 @@ fun Scope.createPlaybackManager() = playbackManager(androidContext()) {
 	)
 	install(media3SessionPlugin(get(), mediaSessionOptions))
 
-	val deviceProfileBuilder = { createDeviceProfile(userPreferences, false) }
+	// Pass context to HdrHelper for Dolby Vision detection
+	val context = androidContext()
+	val deviceProfileBuilder = { createDeviceProfile(context, userPreferences, false) }
+	HdrHelper.logHdrCapabilities(context) // Log current capabilities on startup
 	install(jellyfinPlugin(get(), deviceProfileBuilder))
 
 	// Options
