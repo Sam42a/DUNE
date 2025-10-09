@@ -1183,7 +1183,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
         collapsedOptions = 0;
         for (TextUnderButton action : actionsList) {
-            if (visibleOptions - (ViewKt.isVisible(action) ? 1 : 0) + (!ViewKt.isVisible(moreButton) && collapsedOptions > 0 ? 1 : 0) < 7) {
+            if (visibleOptions - (ViewKt.isVisible(action) ? 1 : 0) + (!ViewKt.isVisible(moreButton) && collapsedOptions > 0 ? 1 : 0) < 8) {
                 if (!ViewKt.isVisible(action)) {
                     action.setVisibility(View.VISIBLE);
                     visibleOptions++;
