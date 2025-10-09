@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="false"
-        android:layout_marginEnd="40sp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginEnd="46sp"
+        android:layout_marginTop="27dp" />
 
     <org.jellyfin.androidtv.ui.NowPlayingWrapperView
         android:id="@+id/npBug"

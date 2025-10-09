@@ -1,6 +1,7 @@
 package org.jellyfin.androidtv.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -31,6 +32,9 @@ class ExpandableTextView @JvmOverloads constructor(
 	}
 
 	init {
+		// Add shadow to text
+		setShadowLayer(6f, 3f, 3f, Color.BLACK)
+
 		background = ContextCompat.getDrawable(context, R.drawable.expanded_text)
 
 		popupContentBinding.scrollContainer.setOnClickListener { popup.dismiss() }

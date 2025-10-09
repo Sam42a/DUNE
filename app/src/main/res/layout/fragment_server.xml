@@ -66,16 +66,16 @@
 
     <org.jellyfin.androidtv.ui.ExpandableTextView
         android:id="@+id/login_disclaimer"
-        android:layout_width="344dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="308dp"
-        android:layout_marginTop="384dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="3"
         android:padding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="384dp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="This is the login disclaimer." />
 
     <androidx.leanback.widget.HorizontalGridView
