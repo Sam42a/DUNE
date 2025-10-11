@@ -20,7 +20,7 @@ class ShadowedClock @JvmOverloads constructor(
 		style = Paint.Style.FILL
 		color = Color.WHITE
 	}
-	private var strokeWidthFraction = 0.09f
+	private var strokeWidthFraction = 0.04f
 	private var blur = true
 
 	@SuppressLint("DrawAllocation")

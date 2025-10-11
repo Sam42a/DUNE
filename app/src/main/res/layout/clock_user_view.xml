@@ -25,7 +25,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="-3dp"
         android:contentDescription="@string/lbl_live_tv"
-        android:src="@drawable/ic_tv"
+        android:src="@drawable/ic_livetv"
         android:visibility="gone"
         app:tint="@color/button_text" />
 

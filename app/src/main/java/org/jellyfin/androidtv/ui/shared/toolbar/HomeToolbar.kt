@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
@@ -174,7 +173,7 @@ fun HomeToolbar(
                     .let { modifier ->
                         if (isSearchFocused) {
                             modifier
-								.defaultMinSize(minWidth = 120.dp)
+                                .width(100.dp)
                                 .height(28.dp)
                                 .clip(RoundedCornerShape(20.dp))
                         } else {
@@ -193,6 +192,7 @@ fun HomeToolbar(
                         .let { modifier ->
                             if (isSearchFocused) {
                                 modifier
+                                    .width(100.dp)
                                     .padding(horizontal = 12.dp)
                             } else {
                                 modifier
@@ -224,7 +224,7 @@ fun HomeToolbar(
 
                     if (isSearchFocused) {
                         Text(
-							text = stringResource(R.string.lbl_search),
+                            text = "Search",
                             color = if (isSearchFocused) Color.Black else Color.White,
                             fontSize = 14.sp,
                             modifier = Modifier
@@ -244,7 +244,7 @@ fun HomeToolbar(
                     .let { modifier ->
                         if (isLibraryFocused) {
                             modifier
-								.defaultMinSize(minWidth = 120.dp)
+                                .width(100.dp)
                                 .height(28.dp)
                                 .clip(RoundedCornerShape(12.5.dp))
                         } else {
@@ -263,6 +263,7 @@ fun HomeToolbar(
                         .let { modifier ->
                             if (isLibraryFocused) {
                                 modifier
+                                    .width(100.dp)
                                     .padding(horizontal = 12.dp)
                             } else {
                                 modifier
@@ -294,7 +295,7 @@ fun HomeToolbar(
 
                     if (isLibraryFocused) {
                         Text(
-							text = stringResource(R.string.lbl_home),
+                            text = "Home",
                             color = if (isLibraryFocused) Color.Black else Color.White,
                             fontSize = 14.sp,
                             modifier = Modifier
@@ -315,7 +316,7 @@ fun HomeToolbar(
                         .let { modifier ->
                             if (isLiveTvFocused) {
                                 modifier
-									.defaultMinSize(minWidth = 120.dp)
+                                    .width(100.dp)
                                     .height(28.dp)
                                     .clip(RoundedCornerShape(12.5.dp))
                             } else {
@@ -334,6 +335,7 @@ fun HomeToolbar(
                             .let { modifier ->
                                 if (isLiveTvFocused) {
                                     modifier
+                                        .width(100.dp)
                                         .padding(horizontal = 12.dp)
                                 } else {
                                     modifier
@@ -365,7 +367,7 @@ fun HomeToolbar(
                         // Show text when focused
                         if (isLiveTvFocused) {
                             Text(
-								text = stringResource(R.string.lbl_live),
+                                text = "Live",
                                 color = if (isLiveTvFocused) Color.Black else Color.White,
                                 fontSize = 14.sp,
                                 modifier = Modifier
@@ -398,7 +400,7 @@ fun HomeToolbar(
                             // Find the movies library
                             val moviesLibrary = views.find {
                                 it.collectionType == CollectionType.MOVIES ||
-                                it.name?.equals("Movies", ignoreCase = true) == true
+                                        it.name?.equals("Movies", ignoreCase = true) == true
                             }
 
                             if (moviesLibrary == null) {
@@ -436,7 +438,7 @@ fun HomeToolbar(
                         .let { modifier ->
                             if (isMasksFocused) {
                                 modifier
-									.defaultMinSize(minWidth = 120.dp)
+                                    .width(100.dp)
                                     .height(28.dp)
                                     .clip(RoundedCornerShape(12.5.dp))
                             } else {
@@ -455,6 +457,7 @@ fun HomeToolbar(
                             .let { modifier ->
                                 if (isMasksFocused) {
                                     modifier
+                                        .width(100.dp)
                                         .padding(horizontal = 12.dp)
                                 } else {
                                     modifier
@@ -470,9 +473,9 @@ fun HomeToolbar(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_dice),
+                            painter = painterResource(R.drawable.ic_masks),
                             contentDescription = stringResource(R.string.show_random_button_summary),
-                            tint = if (isMasksFocused) Color.Black else Color.White,
+                            tint = if (isMasksFocused) Color.Black else Color.White.copy(alpha = 0.7f),
                             modifier = Modifier
                                 .let { modifier ->
                                     if (isMasksFocused) {
@@ -486,7 +489,7 @@ fun HomeToolbar(
                         // Show text when focused
                         if (isMasksFocused) {
                             Text(
-								text = stringResource(R.string.random),
+                                text = "Random",
                                 color = if (isMasksFocused) Color.Black else Color.White,
                                 fontSize = 14.sp,
                                 modifier = Modifier
@@ -506,7 +509,7 @@ fun HomeToolbar(
                     .let { modifier ->
                         if (isSettingsFocused) {
                             modifier
-								.defaultMinSize(minWidth = 120.dp)
+                                .width(100.dp)
                                 .height(28.dp)
                                 .clip(RoundedCornerShape(12.5.dp))
                         } else {
@@ -525,6 +528,7 @@ fun HomeToolbar(
                         .let { modifier ->
                             if (isSettingsFocused) {
                                 modifier
+                                    .width(100.dp)
                                     .padding(horizontal = 12.dp)
                             } else {
                                 modifier
@@ -542,7 +546,7 @@ fun HomeToolbar(
                     Icon(
                         painter = painterResource(R.drawable.ic_settings),
                         contentDescription = stringResource(R.string.lbl_settings),
-                        tint = if (isSettingsFocused) Color.Black else Color.White,
+                        tint = if (isSettingsFocused) Color.Black else Color.White.copy(alpha = 0.7f),
                         modifier = Modifier
                             .let { modifier ->
                                 if (isSettingsFocused) {
@@ -556,7 +560,7 @@ fun HomeToolbar(
 
                     if (isSettingsFocused) {
                         Text(
-							text = stringResource(R.string.settings_title),
+                            text = "Settings",
                             color = if (isSettingsFocused) Color.Black else Color.White,
                             fontSize = 14.sp,
                             modifier = Modifier
@@ -575,7 +579,7 @@ fun HomeToolbar(
                     .let { modifier ->
                         if (isFavoritesFocused) {
                             modifier
-								.defaultMinSize(minWidth = 120.dp)
+                                .width(110.dp)
                                 .height(28.dp)
                                 .clip(RoundedCornerShape(12.5.dp))
                         } else {
@@ -594,6 +598,7 @@ fun HomeToolbar(
                         .let { modifier ->
                             if (isFavoritesFocused) {
                                 modifier
+                                    .width(114.dp)
                                     .padding(horizontal = 13.dp)
                             } else {
                                 modifier
@@ -611,7 +616,7 @@ fun HomeToolbar(
                     Icon(
                         painter = painterResource(R.drawable.ic_heart),
                         contentDescription = stringResource(R.string.lbl_favorites),
-                        tint = if (isFavoritesFocused) Color.Black else Color.White,
+                        tint = if (isFavoritesFocused) Color.Red else Color.White.copy(alpha = 0.7f),
                         modifier = Modifier
                             .let { modifier ->
                                 if (isFavoritesFocused) {
@@ -624,7 +629,7 @@ fun HomeToolbar(
 
                     if (isFavoritesFocused) {
                         Text(
-							text = stringResource(R.string.lbl_favorites),
+                            text = "Favorites",
                             color = if (isFavoritesFocused) Color.Black else Color.White,
                             fontSize = 14.sp,
                             modifier = Modifier

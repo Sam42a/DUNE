@@ -32,6 +32,7 @@ import androidx.lifecycle.Lifecycle;
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.constant.CustomMessage;
 import org.jellyfin.androidtv.constant.Extras;
+import org.jellyfin.androidtv.constant.ImageType;
 import org.jellyfin.androidtv.constant.LiveTvOption;
 import org.jellyfin.androidtv.constant.QueryType;
 import org.jellyfin.androidtv.data.model.DataRefreshService;
@@ -268,23 +269,7 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
             rowCardPresenter.setHomeScreen(true);
 
             ItemRowAdapter rowAdapter = switch (def.getQueryType()) {
-                case NextUp -> {
-                    CardPresenter nextUpPresenter = createAppropriateCardPresenter(isEpisode);
-                    nextUpPresenter.setHomeScreen(true);
-                    try {
-                        java.lang.reflect.Field cardWidthField = CardPresenter.class.getDeclaredField("CARD_WIDTH");
-                        cardWidthField.setAccessible(true);
-                        int originalWidth = cardWidthField.getInt(nextUpPresenter);
-                        int newWidth = (int) (originalWidth * 1.15);
-
-                        nextUpPresenter = new CardPresenter(isEpisode, newWidth);
-                        nextUpPresenter.setHomeScreen(true);
-                    } catch (Exception e) {
-                        nextUpPresenter = new CardPresenter(isEpisode, 160);
-                        nextUpPresenter.setHomeScreen(true);
-                    }
-                    yield new ItemRowAdapter(requireContext(), def.getNextUpQuery(), true, nextUpPresenter, mRowsAdapter);
-                }
+                case NextUp -> new ItemRowAdapter(requireContext(), def.getNextUpQuery(), true, rowCardPresenter, mRowsAdapter);
                 case LatestItems -> {
                     ItemRowAdapter adapter = new ItemRowAdapter(requireContext(), def.getLatestItemsQuery(), true, rowCardPresenter, mRowsAdapter);
                     try {
@@ -292,6 +277,8 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
                         staticHeightField.setAccessible(true);
                         staticHeightField.set(adapter, false);
                     } catch (Exception e) {
+                        // If reflection fails, continue with default behavior
+                        Timber.tag("EnhancedBrowseFragment").w(e, "Could not override staticHeight for LatestItems");
                     }
                     yield adapter;
                 }
@@ -364,6 +351,11 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
         // gridRowAdapter.add(new GridButton(PERSONS, getString(R.string.lbl_performers)));
     }
 
+    /**
+     * Creates the appropriate CardPresenter based on content type and folder type
+     * @param isEpisode true if the content is episodes, false for normal posters
+     * @return configured CardPresenter instance
+     */
     private CardPresenter createAppropriateCardPresenter(boolean isEpisode) {
         if (isEpisode) {
             return new CardPresenter(false, 122);
@@ -372,6 +364,11 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
         }
     }
 
+    /**
+     * Determines if the given query type and folder context represents episodes
+     * @param queryType the query type to check
+     * @return true if this represents episodes content
+     */
     private boolean isEpisodeContent(QueryType queryType) {
         if (itemType == BaseItemKind.SERIES) {
             switch (queryType) {

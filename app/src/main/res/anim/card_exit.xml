@@ -3,13 +3,13 @@
     android:duration="0"
     android:interpolator="@android:interpolator/fast_out_slow_in">
     <alpha
-        android:fromAlpha="1.0"
+        android:fromAlpha="0.0"
         android:toAlpha="0.0" />
     <scale
-        android:fromXScale="1.0"
-        android:fromYScale="1.0"
+        android:fromXScale="0.0"
+        android:fromYScale="0.0"
         android:pivotX="50%"
         android:pivotY="50%"
-        android:toXScale="0.95"
-        android:toYScale="0.95" />
-</set> 
+        android:toXScale="0.0"
+        android:toYScale="0.0" />
+</set>

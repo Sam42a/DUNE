@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shadow layer for depth -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#1A000000" /> <!-- 10% opaque black for shadow -->
+            <corners android:radius="20dp" />
+            <padding
+                android:left="4dp"
+                android:top="4dp"
+                android:right="4dp"
+                android:bottom="4dp" />
+        </shape>
+    </item>
+
+    <!-- Blur-like background (frosted glass effect) -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Semi-transparent white -->
+            <gradient
+                android:startColor="#00FBFBFB"
+                android:endColor="#05FFFFFF"
+                android:angle="90" />
+            <corners android:radius="1dp" />
+        </shape>
+    </item>
+
+    <!-- Inner content layer -->
+    <item
+        android:left="4dp"
+        android:top="4dp"
+        android:right="4dp"
+        android:bottom="4dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#10380468" /> <!-- White background for content -->
+            <corners android:radius="14dp" />
+        </shape>
+    </item>
+
+</layer-list>
