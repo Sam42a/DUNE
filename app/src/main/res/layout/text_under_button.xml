@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="71dp"
     android:layout_height="wrap_content"
     android:duplicateParentState="true"
     android:layoutDirection="ltr">
@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageButton"
         style="@style/Button.Default"
-        android:layout_width="70dp"
+        android:layout_width="60dp"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="85dp"
+        android:layout_width="81dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageButton"
         android:layout_centerHorizontal="true"
@@ -33,6 +33,6 @@
         android:maxLines="2"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:textSize="12sp"
+        android:textSize="10sp"
         tools:text="TextView" />
 </RelativeLayout>

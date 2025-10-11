@@ -21,6 +21,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
+import setButtonShadow
 
 class ClockUserView @JvmOverloads constructor(
     context: Context,
@@ -48,6 +49,9 @@ class ClockUserView @JvmOverloads constructor(
 
         // Load current user's profile image
         updateUserProfileImage()
+
+		// Add shadow to home button
+		binding.home.setButtonShadow(R.drawable.ic_house)
 
         binding.home.setOnClickListener {
             navigationRepository.reset(Destinations.home, clearHistory = true)
@@ -99,7 +103,7 @@ class ClockUserView @JvmOverloads constructor(
     private fun updateClockVisibility() {
         val showClock = userPreferences[UserPreferences.clockBehavior]
 
-        binding.clock.isVisible = when (showClock) {
+		binding.textClock3.isVisible = when (showClock) {
             ClockBehavior.ALWAYS -> true
             ClockBehavior.NEVER -> false
             ClockBehavior.IN_MENUS -> !isVideoPlayer

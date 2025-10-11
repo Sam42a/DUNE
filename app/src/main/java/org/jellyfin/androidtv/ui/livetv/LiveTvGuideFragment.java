@@ -51,6 +51,7 @@ import org.jellyfin.androidtv.util.TimeUtils;
 import org.jellyfin.androidtv.util.Utils;
 import org.jellyfin.androidtv.util.apiclient.EmptyResponse;
 import org.jellyfin.sdk.model.api.BaseItemDto;
+import org.jellyfin.androidtv.data.service.BackgroundService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -66,6 +67,8 @@ public class LiveTvGuideFragment extends Fragment implements LiveTvGuide, View.O
     public static final int PAGE_SIZE = 75;
     public static final int NORMAL_HOURS = 9;
     public static final int FILTERED_HOURS = 4;
+
+    private final Lazy<BackgroundService> backgroundService = inject(BackgroundService.class);
 
     private TextView mDisplayDate;
     private TextView mTitle;
@@ -127,6 +130,8 @@ public class LiveTvGuideFragment extends Fragment implements LiveTvGuide, View.O
         mProgramRows = binding.programRows;
         mSpinner = binding.spinner;
         mSpinner.setVisibility(View.VISIBLE);
+
+        clearBackdrop();
 
         View mFilterButton = binding.filterButton;
         mFilterButton.setOnClickListener(new View.OnClickListener() {
@@ -776,6 +781,16 @@ public class LiveTvGuideFragment extends Fragment implements LiveTvGuide, View.O
                     }
                 }
             }
+        }
+    }
+
+    private void clearBackdrop() {
+        try {
+            if (backgroundService.getValue() != null) {
+                backgroundService.getValue().clearBackgrounds();
+            }
+        } catch (Exception e) {
+            Timber.e(e, "Error clearing backdrop");
         }
     }
 }
