@@ -63,7 +63,6 @@
     <string name="lbl_cancel_recording">Felvétel megszakítása</string>
     <string name="lbl_cancel">Mégse</string>
     <string name="lbl_play">Lejátszás</string>
-    <string name="lbl_play_external">Külső lejátszóban</string>
     <string name="lbl_play_all">Összes lejátszása</string>
     <string name="lbl_other">Egyéb</string>
     <string name="lbl_tv_series">Sorozatok</string>
@@ -225,7 +224,7 @@
     <string name="lbl_showing">Mutat</string>
     <string name="desc_debug">Hibakereséssel kapcsolatos további információk mutatása</string>
     <string name="lbl_enable_debug">Hibakeresési lehetőségek</string>
-    <string name="lbl_goto_series">Ugrás a sorozathoz</string>
+    <string name="lbl_goto_series">Ugrás a sorozatokhoz</string>
     <string name="grid_direction_vertical">Függőleges</string>
     <string name="grid_direction_horizontal">Vízszintes</string>
     <string name="grid_direction">Rács irány</string>
@@ -573,10 +572,4 @@
     <string name="pref_report_device_profile_failure">A dokumentum benyújtása sikertelen. Lehetséges, hogy a Jellyfin szerver tiltja a kliensnaplókat.</string>
     <string name="pref_report_device_profile_title">Lejátszási képességek jelentése a szervernek</string>
     <string name="pref_report_device_profile_summary">Hibakeresési dokumentum feltöltése a Jellyfin szerverre a lejátszási képességekről</string>
-
-    <!-- Exit confirmation dialog -->
-    <string name="exit_app_title">Kilépés</string>
-    <string name="exit_app_message">Biztosan ki akarsz lépni?</string>
-    <string name="yes">Igen</string>
-    <string name="no">Nem</string>
 </resources>

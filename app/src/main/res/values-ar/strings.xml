@@ -521,6 +521,52 @@
     <string name="photo_albums">ألبومات الصور</string>
     <string name="photos">الصور</string>
     <string name="all_channels">جميع القنوات</string>
+    <!-- Genre names -->
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+
+    <!-- Individual genre strings -->
+    <string name="genre_action">أكشن</string>
+    <string name="genre_adventure">مغامرات</string>
+    <string name="genre_animation">رسوم متحركة</string>
+    <string name="genre_comedy">كوميديا</string>
+    <string name="genre_crime">جريمة</string>
+    <string name="genre_documentary">وثائقي</string>
+    <string name="genre_drama">دراما</string>
+    <string name="genre_family">عائلي</string>
+    <string name="genre_fantasy">فانتازيا</string>
+    <string name="genre_history">تاريخي</string>
+    <string name="genre_horror">رعب</string>
+    <string name="genre_music">موسيقى</string>
+    <string name="genre_mystery">غموض</string>
+    <string name="genre_romance">رومانسي</string>
+    <string name="genre_science_fiction">خيال علمي</string>
+    <string name="genre_thriller">إثارة</string>
+    <string name="genre_war">حرب</string>
+    <string name="genre_western">غرب أمريكي</string>
+    <string name="genre_tv_movie">فيلم تلفزيوني</string>
+
+    <!-- Genre filter -->
+    <string name="lbl_all_genres">جميع الأنواع</string>
     <string name="pref_screensaver_ageratingrequired_disabled">يتم عرض جميع العناصر</string>
     <string name="lbl_runtime">مدة العرض</string>
     <string name="app_notification_update_soon">حدّث الخادم من %1$s إلى %2$s على الأقل لتستمر بإستخدام التطبيق بعد التحديث القادم.</string>

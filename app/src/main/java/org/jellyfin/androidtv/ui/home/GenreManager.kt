@@ -63,10 +63,10 @@ class GenreManager(
 				loader = { createCollectionsRow() }
 			),
 			GenreConfig(
-				name = "Science Fiction",
-				displayName = "Sci-Fi",
+				name = "Sci-Fi & Fantasy",
+				displayName = "Sci-Fi & Fantasy",
 				preference = userSettingPreferences.showSciFiRow,
-				loader = { createGenreRow("Science Fiction") }
+				loader = { createGenreRow("Sci-Fi & Fantasy") }
 			),
 			GenreConfig(
 				name = "Comedy",
@@ -81,10 +81,10 @@ class GenreManager(
 				loader = { createGenreRow("Romance") }
 			),
 			GenreConfig(
-				name = "Anime",
-				displayName = "Anime",
-				preference = userSettingPreferences.showAnimeRow,
-				loader = { createGenreRow("Anime") }
+				name = "Animation",
+				displayName = "Animation",
+				preference = userSettingPreferences.showAnimationRow,
+				loader = { createGenreRow("Animation") }
 			),
 			GenreConfig(
 				name = "Action",

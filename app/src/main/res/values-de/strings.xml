@@ -4,12 +4,12 @@
     <string name="btn_cancel">Abbrechen</string>
     <string name="byletter_letters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="pref_playback">Wiedergabe</string>
-    
+
     <!-- Spracheinstellungen -->
     <string name="pref_language">Anwendungssprache</string>
     <string name="pref_language_header">Spracheinstellungen</string>
     <string name="pref_language_summary">Sprache der Anwendung ändern</string>
-    
+
     <string name="pref_max_bitrate_title">Max. Streaming-Bitrate</string>
     <string name="settings_title">Einstellungen</string>
     <string name="chapters">Kapitel</string>
@@ -122,7 +122,7 @@
     <string name="lbl_enable_debug">Debug-Optionen</string>
     <string name="desc_debug">Zusatzinformationen zum Debugging übermitteln</string>
     <string name="lbl_showing">Zeige</string>
-    <string name="genre_rows">Genre-Zeilen (Aktivieren Sie 5 oder weniger für eine bessere Leistung)</string>
+    <string name="genre_rows">Genre-Zeilen</string>
     <string name="lbl_all_items">Alle Einträge</string>
     <string name="lbl_sorted_by">sortiert nach</string>
     <string name="lbl_from">von</string>
@@ -319,7 +319,6 @@
     <string name="lbl_user_last_used">Zuletzt verwendet am %1$s um %2$s</string>
     <string name="lbl_remove_server">Server entfernen</string>
     <string name="lbl_sign_out_content">Erfordert Anmeldung bei nächster Verwendung</string>
-    <string name="pref_backdrop_blur_description">Steuern Sie den Unschärfeeffekt von Hintergrundbildern von 0 % (keine Unschärfe) bis 100 % (vollständige Unschärfe).</string>
     <string name="lbl_remove_user_content">Benutzerkonto entfernen</string>
     <string name="lbl_remove_users">Dadurch werden auch alle zugehörigen Konten entfernt</string>
     <string name="lbl_manage_servers">Server verwalten</string>
@@ -565,6 +564,52 @@
     <string name="current_queue">aktuelle Warteschlange</string>
     <string name="app_notification_update_soon">Aktualisiere deinen Server von %1$s auf mindestens %2$s, um die Anwendung nach dem nächsten Update weiter nutzen zu können.</string>
     <string name="all_channels">Alle Kanäle</string>
+    <!-- Genre names -->
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+
+    <!-- Individual genre strings -->
+    <string name="genre_action">Action</string>
+    <string name="genre_adventure">Abenteuer</string>
+    <string name="genre_animation">Animation</string>
+    <string name="genre_comedy">Komödie</string>
+    <string name="genre_crime">Krimi</string>
+    <string name="genre_documentary">Dokumentation</string>
+    <string name="genre_drama">Drama</string>
+    <string name="genre_family">Familie</string>
+    <string name="genre_fantasy">Fantasy</string>
+    <string name="genre_history">Geschichte</string>
+    <string name="genre_horror">Horror</string>
+    <string name="genre_music">Musik</string>
+    <string name="genre_mystery">Mystery</string>
+    <string name="genre_romance">Liebesfilm</string>
+    <string name="genre_science_fiction">Science-Fiction</string>
+    <string name="genre_thriller">Thriller</string>
+    <string name="genre_war">Kriegsfilm</string>
+    <string name="genre_western">Western</string>
+    <string name="genre_tv_movie">TV-Film</string>
+
+    <!-- Genre filter -->
+    <string name="lbl_all_genres">Alle Genres</string>
     <string name="pref_external_player">Externen Player verwenden</string>
     <string name="past_week">Letzte Woche</string>
     <string name="scheduled_in_next_24_hours">Geplant in den nächsten 24 Stunden</string>
@@ -603,7 +648,6 @@
     <string name="desc_my_media_extra_small">Meine Medienordner als Schaltflächen anzeigen</string>
     <string name="lbl_Watched_History_Series">Gesehene Serien</string>
     <string name="pref_subtitle_weight">Untertitelstärke</string>
-    <string name="lbl_backdrop_blur">Hintergrundunschärfe</string>
     <string name="lbl_backdrop_fading">Hintergrund verblassen</string>
     <string name="lbl_backdrop_dimming">Hintergrund abdunkeln</string>
     <string name="backdrop_settings">Hintergrundeinstellungen</string>

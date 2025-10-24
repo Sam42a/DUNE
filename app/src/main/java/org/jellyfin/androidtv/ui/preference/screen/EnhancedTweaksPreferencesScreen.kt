@@ -1,6 +1,7 @@
 package org.jellyfin.androidtv.ui.preference.screen
 
 import android.R.attr.icon
+import android.annotation.SuppressLint
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.UserSettingPreferences
@@ -12,6 +13,7 @@ import org.jellyfin.androidtv.ui.preference.dsl.enum
 import org.jellyfin.androidtv.ui.preference.dsl.optionsScreen
 import org.koin.android.ext.android.inject
 
+@SuppressLint("SuspiciousIndentation")
 class EnhancedTweaksPreferencesScreen : OptionsFragment() {
     private val userPreferences: UserPreferences by inject()
     private val userSettingPreferences: UserSettingPreferences by inject()
@@ -87,8 +89,8 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
                 bind(userSettingPreferences, userSettingPreferences.showRomanceRow)
             }
             checkbox {
-                setTitle(R.string.show_anime_row)
-                bind(userSettingPreferences, userSettingPreferences.showAnimeRow)
+                setTitle(R.string.show_animation_row)
+                bind(userSettingPreferences, userSettingPreferences.showAnimationRow)
             }
             checkbox {
                 setTitle(R.string.show_action_row)

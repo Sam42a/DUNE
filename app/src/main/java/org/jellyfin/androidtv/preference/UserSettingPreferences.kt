@@ -11,16 +11,13 @@ import org.jellyfin.preference.store.SharedPreferenceStore
 class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 ) {
-	    val showComedyRow = booleanPreference("showComedyRow", false)
+	val showComedyRow = booleanPreference("showComedyRow", false)
     val showRomanceRow = booleanPreference("showRomanceRow", false)
-    val showAnimeRow = booleanPreference("showAnimeRow", false)
     val showAnimationRow = booleanPreference("showAnimationRow", false)
     val showActionRow = booleanPreference("showActionRow", false)
     val showActionAdventureRow = booleanPreference("showActionAdventureRow", false)
     val showSciFiRow = booleanPreference("showSciFiRow", false)
     val showDocumentaryRow = booleanPreference("showDocumentaryRow", false)
-    val showDramaRow = booleanPreference("showDramaRow", false)
-    val showRealityTvRow = booleanPreference("showRealityTvRow", false)
     val showFamilyRow = booleanPreference("showFamilyRow", false)
     val showHorrorRow = booleanPreference("showHorrorRow", false)
     val showFantasyRow = booleanPreference("showFantasyRow", false)
@@ -39,7 +36,7 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
         "Anime",
         "Animation",
         "Action",
-        "Sci-Fi",
+        "Sci-Fi & Fantasy",
         "Documentary",
         "Drama",
         "Family",

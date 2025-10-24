@@ -124,7 +124,52 @@
     <string name="lbl_premier_date">Ensiesitys</string>
     <string name="lbl_date_added">Lisäyspäivä</string>
     <string name="lbl_name">Nimi</string>
-    <string name="lbl_all_items">Kaikki kohteet</string>
+    <!-- Genre names -->
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+
+    <!-- Individual genre strings -->
+    <string name="genre_action">Toiminta</string>
+    <string name="genre_adventure">Seikkailu</string>
+    <string name="genre_animation">Animaatio</string>
+    <string name="genre_comedy">Komedia</string>
+    <string name="genre_crime">Rikos</string>
+    <string name="genre_documentary">Dokumentti</string>
+    <string name="genre_drama">Draama</string>
+    <string name="genre_family">Perhe</string>
+    <string name="genre_fantasy">Fantasia</string>
+    <string name="genre_history">Historia</string>
+    <string name="genre_horror">Kauhu</string>
+    <string name="genre_music">Musiikki</string>
+    <string name="genre_mystery">Mysteeri</string>
+    <string name="genre_romance">Romantiikka</string>
+    <string name="genre_science_fiction">Tieteisfiktio</string>
+    <string name="genre_thriller">Jännitys</string>
+    <string name="genre_war">Sota</string>
+    <string name="genre_western">Western</string>
+    <string name="genre_tv_movie">TV-elokuva</string>
+
+    <!-- Genre filter -->
+    <string name="lbl_all_genres">Kaikki genret</string>
     <string name="lbl_audio_output">Äänilähtö</string>
     <string name="lbl_more_like_this">Lisää samankaltaisia</string>
     <string name="lbl_previous_episode">Edellinen jakso</string>

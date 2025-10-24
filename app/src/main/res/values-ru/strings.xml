@@ -601,4 +601,50 @@
     <string name="indicator_subtitles_hearing_impaired">Слабослышащие</string>
     <string name="fast_forward">Перемотать вперед</string>
     <string name="rewind">Перемотать назад</string>
+    <!-- Genre names -->
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+
+    <!-- Individual genre strings -->
+    <string name="genre_action">Боевик</string>
+    <string name="genre_adventure">Приключения</string>
+    <string name="genre_animation">Мультфильм</string>
+    <string name="genre_comedy">Комедия</string>
+    <string name="genre_crime">Криминал</string>
+    <string name="genre_documentary">Документальный</string>
+    <string name="genre_drama">Драма</string>
+    <string name="genre_family">Семейный</string>
+    <string name="genre_fantasy">Фэнтези</string>
+    <string name="genre_history">История</string>
+    <string name="genre_horror">Ужасы</string>
+    <string name="genre_music">Музыка</string>
+    <string name="genre_mystery">Детектив</string>
+    <string name="genre_romance">Мелодрама</string>
+    <string name="genre_science_fiction">Фантастика</string>
+    <string name="genre_thriller">Триллер</string>
+    <string name="genre_war">Военный</string>
+    <string name="genre_western">Вестерн</string>
+    <string name="genre_tv_movie">Телефильм</string>
+
+    <!-- Genre filter -->
+    <string name="lbl_all_genres">Все жанры</string>
 </resources>

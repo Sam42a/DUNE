@@ -219,7 +219,49 @@
     <string name="lbl_voice_search">Röstsökning</string>
     <string name="msg_not_implemented">" stöds ännu inte"</string>
     <string name="lbl_search">Sök</string>
-    <string name="lbl_genres">Genrer</string>
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+
+    <string name="genre_action">Action</string>
+    <string name="genre_adventure">Äventyr</string>
+    <string name="genre_animation">Animerad</string>
+    <string name="genre_comedy">Komedi</string>
+    <string name="genre_crime">Kriminalare</string>
+    <string name="genre_documentary">Dokumentär</string>
+    <string name="genre_drama">Drama</string>
+    <string name="genre_family">Familj</string>
+    <string name="genre_fantasy">Fantasy</string>
+    <string name="genre_history">Historia</string>
+    <string name="genre_horror">Skräck</string>
+    <string name="genre_music">Musik</string>
+    <string name="genre_mystery">Mysterium</string>
+    <string name="genre_romance">Romantik</string>
+    <string name="genre_science_fiction">Science Fiction</string>
+    <string name="genre_thriller">Thriller</string>
+    <string name="genre_war">Krig</string>
+    <string name="genre_western">Western</string>
+    <string name="genre_tv_movie">TV-film</string>
+
+    <string name="lbl_all_genres">Alla genrer</string>
     <string name="lbl_status">%1$s / %2$s</string>
     <string name="lbl_suggested">Föreslagna</string>
     <string name="lbl_by_letter">I bokstavsordning</string>

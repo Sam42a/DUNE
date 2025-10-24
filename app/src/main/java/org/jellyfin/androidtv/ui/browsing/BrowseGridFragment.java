@@ -899,13 +899,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             public void onClick(View v) {
                 PopupMenu genreMenu = new PopupMenu(getActivity(), binding.toolBar, Gravity.END);
 
-                // genre options
-                String[] genres = {
-                        "Action", "Adventure", "Animation", "Anime","Comedy",
-                        "Crime", "Documentary", "Drama", "Family", "Fantasy",
-                        "History", "Horror", "Music", "Mystery", "Romance",
-                        "Science Fiction", "Thriller", "War", "Western", "TV Movie"
-                };
+                String[] genres = getResources().getStringArray(R.array.genres);
 
                 // Make menu items checkable
                 genreMenu.getMenu().setGroupCheckable(0, true, true);
@@ -913,7 +907,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                 String currentGenre = mAdapter.getGenreFilter();
                 String normalizedCurrentGenre = currentGenre != null ? normalizeGenreName(currentGenre) : null;
 
-                MenuItem allGenresItem = genreMenu.getMenu().add(0, 0, 0, "All Genres");
+                MenuItem allGenresItem = genreMenu.getMenu().add(0, 0, 0, getString(R.string.lbl_all_genres));
                 allGenresItem.setChecked(normalizedCurrentGenre == null);
 
                 for (int i = 0; i < genres.length; i++) {
@@ -1072,12 +1066,11 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         if (serverGenre == null) return null;
 
         String normalizedServer = normalizeGenreName(serverGenre);
-        String[] genres = {
-                "action", "adventure", "animation", "anime", "comedy",
-                "crime", "documentary", "drama", "family", "fantasy",
-                "history", "horror", "music", "mystery", "romance",
-                "science fiction", "thriller", "war", "western", "tv movie"
-        };
+        String[] genreNames = getResources().getStringArray(R.array.genres);
+        String[] genres = new String[genreNames.length];
+        for (int i = 0; i < genreNames.length; i++) {
+            genres[i] = genreNames[i].toLowerCase();
+        }
 
         for (String genre : genres) {
             if (genre.equals(normalizedServer)) {

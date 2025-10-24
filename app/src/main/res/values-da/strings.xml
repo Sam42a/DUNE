@@ -159,7 +159,47 @@
     <string name="lbl_name">Navn</string>
     <string name="lbl_from">fra</string>
     <string name="lbl_sorted_by">Sorter efter</string>
-    <string name="lbl_all_items">Alle filer</string>
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+    <string name="genre_action">Action</string>
+    <string name="genre_adventure">Eventyr</string>
+    <string name="genre_animation">Animation</string>
+    <string name="genre_comedy">Komedie</string>
+    <string name="genre_crime">Krimi</string>
+    <string name="genre_documentary">Dokumentar</string>
+    <string name="genre_drama">Drama</string>
+    <string name="genre_family">Familie</string>
+    <string name="genre_fantasy">Fantasy</string>
+    <string name="genre_history">Historie</string>
+    <string name="genre_horror">Gyser</string>
+    <string name="genre_music">Musik</string>
+    <string name="genre_mystery">Mysterie</string>
+    <string name="genre_romance">Romantik</string>
+    <string name="genre_science_fiction">Science Fiction</string>
+    <string name="genre_thriller">Thriller</string>
+    <string name="genre_war">Krig</string>
+    <string name="genre_western">Western</string>
+    <string name="genre_tv_movie">TV-film</string>
+    <string name="lbl_all_genres">Alle genrer</string>
     <string name="pref_audio_compat">Miks ned til stereo</string>
     <string name="btn_got_it">Forstået</string>
     <string name="lbl_zoom">Zoom</string>

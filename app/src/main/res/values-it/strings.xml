@@ -156,7 +156,51 @@
     <string name="lbl_from">da</string>
     <string name="lbl_sorted_by">ordina per</string>
     <string name="genre_rows">Righe di genere (abilitane 5 o meno per prestazioni migliori)</string>
-    <string name="lbl_all_items">Tutti gli elementi</string>
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+
+    <!-- Individual genre strings -->
+    <string name="genre_action">Azione</string>
+    <string name="genre_adventure">Avventura</string>
+    <string name="genre_animation">Animazione</string>
+    <string name="genre_comedy">Commedia</string>
+    <string name="genre_crime">Giallo</string>
+    <string name="genre_documentary">Documentario</string>
+    <string name="genre_drama">Drammatico</string>
+    <string name="genre_family">Per la famiglia</string>
+    <string name="genre_fantasy">Fantasy</string>
+    <string name="genre_history">Storico</string>
+    <string name="genre_horror">Horror</string>
+    <string name="genre_music">Musicale</string>
+    <string name="genre_mystery">Mistero</string>
+    <string name="genre_romance">Sentimentale</string>
+    <string name="genre_science_fiction">Fantascienza</string>
+    <string name="genre_thriller">Thriller</string>
+    <string name="genre_war">Guerra</string>
+    <string name="genre_western">Western</string>
+    <string name="genre_tv_movie">Film TV</string>
+
+    <!-- Genre filter -->
+    <string name="lbl_all_genres">Tutti i generi</string>
     <string name="lbl_showing">Mostra</string>
     <string name="desc_debug">Provvedi extra informazioni per il debugging</string>
     <string name="pref_audio_compat">Downmix a stereo</string>
