@@ -749,7 +749,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
     private void deleteItem() {
         Timber.i("Showing item delete confirmation");
-        new AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.item_delete_confirm_title))
                 .setMessage(getString(R.string.item_delete_confirm_message))
                 .setNegativeButton(R.string.lbl_no, null)

@@ -154,6 +154,28 @@
     <style name="Popup">
     <!-- Add any Popup base styles here if needed -->
 </style>
+
+<style name="AlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+    <item name="android:windowBackground">@android:color/black</item>
+    <item name="android:textColor">@android:color/white</item>
+    <item name="android:textColorPrimary">@android:color/white</item>
+    <item name="android:textColorSecondary">@android:color/white</item>
+    <item name="android:buttonBarButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="colorAccent">@color/accent_color</item>
+    <item name="android:buttonBarPositiveButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="android:buttonBarNegativeButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="android:buttonBarNeutralButtonStyle">@style/AlertDialogButtonStyle</item>
+    <item name="buttonBarButtonStyle">@style/AlertDialogButtonStyle</item>
+</style>
+
+<style name="AlertDialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <item name="android:background">@drawable/btn_dialog_selector</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:paddingStart">16dp</item>
+    <item name="android:paddingEnd">16dp</item>
+    <item name="android:minHeight">36dp</item>
+    <item name="android:minWidth">64dp</item>
+</style>
     <!-- Exit Confirmation Dialog Style -->
     <style name="ExitDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/exit_dialog_background</item>

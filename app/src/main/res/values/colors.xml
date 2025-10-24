@@ -23,9 +23,10 @@
     <color name="red">#CC3333</color>
     <color name="transparent">#00000000</color>
     <color name="backdrop_dim_10">#1A000000</color>
-    <color name="black_overlay">#CC000000</color>
+    <color name="black_overlay">#99000000</color>
+    <color name="dialog_button_focused">#4DFFFFFF</color>
     <color name="button_background">#FF6200EE</color>
-    <color name="accent_color">#FFBB86FC</color> 
+    <color name="accent_color">#FFBB86FC</color>
 
     <!-- Semi-Transparent Blacks -->
     <color name="black_transparent_dark">#E6000000</color>  <!-- Added back for compatibility -->
