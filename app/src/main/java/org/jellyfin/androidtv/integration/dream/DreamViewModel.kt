@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.jellyfin.androidtv.integration.dream.model.DreamContent
 import org.jellyfin.androidtv.preference.UserPreferences
+import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
 import org.jellyfin.androidtv.util.apiclient.getUrl
 import org.jellyfin.androidtv.util.apiclient.itemBackdropImages
 import org.jellyfin.androidtv.util.apiclient.itemImages
@@ -59,18 +60,96 @@ class DreamViewModel(
 		emit(null)
 		delay(2.seconds)
 
-		while (true) {
-			val next = withContext(Dispatchers.IO) { getRandomLibraryShowcase() }
-			if (next != null) {
-				emit(next)
-				delay(20.seconds)
-			} else {
-				delay(3.seconds)
+		val isRandomSort = userPreferences[UserPreferences.screensaverSortBy] == ScreensaverSortBy.RANDOM
+
+		if (isRandomSort) {
+			// For random sorting, fetch a new random item each time
+			while (true) {
+				val next = withContext(Dispatchers.IO) { getRandomLibraryShowcase() }
+				if (next != null) {
+					emit(next)
+					delay(20.seconds)
+				} else {
+					delay(3.seconds)
+				}
+			}
+		} else {
+			while (true) {
+				val items = withContext(Dispatchers.IO) { getLibraryShowcaseItems() }
+				if (items.isNotEmpty()) {
+					items.forEach { item ->
+						emit(item)
+						delay(15.seconds)
+					}
+				} else {
+					delay(3.seconds)
+				}
 			}
 		}
 	}
 		.distinctUntilChanged()
 		.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+	private suspend fun getLibraryShowcaseItems(): List<DreamContent.LibraryShowcase> {
+		val requireParentalRating = userPreferences[UserPreferences.screensaverAgeRatingRequired]
+		val maxParentalRating = userPreferences[UserPreferences.screensaverAgeRatingMax]
+
+		try {
+			val response by api.itemsApi.getItems(
+				includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
+				recursive = true,
+				sortBy = listOf(userPreferences[UserPreferences.screensaverSortBy].itemSortBy),
+				limit = 50,
+				imageTypes = listOf(ImageType.BACKDROP),
+				maxOfficialRating = if (maxParentalRating == -1) null else maxParentalRating.toString(),
+				hasParentalRating = if (requireParentalRating) true else null,
+			)
+
+			val validItems = response.items.filter { it.itemBackdropImages.isNotEmpty() }
+			if (validItems.isEmpty()) return emptyList()
+
+			Timber.i("Loading ${validItems.size} library showcase items")
+
+			return validItems.mapNotNull { item ->
+				try {
+					val backdropUrl = item.itemBackdropImages.firstOrNull()?.getUrl(api)
+					val logoUrl = item.itemImages[ImageType.LOGO]?.getUrl(api)
+
+					val (logo, backdrop) = withContext(Dispatchers.IO) {
+						val logoDeferred = async {
+							logoUrl?.let { url ->
+								imageLoader.execute(
+									request = ImageRequest.Builder(context).data(url).build()
+								).image?.toBitmap()
+							}
+						}
+
+						val backdropDeferred = async {
+							backdropUrl?.let { url ->
+								imageLoader.execute(
+									request = ImageRequest.Builder(context).data(url).build()
+								).image?.toBitmap()
+							}
+						}
+
+						Pair(logoDeferred.await(), backdropDeferred.await())
+					}
+
+					if (backdrop != null) {
+						DreamContent.LibraryShowcase(item, backdrop, logo)
+					} else {
+						null
+					}
+				} catch (e: Exception) {
+					Timber.e(e, "Error loading library showcase item")
+					null
+				}
+			}
+		} catch (err: Exception) {
+			Timber.e(err, "Error fetching library showcase items")
+			return emptyList()
+		}
+	}
 
 	val content = combine(_mediaContent, _libraryContent) { mediaContent, libraryContent ->
 		mediaContent ?: libraryContent ?: DreamContent.Logo
@@ -88,7 +167,7 @@ class DreamViewModel(
 			val response by api.itemsApi.getItems(
 				includeItemTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
 				recursive = true,
-				sortBy = listOf(ItemSortBy.RANDOM),
+				sortBy = listOf(userPreferences[UserPreferences.screensaverSortBy].itemSortBy),
 				limit = 5,
 				imageTypes = listOf(ImageType.BACKDROP),
 				maxOfficialRating = if (maxParentalRating == -1) null else maxParentalRating.toString(),

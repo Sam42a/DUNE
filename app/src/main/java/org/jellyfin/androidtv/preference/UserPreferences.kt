@@ -8,6 +8,7 @@ import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
 import org.jellyfin.androidtv.preference.constant.GenreSortBy
+import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
 import org.jellyfin.androidtv.preference.constant.RatingType
 import org.jellyfin.androidtv.preference.constant.RefreshRateSwitchingBehavior
@@ -270,6 +271,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Whether items shown in the screensaver are required to have an age rating set.
 		 */
 		var screensaverAgeRatingRequired = booleanPreference("screensaver_agerating_required", true)
+
+		/**
+		 * Sorting method for screensaver content
+		 */
+		var screensaverSortBy = enumPreference("screensaver_sort_by", ScreensaverSortBy.RANDOM)
 
 		/**
 		 * Delay when starting video playback after loading the video player.

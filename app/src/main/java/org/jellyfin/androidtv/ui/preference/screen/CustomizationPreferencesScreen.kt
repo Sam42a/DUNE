@@ -6,6 +6,7 @@ import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.koin.android.ext.android.inject
 
 import org.jellyfin.androidtv.preference.constant.RatingType
+import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
 import org.jellyfin.androidtv.preference.constant.WatchedIndicatorBehavior
 import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
 import org.jellyfin.androidtv.ui.preference.dsl.checkbox
@@ -115,6 +116,12 @@ class CustomizationPreferencesScreen : OptionsFragment() {
 					default { UserPreferences.screensaverInAppTimeout.defaultValue.toString() }
 				}
 
+				depends { userPreferences[UserPreferences.screensaverInAppEnabled] }
+			}
+
+			enum<ScreensaverSortBy> {
+				setTitle(R.string.pref_screensaver_sort_by)
+				bind(userPreferences, UserPreferences.screensaverSortBy)
 				depends { userPreferences[UserPreferences.screensaverInAppEnabled] }
 			}
 
