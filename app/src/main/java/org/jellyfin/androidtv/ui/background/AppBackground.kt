@@ -1,9 +1,10 @@
 package org.jellyfin.androidtv.ui.background
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
-import timber.log.Timber
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,10 +12,9 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import org.jellyfin.androidtv.R
@@ -37,34 +36,66 @@ import org.jellyfin.androidtv.data.service.BackgroundService
 import org.jellyfin.androidtv.ui.composable.modifier.getBackdropFadingColor
 import org.jellyfin.androidtv.ui.composable.modifier.themedFadingEdges
 import org.koin.compose.koinInject
+import timber.log.Timber
+import androidx.core.graphics.createBitmap
 
 @Composable
 private fun AppThemeBackground() {
-	val context = LocalContext.current
-	val themeBackground = remember(context.theme) {
-		val attributes = context.theme.obtainStyledAttributes(intArrayOf(R.attr.defaultBackground))
-		val drawable = attributes.getDrawable(0)
-		attributes.recycle()
+    val context = LocalContext.current
 
-		if (drawable is ColorDrawable) drawable.toBitmap(1, 1).asImageBitmap()
-		else drawable?.toBitmap(1920, 1080)?.asImageBitmap()
-	}
+    // Use a small bitmap size (1x1) for solid color backgrounds to save memory
+    val themeBackground = remember(context.theme) {
+        try {
+            val attributes = context.theme.obtainStyledAttributes(intArrayOf(R.attr.defaultBackground))
+            val drawable = attributes.getDrawable(0)
+            attributes.recycle()
 
-	if (themeBackground != null) {
-		Image(
-			bitmap = themeBackground,
-			contentDescription = null,
-			alignment = Alignment.Center,
-			contentScale = ContentScale.Crop,
-			modifier = Modifier.fillMaxSize()
-		)
-	} else {
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(Color.Black)
-		)
-	}
+            when {
+                drawable is ColorDrawable -> {
+					drawable.toBitmap(1, 1, Bitmap.Config.ARGB_4444).asImageBitmap()
+                }
+                drawable != null -> {
+                    val options = BitmapFactory.Options().apply {
+                        inPreferredConfig = Bitmap.Config.RGB_565
+                        inSampleSize = 4 // Downsample by 4x
+                    }
+
+                    // Convert drawable to bitmap with reduced size
+                    val bitmap = createBitmap(480, 270, Bitmap.Config.RGB_565)
+
+                    val canvas = Canvas(bitmap)
+                    drawable.setBounds(0, 0, canvas.width, canvas.height)
+                    drawable.draw(canvas)
+
+                    bitmap?.asImageBitmap()
+                }
+                else -> null
+            }
+        } catch (e: OutOfMemoryError) {
+            Timber.e(e, "Failed to load theme background due to OOM")
+            null
+        } catch (e: Exception) {
+            Timber.e(e, "Error loading theme background")
+            null
+        }
+    }
+
+    if (themeBackground != null) {
+        Image(
+            bitmap = themeBackground,
+            contentDescription = null,
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        // Fallback to solid black background
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        )
+    }
 }
 
 @Composable
