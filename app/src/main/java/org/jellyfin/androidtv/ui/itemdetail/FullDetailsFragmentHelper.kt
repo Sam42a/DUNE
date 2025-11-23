@@ -25,13 +25,17 @@ import org.jellyfin.sdk.api.client.exception.ApiClientException
 import org.jellyfin.sdk.api.client.extensions.itemsApi
 import org.jellyfin.sdk.api.client.extensions.libraryApi
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
+import org.jellyfin.sdk.api.client.extensions.mediaInfoApi
 import org.jellyfin.sdk.api.client.extensions.tvShowsApi
 import org.jellyfin.sdk.api.client.extensions.userLibraryApi
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
+import org.jellyfin.sdk.model.api.DeviceProfile
 import org.jellyfin.sdk.model.api.ItemFilter
 import org.jellyfin.sdk.model.api.ItemSortBy
 import org.jellyfin.sdk.model.api.MediaType
+import org.jellyfin.sdk.model.api.PlaybackInfoDto
+import org.jellyfin.sdk.model.api.PlaybackInfoResponse
 import org.jellyfin.sdk.model.api.SeriesTimerInfoDto
 import org.jellyfin.sdk.model.extensions.ticks
 import org.jellyfin.sdk.model.serializer.toUUID
@@ -379,6 +383,39 @@ fun FullDetailsFragment.getLiveTvChannel(
 			}
 		}.onSuccess { channel ->
 			callback(channel)
+		}
+	}
+}
+
+fun FullDetailsFragment.getPostedPlaybackInfo(
+	itemId: UUID,
+	mediaSourceId: String?,
+	deviceProfile: DeviceProfile,
+	callback: (response: PlaybackInfoResponse?) -> Unit,
+) {
+	val api by inject<ApiClient>()
+
+	lifecycleScope.launch {
+		try {
+			val response = withContext(Dispatchers.IO) {
+				api.mediaInfoApi.getPostedPlaybackInfo(
+					itemId = itemId,
+					data = PlaybackInfoDto(
+						mediaSourceId = mediaSourceId,
+						deviceProfile = deviceProfile,
+						enableDirectPlay = true,
+						enableDirectStream = true,
+						enableTranscoding = true,
+						allowVideoStreamCopy = true,
+						allowAudioStreamCopy = true,
+						autoOpenLiveStream = false,
+					)
+				).content
+			}
+			callback(response)
+		} catch (err: ApiClientException) {
+			Timber.w(err, "Failed to get playback info for item $itemId")
+			callback(null)
 		}
 	}
 }

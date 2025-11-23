@@ -94,6 +94,13 @@ import org.jellyfin.sdk.model.api.UserDto;
 import org.jellyfin.sdk.model.serializer.UUIDSerializerKt;
 import org.koin.java.KoinJavaComponent;
 
+import org.jellyfin.sdk.api.client.ApiClient;
+import org.jellyfin.sdk.model.api.PlaybackInfoDto;
+import org.jellyfin.sdk.model.api.DeviceProfile;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -399,6 +406,92 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
     private int posterHeight;
 
+
+      // Preloads all video versions with complete media source information to ensure
+      // that audio and subtitle tracks are immediately available when selecting any version,useful for gelato plugin
+
+    private void preloadVideoVersions() {
+        if (mBaseItem == null || mBaseItem.getMediaSources() == null || mBaseItem.getMediaSources().size() <= 1) {
+            Timber.d("Skipping version preload - no multiple media sources found (mBaseItem=%s, mediaSources=%s)",
+                mBaseItem != null ? "exists" : "null",
+                (mBaseItem != null && mBaseItem.getMediaSources() != null) ? mBaseItem.getMediaSources().size() : "null");
+            return;
+        }
+
+        Timber.d("Starting batch probing for %d video versions", mBaseItem.getMediaSources().size());
+
+        List<org.jellyfin.sdk.model.api.MediaSourceInfo> probedSources = new ArrayList<>();
+        java.util.concurrent.atomic.AtomicInteger completedCount = new java.util.concurrent.atomic.AtomicInteger(0);
+        int totalSources = mBaseItem.getMediaSources().size();
+
+        for (org.jellyfin.sdk.model.api.MediaSourceInfo mediaSource : mBaseItem.getMediaSources()) {
+            probeMediaSource(mediaSource.getId(), probedSource -> {
+                synchronized (probedSources) {
+                    if (probedSource != null) {
+                        probedSources.add(probedSource);
+                    }
+                }
+
+                int completed = completedCount.incrementAndGet();
+                Timber.d("Completed probing %d/%d video versions", completed, totalSources);
+
+                if (completed == totalSources) {
+                    if (!probedSources.isEmpty()) {
+                        mBaseItem = JavaCompat.copyWithMediaSources(mBaseItem, probedSources);
+                        Timber.d("Successfully probed %d video versions with complete stream information", probedSources.size());
+
+                        if (versions != null) {
+                            versions = new ArrayList<>(probedSources);
+                        }
+                    } else {
+                        Timber.w("No media sources were successfully probed");
+                    }
+                }
+            });
+        }
+    }
+
+    private void probeMediaSource(String mediaSourceId, java.util.function.Consumer<org.jellyfin.sdk.model.api.MediaSourceInfo> callback) {
+        try {
+            UserPreferences userPreferences = KoinJavaComponent.get(UserPreferences.class);
+
+            // Create device profile for probing
+            DeviceProfile deviceProfile = org.jellyfin.androidtv.util.profile.DeviceProfileKt.createDeviceProfile(userPreferences, false);
+
+            FullDetailsFragmentHelperKt.getPostedPlaybackInfo(this, mBaseItem.getId(), mediaSourceId, deviceProfile, response -> {
+                if (response != null) {
+                    if (response.getErrorCode() != null) {
+                        Timber.w("Playback info error for source %s: %s", mediaSourceId, response.getErrorCode());
+                        callback.accept(null);
+                        return null;
+                    }
+
+                    org.jellyfin.sdk.model.api.MediaSourceInfo probedSource = response.getMediaSources().stream()
+                        .filter(source -> mediaSourceId.equals(source.getId()))
+                        .findFirst()
+                        .orElse(null);
+
+                    if (probedSource != null) {
+                        Timber.d("Successfully probed media source: %s", mediaSourceId);
+                        callback.accept(probedSource);
+                        return null;
+                    } else {
+                        Timber.w("Media source not found in response: %s", mediaSourceId);
+                        callback.accept(null);
+                        return null;
+                    }
+                } else {
+                    callback.accept(null);
+                    return null;
+                }
+            });
+
+        } catch (Exception e) {
+            Timber.e(e, "Exception probing media source: %s", mediaSourceId);
+            callback.accept(null);
+        }
+    }
+
     @Override
     public void setRecSeriesTimer(String id) {
         if (mProgramInfo != null) mProgramInfo = JavaCompat.copyWithTimerId(mProgramInfo, id);
@@ -419,6 +512,15 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             posterHeight = aspect > 1 ? Utils.convertDpToPixel(requireContext(), 160) : Utils.convertDpToPixel(requireContext(), item.getType() == BaseItemKind.PERSON || item.getType() == BaseItemKind.MUSIC_ARTIST ? 300 : 200);
 
             mDetailsOverviewRow = new MyDetailsOverviewRow(item);
+
+            String savedMediaItemId = userPreferences.getValue().get(UserPreferences.Companion.getCurrentMediaItemId());
+            if (savedMediaItemId != null && savedMediaItemId.equals(item.getId())) {
+                int savedIndex = userPreferences.getValue().get(UserPreferences.Companion.getSelectedMediaSourceIndex());
+                if (savedIndex >= 0) {
+                    Timber.d("Restoring selected media source index: %d for item: %s", savedIndex, item.getId());
+                    mDetailsOverviewRow.setSelectedMediaSourceIndex(savedIndex);
+                }
+            }
 
             String primaryImageUrl = imageHelper.getValue().getLogoImageUrl(mBaseItem, 600);
             if (primaryImageUrl == null) {
@@ -900,6 +1002,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
                     } else {
                         versions = new ArrayList<>(mBaseItem.getMediaSources());
                         addVersionsMenu(v);
+                        preloadVideoVersions();
                     }
                 }
             });
@@ -1150,6 +1253,11 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 mDetailsOverviewRow.setSelectedMediaSourceIndex(menuItem.getItemId());
+
+                Timber.d("Saving selected media source index: %d for item: %s", menuItem.getItemId(), mBaseItem.getId());
+                userPreferences.getValue().set(UserPreferences.Companion.getSelectedMediaSourceIndex(), menuItem.getItemId());
+                userPreferences.getValue().set(UserPreferences.Companion.getCurrentMediaItemId(), mBaseItem.getId().toString());
+
                 FullDetailsFragmentHelperKt.getItem(FullDetailsFragment.this, UUIDSerializerKt.toUUID(versions.get(mDetailsOverviewRow.getSelectedMediaSourceIndex()).getId()), item -> {
                     if (item == null) return null;
 

@@ -112,6 +112,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var nextUpTimeout = intPreference("next_up_timeout", 1000 * 7)
 
 		/**
+		 * Duration in milliseconds before player UI controls automatically hide
+		 * Default: 15000ms (15 seconds)
+		 */
+		var playerControlsHideDuration = intPreference("pref_player_controls_hide_duration", 15_000)
+		/**
 		 * Duration in seconds to subtract from resume time
 		 */
 		var resumeSubtractDuration = stringPreference("pref_resume_preroll", "0")
@@ -136,6 +141,18 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Whether ExoPlayer should prefer FFmpeg renderers to core ones.
 		 */
 		var preferExoPlayerFfmpeg = booleanPreference("exoplayer_prefer_ffmpeg", defaultValue = false)
+
+		/**
+		 * Selected media source index for the current media item
+		 * Used to persist version selection when navigating back to details screenn
+		 */
+		var selectedMediaSourceIndex = intPreference("selected_media_source_index", -1)
+
+		/**
+		 * Current media item ID to associate with selected media source index
+		 * Used to persist version selection when navigating back to details
+		 */
+		var currentMediaItemId = stringPreference("current_media_item_id", "")
 
 		/* Playback - Audio related */
 		/**
