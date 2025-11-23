@@ -49,6 +49,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 class ServerFragment : Fragment() {
+	private var initialFocusSet = false
 	companion object {
 		const val ARG_SERVER_ID = "server_id"
 	}
@@ -110,7 +111,21 @@ class ServerFragment : Fragment() {
 
 				binding.users.isFocusable = users.any()
 				binding.noUsersWarning.isVisible = users.isEmpty()
-				binding.root.requestFocus()
+
+				// Set initial focus on first user if not already set
+				if (users.isNotEmpty() && !initialFocusSet) {
+					initialFocusSet = true
+					view?.post {
+						try {
+							if (isAdded && view != null) {
+								val firstChild = binding.users.getChildAt(0)
+								firstChild?.requestFocus()
+							}
+						} catch (e: Exception) {
+							Timber.e(e, "Error setting initial focus")
+						}
+					}
+				}
 			}.launchIn(viewLifecycleOwner.lifecycleScope)
 
 		startupViewModel.loadUsers(server)
