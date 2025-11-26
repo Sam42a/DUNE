@@ -7,15 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.core.view.isVisible
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.databinding.OverlayStatsBindingBinding
 import org.jellyfin.androidtv.ui.graph.NetworkGraphView
 import org.jellyfin.androidtv.ui.playback.PlaybackController
+import org.jellyfin.androidtv.ui.playback.getConnectionSpeed
 import org.jellyfin.androidtv.ui.playback.getNetworkStats
+import org.jellyfin.androidtv.ui.playback.model.NetworkStats
 import org.jellyfin.androidtv.ui.playback.overlay.CustomPlaybackTransportControlGlue
 import org.jellyfin.androidtv.ui.playback.overlay.VideoPlayerAdapter
 import org.jellyfin.androidtv.util.dp
+import org.jellyfin.sdk.model.api.MediaStream
 import org.jellyfin.sdk.model.api.MediaStreamType
+import org.jellyfin.sdk.model.api.VideoRangeType
 import java.util.Locale
 
 class StatsAction(
@@ -343,7 +349,7 @@ class StatsAction(
 
             // Playback info
             val isTranscoding = currentMediaSource.isTranscoding()
-            val playMethod = currentStreamInfo?.playMethod?.name?.replace("_", " ")?.lowercase()?.replaceFirstChar { it.uppercase() }
+            val playMethod = currentStreamInfo?.playMethod?.name?.replace("_", " ")?.lowercase()?.capitalize()
                 ?: "Unknown"
             val container = currentMediaSource.container?.uppercase() ?: context.getString(R.string.resolution_na)
 
