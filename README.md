@@ -1,24 +1,18 @@
-
 <p align="center">
   <img src="https://files.catbox.moe/jqk9rl.jpg" alt="DUNE" width="100%">
 </p>
 
-<h1 align="center">DUNE - Jellyfin Android TV Client</h1> 
+# DUNE - Jellyfin Android TV Client
 
-<div align="center" style="display: flex; gap: 5px; justify-content: center;">
-  <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"><img src="https://img.shields.io/badge/License-GPL_v2-blue?labelColor=555555&style=for-the-badge" alt="License: GPL v2"></a>
-  <a href="https://github.com/Sam42a/DUNE/releases/latest"><img src="https://img.shields.io/github/v/release/Sam42a/DUNE?label=Latest%20Release&labelColor=555555&style=for-the-badge" alt="Latest Release"></a>
-  <a href="https://github.com/Sam42a/DUNE/stargazers"><img src="https://img.shields.io/github/stars/Sam42a/DUNE?label=Stars&labelColor=555555&style=for-the-badge" alt="GitHub Stars"></a>
-  <a href="https://coff.ee/sam42"><img src="https://img.shields.io/badge/Support_Me-Buy_a_Coffee-orange?labelColor=555555&style=for-the-badge" alt="Support Me"></a>
-</div>
+[![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue?labelColor=555555&style=for-the-badge)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![Latest Release](https://img.shields.io/github/v/release/Sam42a/DUNE?label=Latest%20Release&labelColor=555555&style=for-the-badge)](https://github.com/Sam42a/DUNE/releases/latest)
+[![GitHub Stars](https://img.shields.io/github/stars/Sam42a/DUNE?label=Stars&labelColor=555555&style=for-the-badge)](https://github.com/Sam42a/DUNE/stargazers)
+[![Support Me](https://img.shields.io/badge/Support_Me-Buy_a_Coffee-orange?labelColor=555555&style=for-the-badge)](https://coff.ee/sam42)
 
 <p align="center">
   <br>
-  <img src="https://i.imgur.com/x38f0Tw.png" alt="DUNE Screenshot" width="800">
+  <img src="https://i.imgur.com/4Oe1APd.jpeg" alt="DUNE Screenshot" width="100%">
 </p>
-
-> **Copyright © 2025 Sam42a**  
-> Based on [Jellyfin Android TV](https://github.com/jellyfin/jellyfin-androidtv) (C) Jellyfin Contributors
 
 ## About
 
@@ -28,38 +22,37 @@
 
 ## Translating
 
-This project uses the same translation system as the original Jellyfin Android TV client. If you'd like to help, instead please contribute to the [official Jellyfin Weblate instance](https://translate.jellyfin.org/projects/jellyfin-android/jellyfin-androidtv).
+This project uses the same translation system as the original Jellyfin Android TV client. If you'd like to help, please contribute to the [official Jellyfin Weblate instance](https://translate.jellyfin.org/projects/jellyfin-android/jellyfin-androidtv).
 
-## ✨ Key Features
+## Key Features
 
-### 🎨 Visual & Interface
-- **Modernized UI Framework**
-  - 🏠 Redesigned homescreen with improved content hierarchy
-  - 🔑 Enhanced login experience with visual feedback 
-  - 🔑 Default avatars for users without profile images
-  - 🔍 Intuitive search interface with voice input
-  - 🎭 Multiple theme options including OLED-optimized dark mode, based on [![Jellyfin Android TV OLED](https://img.shields.io/badge/Jellyfin%20Android%20TV-OLED-blue?logo=github)](https://github.com/LitCastVlog/jellyfin-androidtv-OLED) 
+### Visual & Interface
+**Modernized UI Framework**
+- Redesigned homescreen with improved content hierarchy
+- Enhanced login experience with visual feedback
+- Default avatars for users without profile images
+- Intuitive search interface with voice input
+- Multiple theme options including OLED-optimized dark mode, based on [Jellyfin Android TV OLED](https://github.com/LitCastVlog/jellyfin-androidtv-OLED)
 
-### 🛠️ Customization
-- **Library Presentation**
-  - 📚 Toggle between classic and modern layouts
-  - 🖼️ Dynamic backdrops from media artwork
-  - 🎬 Customizable homescreen rows (genres, favorites, collections)
+### Customization
+**Library Presentation**
+- Toggle between classic and modern layouts
+- Dynamic backdrops from media artwork
+- Customizable homescreen rows (genres, favorites, collections)
 
-### 🎥 Media Experience
-- **Enhanced Playback**
-  - 🎬 Advanced subtitle controls
-  - 🎨 Customizable background effects
-  - ⚡ Optimized performance
+### Media Experience
+**Enhanced Playback**
+- Advanced subtitle controls
+- Customizable background effects
+- Optimized performance
 
-### ⚙️ Technical Improvements
-- 🚀 Reduced memory usage
-- ⚡ Faster app startup
-- 📦 Side-by-side installation with official client
-- 🔃 Built-in auto-update support
+### Technical Improvements
+- Reduced memory usage
+- Faster app startup
+- Side-by-side installation with official client
+- Built-in auto-update support
 
-
-## 🛠️ Building from Source
+## Building from Source
 
 ### Requirements
 - Android Studio Giraffe (2022.3.1+)
@@ -69,7 +62,7 @@ This project uses the same translation system as the original Jellyfin Android T
 ### Build Instructions
 ```bash
 # Clone repository
-git clone [https://github.com/Sam42a/DUNE.git](https://github.com/Sam42a/DUNE.git)
+git clone https://github.com/Sam42a/DUNE.git
 cd DUNE-main
 
 # Build standard version
@@ -77,19 +70,18 @@ cd DUNE-main
 
 # Or build enhanced version (coexists with official app)
 ./gradlew assembleEnhancedRelease
+```
 
-# Install on Device
-
+### Install on Device
+```bash
 # Install debug version
 ./gradlew installStandardDebug
 
 # Install enhanced release
 ./gradlew installEnhancedRelease
+```
 
 **Note:** The enhanced version uses package ID `Dune.enhanced.tv` which allows it to be installed alongside the original Jellyfin app.
-
-
-```
 
 ## Third-Party Libraries
 
@@ -105,6 +97,7 @@ This project uses the following third-party libraries:
 - **ACRA** - [Apache-2.0](https://github.com/ACRA/acra)
 - **Kotest** - [Apache-2.0](https://kotest.io/)
 - **MockK** - [Apache-2.0](https://mockk.io/)
+
 ## Acknowledgments
 
 This project is based on the work of the Jellyfin Contributors. Special thanks to all the developers and community members who have contributed to the Jellyfin Android TV project.
@@ -112,6 +105,3 @@ This project is based on the work of the Jellyfin Contributors. Special thanks t
 ## License
 
 This project is licensed under the **GNU General Public License v2.0 (GPL-2.0)**. See the [LICENSE](LICENSE) file for details.
-
-
-
