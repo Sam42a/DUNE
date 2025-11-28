@@ -48,6 +48,12 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             }
 
             checkbox {
+                setTitle(R.string.use_classic_home_screen)
+                setContent(R.string.use_classic_home_screen_summary)
+                bind(userSettingPreferences, userSettingPreferences.useClassicHomeScreen)
+            }
+
+            checkbox {
                 setTitle(R.string.lbl_use_series_thumbnails)
                 setContent(R.string.lbl_use_series_thumbnails_description)
                 bind(userPreferences, UserPreferences.seriesThumbnailsEnabled)

@@ -616,6 +616,8 @@
     <string name="skip_duration_20_seconds">20 Seconds</string>
     <string name="segment_type_unknown">Unknown segments</string>
     <string name="skip_forward_length">Skip forward length</string>
+    <string name="player_controls_hide_duration">Hide Player UI Controls Duration</string>
+    <string name="player_controls_hide_duration_summary">Time in seconds before player controls automatically hide</string>
     <string name="preference_enable_trickplay">Enable trickplay in video player</string>
     <string name="pref_subtitles_background_opacity">Subtitle background opacity</string>
     <string name="pref_troubleshooting">Troubleshooting</string>
@@ -744,6 +746,8 @@
     <string name="show_live_tv_button_summary">Display the Live TV button </string>
     <string name="show_random_button">Random Movie Button</string>
     <string name="show_random_button_summary">Display the Random Movie button </string>
+    <string name="use_classic_home_screen">Classic Home Screen</string>
+    <string name="use_classic_home_screen_summary">Switch between classic and modern home screen layout</string>
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>
 
@@ -859,4 +863,5 @@
     <!-- Screensaver sorting -->
     <string name="pref_screensaver_sort_by">Screensaver Sort Order</string>
     <string name="pref_screensaver_sort_by_description">Choose how items are sorted in the screensaver</string>
+    <string name="lbl_version">lbl_version</string>
 </resources>

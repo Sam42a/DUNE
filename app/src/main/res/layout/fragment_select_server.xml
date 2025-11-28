@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/user_page_background_shadow"
     android:paddingHorizontal="@dimen/overscan_horizontal"
     android:paddingBottom="@dimen/overscan_vertical">
 

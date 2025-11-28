@@ -109,7 +109,8 @@
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/flexy_background_filter</item>
         <!-- Backdrop Fading Color -->
-        <item name="backdrop_fading_color">@color/flexy_highlight</item>
+        <item name="backdrop_fading_color">@color/black</item>
+        <item name="defaultBackground">@color/black</item>
         <item name="browseTitleViewLayout">@layout/view_lb_browse_title</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>

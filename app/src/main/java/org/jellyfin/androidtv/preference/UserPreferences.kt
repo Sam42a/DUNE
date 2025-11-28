@@ -56,7 +56,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		/**
 		 * Select the app theme
 		 */
-		var appTheme = enumPreference("app_theme", AppTheme.FLEXY)
+		var appTheme = enumPreference("app_theme", AppTheme.MUTED_PURPLE)
 
 		/**
 		 * Enable background images while browsing

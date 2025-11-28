@@ -33,9 +33,9 @@
         <item name="cardViewBackground">@color/transparent</item>
         <item name="cardImageBackground">@color/yellowtown_surface</item>
         <item name="popupMenuBackground">@color/yellowtown_surface</item>
-        <item name="defaultBackground">@drawable/dark_backgrounds</item>
+        <item name="defaultBackground">@color/yellowtown_Fading_background</item>
         <item name="background_filter">@color/yellowtown_background</item>
-        <item name="backdrop_fading_color">@color/yellowtown_background</item>
+        <item name="backdrop_fading_color">@color/yellowtown_Fading_background</item>
 
         <!-- Buttons and controls -->
         <item name="buttonBackground">@color/muted_purple_button_normal</item>

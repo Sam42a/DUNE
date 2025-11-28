@@ -53,6 +53,7 @@ class BackgroundService(
 	private var _currentBackground = MutableStateFlow<ImageBitmap?>(null)
 	private var _enabled = MutableStateFlow(true)
 	private var _preventLoginBackgroundOverride = MutableStateFlow(false)
+	private var _blockAllBackgrounds = false
 	val currentBackground get() = _currentBackground.asStateFlow()
 	val enabled get() = _enabled.asStateFlow()
 	private var _dimmingIntensity = MutableStateFlow(0.5f)
@@ -64,6 +65,8 @@ class BackgroundService(
 	 * Use splashscreen from [server] as background.
 	 */
 	fun setBackground(server: Server) {
+		if (_blockAllBackgrounds) return
+
 		// Check if item is set and backgrounds are enabled
 		if (!userPreferences[UserPreferences.backdropEnabled] || _preventLoginBackgroundOverride.value)
 			return clearBackgrounds()
@@ -89,6 +92,8 @@ class BackgroundService(
 	 * For Media Folders, use primary image as backdrop if no backdrops are available.
 	 */
 	fun setBackground(baseItem: BaseItemDto?) {
+		if (_blockAllBackgrounds) return
+
 		// Check if item is set and backgrounds are enabled
 		if (baseItem == null || !userPreferences[UserPreferences.backdropEnabled])
 			return clearBackgrounds()
@@ -175,6 +180,14 @@ class BackgroundService(
 	 */
 	fun allowLoginBackgroundOverride() {
 		_preventLoginBackgroundOverride.value = false
+	}
+
+	fun blockAllBackgrounds() {
+		_blockAllBackgrounds = true
+		clearBackgrounds() // Clear any existing backgrounds
+	}
+	fun unblockAllBackgrounds() {
+		_blockAllBackgrounds = false
 	}
 
 	internal fun update() {

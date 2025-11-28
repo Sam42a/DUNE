@@ -113,7 +113,8 @@
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/backdrop_dim_10</item>
         <!-- Backdrop Fading Color -->
-        <item name="backdrop_fading_color">@color/white</item>
+        <item name="backdrop_fading_color">@color/purplehaze_background_filter</item>
+        <item name="defaultBackground">@color/purplehaze_background_filter</item>
         <item name="browseTitleViewLayout">@layout/view_lb_browse_title</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>

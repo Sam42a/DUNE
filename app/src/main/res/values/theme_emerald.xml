@@ -120,7 +120,8 @@
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/black</item>
         <!-- Backdrop Fading Color -->
-        <item name="backdrop_fading_color">@color/emerald_highlight</item>
+        <item name="backdrop_fading_color">@color/emerald_primary_dark</item>
+        <item name="defaultBackground">@color/emerald_primary_dark</item>
         <item name="browseTitleViewLayout">@layout/view_lb_browse_title</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>

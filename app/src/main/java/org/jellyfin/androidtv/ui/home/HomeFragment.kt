@@ -15,11 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jellyfin.androidtv.auth.repository.ServerRepository
 import org.jellyfin.androidtv.auth.repository.SessionRepository
-import org.jellyfin.androidtv.auth.repository.UserRepository
-import org.jellyfin.androidtv.data.repository.NotificationsRepository
 import org.jellyfin.androidtv.databinding.FragmentHomeBinding
+import org.jellyfin.androidtv.databinding.FragmentHomeClassicBinding
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.ui.AsyncImageView
 import org.jellyfin.androidtv.preference.UserSettingPreferences
@@ -34,14 +32,35 @@ import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.koin.android.ext.android.inject
+import org.jellyfin.androidtv.ui.home.carousel.CarouselViewModel
+import org.jellyfin.androidtv.ui.home.carousel.FeaturedCarousel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import org.jellyfin.androidtv.ui.home.carousel.CarouselUiState
 import timber.log.Timber
 import java.util.UUID
 
 class HomeFragment : Fragment() {
     private val api: ApiClient by inject()
     private val imageHelper: ImageHelper by inject()
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private val carouselViewModel: CarouselViewModel by viewModel()
+    private var _modernBinding: FragmentHomeBinding? = null
+    private var _classicBinding: FragmentHomeClassicBinding? = null
+    private val modernBinding get() = _modernBinding!!
+    private val classicBinding get() = _classicBinding!!
+    private var useClassicLayout = false
+    private val currentBinding get() = if (useClassicLayout) _classicBinding else _modernBinding
     private val scrollListeners = mutableListOf<RecyclerView.OnScrollListener>()
     private var isScrolling = false
     private val scrollHandler = android.os.Handler(android.os.Looper.getMainLooper())
@@ -53,13 +72,11 @@ class HomeFragment : Fragment() {
      * Set up scroll listeners for all RecyclerViews in the fragment
      */
     private fun setupScrollListeners() {
-        // Check if binding is still valid (fragment view not destroyed)
-        val binding = _binding ?: return
+        val currentBinding = currentBinding ?: return
 
-        binding.root.post {
-            val currentBinding = _binding ?: return@post
+        currentBinding.root.post {
 
-            findRecyclerViews(currentBinding.root).forEach { recyclerView ->
+            findRecyclerViews(currentBinding.root as ViewGroup).forEach { recyclerView ->
                 val scrollListener = object : RecyclerView.OnScrollListener() {
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                         super.onScrollStateChanged(recyclerView, newState)
@@ -120,14 +137,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun notifyAsyncImageViewsOfScrollState(scrolling: Boolean) {
-        // Check if binding is still valid (fragment view not destroyed)
-        val binding = _binding ?: return
+        val currentBinding = currentBinding ?: return
 
-        binding.root.post {
-            // Check binding again in case fragment was destroyed during post delay
-            val currentBinding = _binding ?: return@post
+        currentBinding.root.post {
+            val currentBinding = currentBinding ?: return@post
 
-            findAsyncImageViews(currentBinding.root).forEach { asyncImageView ->
+            findAsyncImageViews(currentBinding.root as ViewGroup).forEach { asyncImageView ->
                 asyncImageView.setScrollState(scrolling)
             }
         }
@@ -150,12 +165,11 @@ class HomeFragment : Fragment() {
      * Clean up scroll listeners
      */
     private fun cleanupScrollListeners() {
-        // Check if binding is still valid (fragment view not destroyed)
-        val binding = _binding ?: return
+        val currentBinding = currentBinding ?: return
 
         scrollListeners.forEach { listener ->
             // Remove listener from all RecyclerViews
-            findRecyclerViews(binding.root).forEach { recyclerView ->
+            findRecyclerViews(currentBinding.root as ViewGroup).forEach { recyclerView ->
                 recyclerView.removeOnScrollListener(listener)
             }
         }
@@ -184,8 +198,15 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        useClassicLayout = userSettingPreferences.get(userSettingPreferences.useClassicHomeScreen)
+
+        return if (useClassicLayout) {
+            _classicBinding = FragmentHomeClassicBinding.inflate(inflater, container, false)
+            classicBinding.root
+        } else {
+            _modernBinding = FragmentHomeBinding.inflate(inflater, container, false)
+            modernBinding.root
+        }
     }
 
     override fun onResume() {
@@ -195,11 +216,16 @@ class HomeFragment : Fragment() {
         // Start preloading images when the fragment resumes
         preloadHomeScreenImages()
 
-        // Clear backdrop when navigating to home
+        refreshBackgroundState()
+    }
+
+    override fun onPause() {
+        super.onPause()
         try {
-            backgroundService.clearBackgrounds()
+            backgroundService.unblockAllBackgrounds() // Unblock for other screens
+            Timber.tag("HomeFragment").d("Backgrounds unblocked on pause")
         } catch (e: Exception) {
-			Timber.tag("HomeFragment").e(e, "Error clearing backdrop")
+			Timber.tag("HomeFragment").e(e, "Error unblocking background service on pause")
         }
     }
 
@@ -227,7 +253,8 @@ class HomeFragment : Fragment() {
             cleanupScrollListeners()
 
             // Clear binding
-            _binding = null
+            _modernBinding = null
+            _classicBinding = null
         } catch (e: Exception) {
             Timber.e(e, "Error in onDestroyView")
         } finally {
@@ -380,7 +407,9 @@ class HomeFragment : Fragment() {
         }
         view.postDelayed(interactionDelayRunnable!!, 2000) // 2 second delay
 
-        binding.toolbar.setContent {
+        //  toolbar for both classic and modern layouts
+        val toolbarBinding = if (useClassicLayout) classicBinding.toolbar else modernBinding.toolbar
+        toolbarBinding.setContent {
             val searchAction = {
                 navigationRepository.navigate(Destinations.search())
             }
@@ -442,6 +471,88 @@ class HomeFragment : Fragment() {
                 openRandomMovie = openRandomMovie,
                 userSettingPreferences = userSettingPreferences
             )
+        }
+
+        if (!useClassicLayout) {
+            modernBinding.carouselContainer?.setContent {
+            val carouselUiState by carouselViewModel.uiState.collectAsState()
+
+            when (val state = carouselUiState) {
+                is CarouselUiState.Loading -> {
+                    // Loading state  could show a shimmer or placeholder
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.material3.CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+                }
+                is CarouselUiState.Success -> {
+                    FeaturedCarousel(
+                        items = state.items,
+                        onItemSelected = { item ->
+                            // Navigate to item details
+                            try {
+                                val uuid = java.util.UUID.fromString(item.id)
+                                navigationRepository.navigate(Destinations.itemDetails(uuid))
+                            } catch (e: Exception) {
+                                Timber.e(e, "Error parsing item ID for navigation: ${item.id}")
+                            }
+                        }
+                    )
+                }
+                is CarouselUiState.Empty -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.material3.Text(
+                            text = "No featured content available",
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+                is CarouselUiState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                        ) {
+                            androidx.compose.material3.Text(
+                                text = "Error loading featured content",
+                                style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.error
+                            )
+
+                            androidx.compose.material3.TextButton(
+                                onClick = { carouselViewModel.refresh() },
+                                modifier = Modifier.padding(top = 16.dp)
+                            ) {
+                                androidx.compose.material3.Text("Retry")
+                            }
+                        }
+                    }
+                }
+            }
+            }
+        }
+    }
+
+    private fun refreshBackgroundState() {
+        try {
+            if (useClassicLayout) {
+                backgroundService.unblockAllBackgrounds()
+                Timber.tag("HomeFragment").d("Backgrounds enabled for classic home screen (refresh)")
+            } else {
+                backgroundService.blockAllBackgrounds()
+                Timber.tag("HomeFragment").d("Backgrounds blocked for modern home screen (refresh)")
+            }
+        } catch (e: Exception) {
+            Timber.tag("HomeFragment").e(e, "Error refreshing background service")
         }
     }
 

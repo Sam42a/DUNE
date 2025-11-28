@@ -10,7 +10,8 @@
         <item name="android:colorAccent">@color/muted_purple_card</item>
 
         <!-- Background and window -->
-        <item name="android:windowBackground">@color/muted_purple_background</item>
+        <item name="android:windowBackground">@color/muted_purple_status_bar</item>
+        <item name="defaultBackground">@color/muted_purple_status_bar</item>
         <item name="android:statusBarColor">@color/muted_purple_status_bar</item>
         <item name="android:navigationBarColor">@color/muted_purple_nav_bar</item>
         <item name="android:windowLightStatusBar">false</item>
@@ -111,7 +112,7 @@
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/muted_purple_background_filter</item>
         <!-- Backdrop Fading Color -->
-        <item name="backdrop_fading_color">@color/muted_purple_highlight</item>
+        <item name="backdrop_fading_color">@color/muted_purple_status_bar</item>
         <item name="browseTitleViewLayout">@layout/view_lb_browse_title</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlayLeanback</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>

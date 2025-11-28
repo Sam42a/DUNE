@@ -27,19 +27,20 @@ coil = "3.3.0"
 detekt = "1.23.8"
 java-jdk = "21"
 jellyfin-androidx-media = "1.8.0+1"
+jellyfin-sdk = "1.8.3"
 jellyfin-apiclient = "v0.7.10"
-jellyfin-sdk = "1.7.1"
 koin = "4.0.4"
 koin-compose = "4.1.0"
 kotest = "6.0.4"
 kotlin = "2.2.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
-libass-android = "0.3.0-rc04"
+libass-android = "0.3.0-rc05"
 markwon = "4.6.2"
 mockk = "1.14.6"
 slf4j-timber = "0.0.8"
 timber = "5.0.1"
+foundationAndroid = "1.8.0"
 
 [plugins]
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
@@ -78,8 +79,11 @@ androidx-preference = { module = "androidx.preference:preference-ktx", version.r
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup" }
 androidx-tvprovider = { module = "androidx.tvprovider:tvprovider", version.ref = "androidx-tvprovider" }
+androidx-tv-material = { module = "androidx.tv:tv-material", version = "1.0.0" }
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidx-work" }
+androidx-palette = { module = "androidx.palette:palette", version = "1.0.0" }
+androidx-material3 = { module = "androidx.compose.material3:material3", version = "1.2.1" }
 
 # Dependency Injection
 koin-android-compat = { module = "io.insert-koin:koin-android-compat", version.ref = "koin" }
@@ -125,6 +129,7 @@ android-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref =
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 
 [bundles]
 acra = [

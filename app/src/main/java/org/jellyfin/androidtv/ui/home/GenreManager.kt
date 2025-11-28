@@ -35,7 +35,7 @@ class GenreManager(
 
 	companion object {
 		private const val GENRE_ITEM_LIMIT = 10
-		private const val GENRE_CARD_HEIGHT = 170
+		private const val GENRE_CARD_HEIGHT = 140
 		private const val CACHE_EXPIRY_MS = 5 * 60 * 1000L // 5 minutes
 	}
 
@@ -326,7 +326,7 @@ class GenreManager(
 		val query = GetItemsRequest(
 			userId = currentUserId,
 			includeItemTypes = listOf(BaseItemKind.BOX_SET),
-			sortBy = setOf(ItemSortBy.RANDOM),
+			sortBy = listOf(userPreferences[UserPreferences.genreSortBy].itemSortBy),
 			sortOrder = listOf(SortOrder.DESCENDING),
 			limit = GENRE_ITEM_LIMIT,
 			recursive = true,
@@ -354,8 +354,8 @@ class GenreManager(
 
 						// Set fixed dimensions for all cards in the row (same as Music Videos)
 						(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
-							cardView.setMainImageDimensions(220, 128)
-							cardView.cardType = BaseCardView.CARD_TYPE_INFO_UNDER
+							cardView.setMainImageDimensions(210, 110)
+							cardView.cardType = BaseCardView.CARD_TYPE_MAIN_ONLY
 						}
 					}
 				}

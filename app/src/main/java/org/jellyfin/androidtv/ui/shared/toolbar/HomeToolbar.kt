@@ -109,8 +109,7 @@ fun HomeToolbar(
                 user.primaryImageTag?.let { tag ->
                     koinInject<ApiClient>().imageApi.getUserImageUrl(
                         userId = user.id,
-                        tag = tag,
-                        maxHeight = 100 // Small size for the toolbar
+                        tag = tag
                     )
                 }
             }
@@ -124,7 +123,7 @@ fun HomeToolbar(
                     .size(36.dp) // 40dp - 10%
                     .clip(CircleShape)
                     .background(
-                        if (isFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent,
+                        if (isFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent,
                         CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -183,7 +182,7 @@ fun HomeToolbar(
                         }
                     }
                     .background(
-                        if (isSearchFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
+                        if (isSearchFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -254,7 +253,7 @@ fun HomeToolbar(
                         }
                     }
                     .background(
-                        if (isLibraryFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
+                        if (isLibraryFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -326,7 +325,7 @@ fun HomeToolbar(
                             }
                         }
                         .background(
-                            if (isLiveTvFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
+                            if (isLiveTvFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -448,7 +447,7 @@ fun HomeToolbar(
                             }
                         }
                         .background(
-                            if (isMasksFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
+                            if (isMasksFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -519,7 +518,7 @@ fun HomeToolbar(
                         }
                     }
                     .background(
-                        if (isSettingsFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
+                        if (isSettingsFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -589,7 +588,7 @@ fun HomeToolbar(
                         }
                     }
                     .background(
-                        if (isFavoritesFocused) Color.White.copy(alpha = 0.65f) else Color.Transparent
+                        if (isFavoritesFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent
                     ),
                 contentAlignment = Alignment.Center
             ) {
