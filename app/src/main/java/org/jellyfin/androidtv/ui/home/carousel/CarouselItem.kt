@@ -25,16 +25,16 @@ data class CarouselItem(
             if (item.id == null) return null
 
             val backdropUrl = imageHelper.getBackdropImageUrl(item, maxWidth = 1920, maxHeight = 1080)
-            val primaryImageUrl = imageHelper.getPrimaryImageUrl(item) ?: ""
+            val thumbImageUrl = imageHelper.getThumbImageUrl(item, fillWidth = 1920, fillHeight = 720) ?: ""
 
-            timber.log.Timber.d("Item ${item.name} - Backdrop URL: ${backdropUrl ?: "NULL"}, Primary URL: $primaryImageUrl")
+            timber.log.Timber.d("Item ${item.name} - Backdrop URL: ${backdropUrl ?: "NULL"}, Thumb URL: $thumbImageUrl")
 
             return CarouselItem(
                 id = item.id.toString(),
                 title = item.name ?: "",
                 description = item.overview ?: "",
-                imageUrl = backdropUrl ?: primaryImageUrl,
-                backdropUrl = backdropUrl ?: primaryImageUrl,
+                imageUrl = backdropUrl ?: thumbImageUrl,
+                backdropUrl = backdropUrl ?: thumbImageUrl,
                 runtimeTicks = item.runTimeTicks,
                 productionYear = item.productionYear,
                 communityRating = item.communityRating,

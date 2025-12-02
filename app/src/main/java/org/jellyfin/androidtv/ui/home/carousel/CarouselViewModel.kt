@@ -41,7 +41,7 @@ class CarouselViewModel(
                 val response = api.itemsApi.getItems(
                     request = GetItemsRequest(
                         parentId = null,
-                        includeItemTypes = setOf(org.jellyfin.sdk.model.api.BaseItemKind.MOVIE,org.jellyfin.sdk.model.api.BaseItemKind.SERIES),
+                        includeItemTypes = setOf(org.jellyfin.sdk.model.api.BaseItemKind.MOVIE),
 						filters = setOf(ItemFilter.IS_UNPLAYED),
 						sortBy = setOf(ItemSortBy.DATE_CREATED),
                         sortOrder = setOf(SortOrder.DESCENDING),
@@ -49,7 +49,7 @@ class CarouselViewModel(
                         recursive = true,
                         enableImageTypes = setOf(
                         org.jellyfin.sdk.model.api.ImageType.BACKDROP,
-                        org.jellyfin.sdk.model.api.ImageType.PRIMARY
+                        org.jellyfin.sdk.model.api.ImageType.THUMB
                     ),
                         fields = setOf(org.jellyfin.sdk.model.api.ItemFields.OVERVIEW),
                         enableTotalRecordCount = false
