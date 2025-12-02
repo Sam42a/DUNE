@@ -2,6 +2,8 @@ package org.jellyfin.androidtv.ui.itemdetail;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -14,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -48,12 +52,16 @@ import org.jellyfin.androidtv.util.Utils;
 import org.jellyfin.androidtv.util.sdk.BaseItemExtensionsKt;
 import org.jellyfin.sdk.model.api.BaseItemDto;
 import org.jellyfin.sdk.model.api.BaseItemKind;
+import org.jellyfin.sdk.model.api.ItemSortBy;
 import org.jellyfin.sdk.model.api.MediaType;
+import org.jellyfin.sdk.model.api.SortOrder;
 import org.koin.java.KoinJavaComponent;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -86,6 +94,24 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
     private boolean firstTime = true;
     private Instant lastUpdated = Instant.now();
 
+    private Map<Integer, SortOption> sortOptions;
+    private ItemSortBy currentSortBy = ItemSortBy.SORT_NAME;
+    private SortOrder currentSortOrder = SortOrder.ASCENDING;
+
+    // Lazy loading fields, hopefully lol
+    private int mCurrentLoadedCount = 0;
+    private static final int BATCH_SIZE = 25;  // Reduced from 50 - smaller batches load faster
+    private static final int INITIAL_BATCH_SIZE = 15;  // Even smaller first batch for immediate display
+    private boolean mIsLoadingMore = false;
+    private int mTotalItemCount = 0;
+    private final Map<UUID, Double> imageAspectCache = new HashMap<>();  // Cache for image aspect ratios
+    private BaseItemDto lastBackdropItem = null;  // Cache for backdrop item
+    private long lastScrollLoadTime = 0;
+    private static final long SCROLL_LOAD_DEBOUNCE = 300; // ms
+    private ProgressBar loadingIndicator;
+    private boolean isLoading = false;
+    private int activeLoaders = 0;
+
     private final Lazy<DataRefreshService> dataRefreshService = inject(DataRefreshService.class);
     private final Lazy<BackgroundService> backgroundService = inject(BackgroundService.class);
     private final Lazy<MediaManager> mediaManager = inject(MediaManager.class);
@@ -94,6 +120,7 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
     private final Lazy<PlaybackHelper> playbackHelper = inject(PlaybackHelper.class);
     private final Lazy<ImageHelper> imageHelper = inject(ImageHelper.class);
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,6 +137,7 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
         mSummary = detailsBinding.fdSummaryText;
         mItemList = binding.songs;
         mScrollView = binding.scrollView;
+        loadingIndicator = binding.loadingIndicator;
 
         mMetrics = new DisplayMetrics();
         requireActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
@@ -135,6 +163,18 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
             @Override
             public void onRowClicked(ItemRowView row) {
                 showMenu(row, row.getItem().getType() != BaseItemKind.AUDIO);
+            }
+        });
+
+        mScrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (mScrollView.getChildCount() > 0) {
+                View child = mScrollView.getChildAt(0);
+                int scrollViewHeight = mScrollView.getHeight();
+                int childHeight = child.getHeight();
+
+                if (scrollY + scrollViewHeight >= childHeight - 100) {
+                    onScrolledToBottom();
+                }
             }
         });
 
@@ -214,6 +254,12 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
     public void onPause() {
         super.onPause();
         mediaManager.getValue().removeAudioEventListener(mAudioEventListener);
+        if (loadingIndicator != null && activeLoaders > 0) {
+            activeLoaders = 0;
+            loadingIndicator.animate().cancel();
+            loadingIndicator.setVisibility(View.GONE);
+            loadingIndicator.setAlpha(1f);
+        }
     }
 
     private AudioEventListener mAudioEventListener = new AudioEventListener() {
@@ -314,31 +360,142 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
         mPoster.setPadding(0, 0, 0, 0);
         mPoster.load(primaryImageUrl, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_album), aspect, 0);
 
-        ItemListFragmentHelperKt.getPlaylist(this, mBaseItem, itemResponse);
+        ItemListFragmentHelperKt.getPlaylist(this, mBaseItem, currentSortBy, currentSortOrder, itemResponse);
+    }
+
+    private void setLoading(boolean loading) {
+        if (getActivity() == null || loadingIndicator == null) return;
+
+        getActivity().runOnUiThread(() -> {
+            // Cancel any ongoing animations
+            loadingIndicator.animate().cancel();
+
+            if (loading) {
+                activeLoaders++;
+                // Show and fade in the loading indicator
+                if (loadingIndicator.getVisibility() != View.VISIBLE) {
+                    loadingIndicator.setAlpha(0f);
+                    loadingIndicator.setVisibility(View.VISIBLE);
+                }
+                loadingIndicator.animate()
+                    .alpha(1f)
+                    .setDuration(300)
+                    .start();
+            } else {
+                activeLoaders = Math.max(0, activeLoaders - 1);
+                if (activeLoaders == 0) {
+                    loadingIndicator.animate()
+                        .alpha(0f)
+                        .setDuration(300)
+                        .withEndAction(() -> {
+                            if (getActivity() != null && loadingIndicator != null) {
+                                loadingIndicator.clearAnimation();
+                                loadingIndicator.setVisibility(View.GONE);
+                                loadingIndicator.setAlpha(1f); // Reset alpha for next time
+                                loadingIndicator.setIndeterminate(false);
+                                loadingIndicator.setIndeterminate(true);
+                            }
+                        })
+                        .start();
+                }
+            }
+        });
+    }
+
+    // Force stop loading indicator
+    private void forceStopLoading() {
+        if (getActivity() == null || loadingIndicator == null) return;
+
+        getActivity().runOnUiThread(() -> {
+            activeLoaders = 0;
+            loadingIndicator.animate().cancel();
+            loadingIndicator.clearAnimation();
+            loadingIndicator.setVisibility(View.GONE);
+            loadingIndicator.setAlpha(1f);
+        });
     }
 
     private Function1<List<BaseItemDto>, Unit> itemResponse = (List<BaseItemDto> items) -> {
-        mTitle.setText(mBaseItem.getName());
-        if (mBaseItem.getName().length() > 32) {
-            // scale down the title so more will fit
-            mTitle.setTextSize(32);
-        }
-        if (!items.isEmpty()) {
-            mItems = new ArrayList<>();
-            int i = 0;
-            for (BaseItemDto item : items) {
-                mItemList.addItem(item, i++);
-                mItems.add(item);
-            }
-            if (mediaManager.getValue().isPlayingAudio()) {
-                //update our status
-                mAudioEventListener.onPlaybackStateChange(PlaybackController.PlaybackState.PLAYING, mediaManager.getValue().getCurrentAudioItem());
+        forceStopLoading();
+
+        try {
+            mTitle.setText(mBaseItem.getName());
+            if (mTitle.getText().length() > 32) {
+                mTitle.setTextSize(32);
             }
 
-            updateBackdrop();
+            if (!items.isEmpty()) {
+                mCurrentLoadedCount = 0;
+                mItems = new ArrayList<>(items.size() > 100 ? 100 : items.size()); // Pre-allocate with expected size
+                mTotalItemCount = items.size();
+
+                mItemList.clear();
+
+                int batchSize = Math.min(INITIAL_BATCH_SIZE, items.size());
+                for (int i = 0; i < batchSize; i++) {
+                    BaseItemDto item = items.get(i);
+                    mItemList.addItem(item, i);
+                    mItems.add(item);
+                }
+                mCurrentLoadedCount = batchSize;
+
+                if (items.size() > INITIAL_BATCH_SIZE) {
+                    loadNextBatchBackground(items, batchSize);
+                } else {
+                    setLoading(false);
+                }
+
+                if (mediaManager.getValue().isPlayingAudio()) {
+                    mAudioEventListener.onPlaybackStateChange(PlaybackController.PlaybackState.PLAYING, mediaManager.getValue().getCurrentAudioItem());
+                }
+
+                updateBackdrop();
+            } else {
+                setLoading(false);
+            }
+        } catch (Exception e) {
+            setLoading(false);
         }
         return null;
     };
+
+    private void loadNextBatchBackground(List<BaseItemDto> allItems, int startIndex) {
+        boolean isFirstBatch = (startIndex == INITIAL_BATCH_SIZE);
+        if (isFirstBatch) {
+            setLoading(true);
+        }
+
+        new Handler().postDelayed(() -> {
+            try {
+                if (startIndex >= allItems.size()) {
+                    setLoading(false);
+                    return;
+                }
+
+                int endIndex = Math.min(startIndex + BATCH_SIZE, allItems.size());
+                for (int i = startIndex; i < endIndex; i++) {
+                    if (i < allItems.size()) {
+                        mItemList.addItem(allItems.get(i), i);
+                        mItems.add(allItems.get(i));
+                    }
+                }
+                mCurrentLoadedCount = endIndex;
+
+                if (endIndex < allItems.size()) {
+                    loadNextBatchBackground(allItems, endIndex);
+                } else {
+                    setLoading(false);
+                    new Handler().postDelayed(() -> {
+                        if (activeLoaders == 0 && loadingIndicator != null && loadingIndicator.getVisibility() == View.VISIBLE) {
+                            forceStopLoading();
+                        }
+                    }, 500);
+                }
+            } catch (Exception e) {
+                setLoading(false);
+            }
+        }, 200); // 200ms delay to not block UI immediately
+    }
 
     private void addGenres(TextView textView) {
         List<String> genres = mBaseItem.getGenres();
@@ -362,9 +519,11 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
     }
 
     private void addButtons(int buttonSize) {
+        initializeSortOptions();
+
         if (BaseItemExtensionsKt.canPlay(mBaseItem)) {
-            // add play button but don't show and focus yet
-            TextUnderButton play = TextUnderButton.create(requireContext(), R.drawable.ic_play, buttonSize, 2, getString(mBaseItem.isFolder() ? R.string.lbl_play_all : R.string.lbl_play), new View.OnClickListener() {
+            TextUnderButton play = TextUnderButton.create(requireContext(), R.drawable.ic_play, buttonSize, 2,
+                getString(mBaseItem.isFolder() ? R.string.lbl_play_all : R.string.lbl_play), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mItems.size() > 0) {
@@ -379,52 +538,57 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
             });
             mButtonRow.addView(play);
 
-            boolean hidePlayButton = false;
-            TextUnderButton queueButton = null;
-            // add to queue if a queue exists and mBaseItem is a MusicAlbum
-            if (mBaseItem.getType() == BaseItemKind.MUSIC_ALBUM && mediaManager.getValue().hasAudioQueueItems()) {
-                queueButton = TextUnderButton.create(requireContext(), R.drawable.ic_add, buttonSize, 2, getString(R.string.lbl_add_to_queue), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mediaManager.getValue().addToAudioQueue(mItems);
-                    }
-                });
-                hidePlayButton = true;
-                mButtonRow.addView(queueButton);
-                queueButton.setOnFocusChangeListener((v, hasFocus) -> {
-                    if (hasFocus) mScrollView.smoothScrollTo(0, 0);
-                });
-            }
+            mButtonRow.post(() -> addSecondaryButtons(buttonSize, play));
+        }
+    }
 
-            // hide the play button and show add to queue if eligible
-            if (hidePlayButton) {
-                play.setVisibility(View.GONE);
-                queueButton.requestFocus();
-            } else {
-                play.requestFocus();
-            }
+    private void addSecondaryButtons(int buttonSize, TextUnderButton play) {
+        boolean hidePlayButton = false;
+        TextUnderButton queueButton = null;
 
-            if (mBaseItem.isFolder()) {
-                TextUnderButton shuffle = TextUnderButton.create(requireContext(), R.drawable.ic_shuffle, buttonSize, 2, getString(R.string.lbl_shuffle_all), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!mItems.isEmpty()) {
-                            //use server retrieval in order to get all items
-                            playbackHelper.getValue().retrieveAndPlay(mBaseItem.getId(), true, requireContext());
-                        } else {
-                            Utils.showToast(requireContext(), R.string.msg_no_playable_items);
-                        }
+        if (mBaseItem.getType() == BaseItemKind.MUSIC_ALBUM && mediaManager.getValue().hasAudioQueueItems()) {
+            queueButton = TextUnderButton.create(requireContext(), R.drawable.ic_add, buttonSize, 2,
+                getString(R.string.lbl_add_to_queue), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mediaManager.getValue().addToAudioQueue(mItems);
+                }
+            });
+            hidePlayButton = true;
+            mButtonRow.addView(queueButton);
+            queueButton.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) mScrollView.smoothScrollTo(0, 0);
+            });
+        }
+
+        if (hidePlayButton) {
+            play.setVisibility(View.GONE);
+            if (queueButton != null) queueButton.requestFocus();
+        } else {
+            play.requestFocus();
+        }
+
+        if (mBaseItem.isFolder()) {
+            TextUnderButton shuffle = TextUnderButton.create(requireContext(), R.drawable.ic_shuffle, buttonSize, 2,
+                getString(R.string.lbl_shuffle_all), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mItems.isEmpty()) {
+                        playbackHelper.getValue().retrieveAndPlay(mBaseItem.getId(), true, requireContext());
+                    } else {
+                        Utils.showToast(requireContext(), R.string.msg_no_playable_items);
                     }
-                });
-                mButtonRow.addView(shuffle);
-                shuffle.setOnFocusChangeListener((v, hasFocus) -> {
-                    if (hasFocus) mScrollView.smoothScrollTo(0, 0);
-                });
-            }
+                }
+            });
+            mButtonRow.addView(shuffle);
+            shuffle.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) mScrollView.smoothScrollTo(0, 0);
+            });
         }
 
         if (mBaseItem.getType() == BaseItemKind.MUSIC_ALBUM) {
-            TextUnderButton mix = TextUnderButton.create(requireContext(), R.drawable.ic_mix, buttonSize, 2, getString(R.string.lbl_instant_mix), new View.OnClickListener() {
+            TextUnderButton mix = TextUnderButton.create(requireContext(), R.drawable.ic_mix, buttonSize, 2,
+                getString(R.string.lbl_instant_mix), new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
                     playbackHelper.getValue().playInstantMix(requireContext(), mBaseItem);
@@ -436,8 +600,8 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
             });
         }
 
-        //Favorite
-        TextUnderButton fav = TextUnderButton.create(requireContext(), R.drawable.ic_heart, buttonSize, 2, getString(R.string.lbl_favorite), new View.OnClickListener() {
+        TextUnderButton fav = TextUnderButton.create(requireContext(), R.drawable.ic_heart, buttonSize, 2,
+            getString(R.string.lbl_favorite), new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 ItemListFragmentHelperKt.toggleFavorite(ItemListFragment.this, mBaseItem, (BaseItemDto updatedItem) -> {
@@ -454,8 +618,11 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
             if (hasFocus) mScrollView.smoothScrollTo(0, 0);
         });
 
+        addSortButton(buttonSize);
+
         if (mBaseItem.getAlbumArtists() != null && !mBaseItem.getAlbumArtists().isEmpty()) {
-            TextUnderButton artist = TextUnderButton.create(requireContext(), R.drawable.ic_user, buttonSize, 4, getString(R.string.lbl_open_artist), new View.OnClickListener() {
+            TextUnderButton artist = TextUnderButton.create(requireContext(), R.drawable.ic_user, buttonSize, 4,
+                getString(R.string.lbl_open_artist), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     navigationRepository.getValue().navigate(Destinations.INSTANCE.itemDetails(mBaseItem.getAlbumArtists().get(0).getId()));
@@ -466,15 +633,193 @@ public class ItemListFragment extends Fragment implements View.OnKeyListener {
                 if (hasFocus) mScrollView.smoothScrollTo(0, 0);
             });
         }
-
     }
 
     private void updateBackdrop() {
         BaseItemDto item = mBaseItem;
 
-        if (item.getBackdropImageTags() == null || item.getBackdropImageTags().isEmpty() && mItems != null && !mItems.isEmpty())
-            item = mItems.get(new Random().nextInt(mItems.size()));
+        if ((item.getBackdropImageTags() == null || item.getBackdropImageTags().isEmpty()) &&
+            mItems != null && !mItems.isEmpty()) {
+            if (lastBackdropItem == null) {
+                lastBackdropItem = mItems.get(new Random().nextInt(mItems.size()));
+            }
+            item = lastBackdropItem;
+        }
 
         backgroundService.getValue().setBackground(item);
+    }
+
+    public class SortOption {
+        public String name;
+        public ItemSortBy value;
+        public SortOrder order;
+
+        public SortOption(String name, ItemSortBy value, SortOrder order) {
+            this.name = name;
+            this.value = value;
+            this.order = order;
+        }
+    }
+
+    private void initializeSortOptions() {
+        if (sortOptions != null) return; // Already initialized
+
+        sortOptions = new HashMap<>();
+        // Main sort options
+        sortOptions.put(0, new SortOption(getString(R.string.lbl_name), ItemSortBy.SORT_NAME, SortOrder.ASCENDING));
+        sortOptions.put(1, new SortOption(getString(R.string.lbl_date_added), ItemSortBy.DATE_CREATED, SortOrder.DESCENDING));
+        sortOptions.put(2, new SortOption(getString(R.string.lbl_premier_date), ItemSortBy.PREMIERE_DATE, SortOrder.DESCENDING));
+        sortOptions.put(3, new SortOption(getString(R.string.lbl_critic_rating), ItemSortBy.CRITIC_RATING, SortOrder.DESCENDING));
+        sortOptions.put(4, new SortOption("Airtime", ItemSortBy.AIRED_EPISODE_ORDER, SortOrder.DESCENDING));
+
+        // Add Sort Order category
+        sortOptions.put(100, new SortOption("Sort Order", null, null));
+        sortOptions.put(101, new SortOption("Ascending", null, SortOrder.ASCENDING));
+        sortOptions.put(102, new SortOption("Descending", null, SortOrder.DESCENDING));
+
+        loadSortPreferences();
+    }
+
+    private SortOption getSortOption(ItemSortBy value) {
+        if (value == null) {
+            return new SortOption(getString(R.string.lbl_bracket_unknown), ItemSortBy.SORT_NAME, SortOrder.ASCENDING);
+        }
+
+        for (SortOption sortOption : sortOptions.values()) {
+            if (sortOption.value != null && sortOption.value.equals(value)) {
+                return sortOption;
+            }
+        }
+
+        return new SortOption(getString(R.string.lbl_bracket_unknown), ItemSortBy.SORT_NAME, SortOrder.ASCENDING);
+    }
+
+    private void addSortButton(int buttonSize) {
+        TextUnderButton sort = TextUnderButton.create(requireContext(), R.drawable.ic_sort, buttonSize, 2, getString(R.string.lbl_sort_by), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortMenu();
+            }
+        });
+        mButtonRow.addView(sort);
+        sort.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) mScrollView.smoothScrollTo(0, 0);
+        });
+    }
+
+    private void showSortMenu() {
+        PopupMenu sortMenu = new PopupMenu(requireContext(), mButtonRow, Gravity.END);
+
+        for (Map.Entry<Integer, SortOption> entry : sortOptions.entrySet()) {
+            SortOption option = entry.getValue();
+            if (option.value != null) {
+                MenuItem menuItem = sortMenu.getMenu().add(0, entry.getKey(), entry.getKey(), option.name);
+                menuItem.setChecked(option.value != null && option.value.equals(currentSortBy) &&
+                        option.order != null && option.order.equals(currentSortOrder));
+            } else if (option.order != null) {
+                MenuItem menuItem = sortMenu.getMenu().add(1, entry.getKey(), entry.getKey(), option.name);
+                menuItem.setChecked(option.order.equals(currentSortOrder));
+            } else {
+                sortMenu.getMenu().add(2, entry.getKey(), entry.getKey(), option.name);
+            }
+        }
+
+        // Make sort options checkable
+        sortMenu.getMenu().setGroupCheckable(0, true, true);
+        sortMenu.getMenu().setGroupCheckable(1, true, true);
+        sortMenu.getMenu().setGroupEnabled(2, false); // Disable category header
+
+        sortMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                SortOption selectedOption = sortOptions.get(item.getItemId());
+                if (selectedOption != null) {
+                    boolean shouldRefresh = false;
+                    if (selectedOption.value != null) {
+                        if (!currentSortBy.equals(selectedOption.value)) {
+                            currentSortBy = selectedOption.value;
+                            shouldRefresh = true;
+                        }
+                        currentSortOrder = selectedOption.order;
+                    } else if (selectedOption.order != null) {
+                        if (!currentSortOrder.equals(selectedOption.order)) {
+                            currentSortOrder = selectedOption.order;
+                            shouldRefresh = true;
+                        }
+                    }
+                    if (shouldRefresh) {
+                        saveSortPreferences();
+                        setLoading(true);
+                        ItemListFragmentHelperKt.getPlaylist(ItemListFragment.this, mBaseItem, currentSortBy, currentSortOrder, itemResponse);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+        sortMenu.show();
+    }
+
+    private void saveSortPreferences() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("ItemListFragment_Prefs", android.content.Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("sortBy", currentSortBy.name());
+        editor.putString("sortOrder", currentSortOrder.name());
+        editor.apply();
+    }
+
+    private void loadSortPreferences() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("ItemListFragment_Prefs", android.content.Context.MODE_PRIVATE);
+        String sortByStr = prefs.getString("sortBy", ItemSortBy.SORT_NAME.name());
+        String sortOrderStr = prefs.getString("sortOrder", SortOrder.ASCENDING.name());
+
+        try {
+            currentSortBy = ItemSortBy.valueOf(sortByStr);
+            currentSortOrder = SortOrder.valueOf(sortOrderStr);
+        } catch (IllegalArgumentException e) {
+            // If saved value is invalid, use defaults
+            currentSortBy = ItemSortBy.SORT_NAME;
+            currentSortOrder = SortOrder.ASCENDING;
+        }
+    }
+
+    private void loadMoreItems() {
+        if (mIsLoadingMore || mBaseItem == null) {
+            return;
+        }
+
+        mIsLoadingMore = true;
+        setLoading(true);
+
+        ItemListFragmentHelperKt.getPlaylistBatch(
+            this,
+            mBaseItem,
+            currentSortBy,
+            currentSortOrder,
+            mCurrentLoadedCount,
+            BATCH_SIZE,
+            (items) -> {
+                if (!items.isEmpty()) {
+                    int startIndex = mCurrentLoadedCount;
+                    for (BaseItemDto item : items) {
+                        mItemList.addItem(item, startIndex++);
+                        mItems.add(item);
+                    }
+                    mCurrentLoadedCount += items.size();
+                }
+                mIsLoadingMore = false;
+                setLoading(false);
+                return null;
+            }
+        );
+    }
+
+    public void onScrolledToBottom() {
+        long now = System.currentTimeMillis();
+        if (now - lastScrollLoadTime < SCROLL_LOAD_DEBOUNCE) {
+            return; // Debounce rapid scroll events
+        }
+        lastScrollLoadTime = now;
+        loadMoreItems();
     }
 }

@@ -53,4 +53,12 @@
         android:layout_alignBottom="@+id/fdClock"
         android:layout_toStartOf="@+id/fdClock" />
 
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:indeterminate="true" />
+
 </RelativeLayout>
