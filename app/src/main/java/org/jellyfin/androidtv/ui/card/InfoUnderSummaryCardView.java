@@ -343,4 +343,28 @@ public class InfoUnderSummaryCardView extends BaseCardView implements androidx.l
             watchedIndicator.setVisibility(GONE);
         }
     }
+
+    public void setResolutionIndicator(String resolution) {
+        FrameLayout resolutionIndicator = findViewById(R.id.resolutionIndicator);
+        TextView resolutionText = findViewById(R.id.resolutionText);
+        
+        if (resolution != null && !resolution.isEmpty() && resolutionIndicator != null && resolutionText != null) {
+            resolutionText.setText(resolution);
+            resolutionIndicator.setVisibility(VISIBLE);
+        } else if (resolutionIndicator != null) {
+            resolutionIndicator.setVisibility(GONE);
+        }
+    }
+
+    public void setAudioCodecIndicator(String codec) {
+        FrameLayout audioCodecIndicator = findViewById(R.id.audioCodecIndicator);
+        TextView audioCodecText = findViewById(R.id.audioCodecText);
+        
+        if (codec != null && !codec.isEmpty() && audioCodecIndicator != null && audioCodecText != null) {
+            audioCodecText.setText(codec);
+            audioCodecIndicator.setVisibility(VISIBLE);
+        } else if (audioCodecIndicator != null) {
+            audioCodecIndicator.setVisibility(GONE);
+        }
+    }
 }

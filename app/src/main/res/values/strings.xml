@@ -414,6 +414,8 @@
     <string name="login_help_title">Need help?</string>
     <string name="login_help_description">Dune requires a server to connect with. Visit the documentation at docs.jellyfin.org or scan the QR code to get started.</string>
     <string name="pref_watched_indicator">Show watched indicators</string>
+    <string name="pref_show_resolution_badge">Show Resolution badge</string>
+    <string name="pref_show_audio_codec_badge">Show Audio Codec badge</string>
     <string name="lbl_hide_unwatched_count">When the item is watched</string>
     <string name="lbl_hide_watched_checkmark">When there are episodes remaining</string>
     <string name="lbl_use_series_thumbnails">Prefer series thumbnails</string>

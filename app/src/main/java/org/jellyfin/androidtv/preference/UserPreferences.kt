@@ -223,6 +223,16 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var watchedIndicatorBehavior = enumPreference("pref_watched_indicator_behavior", WatchedIndicatorBehavior.ALWAYS)
 
 		/**
+		 * Show resolution badge on movie cards
+		 */
+		var showResolutionBadge = booleanPreference("pref_show_resolution_badge", true)
+
+		/**
+		 * Show audio codec badge on movie cards
+		 */
+		var showAudioCodecBadge = booleanPreference("pref_show_audio_codec_badge", false)
+
+		/**
 		 * Enable series thumbnails in home screen rows
 		 */
 		var seriesThumbnailsEnabled = booleanPreference("pref_enable_series_thumbnails", true)

@@ -92,6 +92,87 @@
 
             </FrameLayout>
 
+            <!-- Resolution Indicator -->
+            <FrameLayout
+                android:id="@+id/resolutionIndicator"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignStart="@id/main_image"
+                android:layout_alignTop="@id/main_image"
+                android:layout_marginStart="4dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/resolutionBackground"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/squared_accent"
+                    tools:ignore="ImageContrastCheck" />
+
+                <TextView
+                    android:id="@+id/resolutionText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/lbl_unwatched"
+                    android:textAlignment="center"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    tools:ignore="TextContrastCheck"
+                    tools:text="4K"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="2" />
+
+            </FrameLayout>
+
+            <!-- Audio Codec Indicator -->
+            <FrameLayout
+                android:id="@+id/audioCodecIndicator"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignStart="@id/main_image"
+                android:layout_below="@id/resolutionIndicator"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/audioCodecBackground"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/squared_accent"
+                    tools:ignore="ImageContrastCheck" />
+
+                <TextView
+                    android:id="@+id/audioCodecText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/lbl_unwatched"
+                    android:textAlignment="center"
+                    android:textSize="7sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    tools:ignore="TextContrastCheck"
+                    tools:text="DTS"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="2" />
+
+            </FrameLayout>
+
         </RelativeLayout>
 
         <!-- Right side: Info Area -->

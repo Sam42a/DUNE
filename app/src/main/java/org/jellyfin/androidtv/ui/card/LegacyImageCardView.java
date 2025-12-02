@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,9 +63,28 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
         }
     }
 
+    public LegacyImageCardView(Context context) {
+        this(context, null);
+    }
+
+    public LegacyImageCardView(Context context, AttributeSet attrs) {
+        this(context, attrs, androidx.leanback.R.attr.imageCardViewStyle);
+    }
+
+    public LegacyImageCardView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+
+        // Initialize with default showInfo = true
+        initializeCard(context, true);
+    }
+
     public LegacyImageCardView(Context context, boolean showInfo) {
         super(context, null, androidx.leanback.R.attr.imageCardViewStyle);
 
+        initializeCard(context, showInfo);
+    }
+
+    private void initializeCard(Context context, boolean showInfo) {
         // Completely disable all elevation animations
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             // Create a custom StateListAnimator that does nothing
@@ -463,5 +483,23 @@ public class LegacyImageCardView extends BaseCardView implements androidx.lifecy
 
     public void showFavIcon(boolean show) {
         binding.favIcon.setVisibility(show ? VISIBLE : GONE);
+    }
+
+    public void setResolutionIndicator(String resolution) {
+        if (resolution != null && !resolution.isEmpty()) {
+            binding.resolutionText.setText(resolution);
+            binding.resolutionIndicator.setVisibility(VISIBLE);
+        } else {
+            binding.resolutionIndicator.setVisibility(GONE);
+        }
+    }
+
+    public void setAudioCodecIndicator(String codec) {
+        if (codec != null && !codec.isEmpty()) {
+            binding.audioCodecText.setText(codec);
+            binding.audioCodecIndicator.setVisibility(VISIBLE);
+        } else {
+            binding.audioCodecIndicator.setVisibility(GONE);
+        }
     }
 }

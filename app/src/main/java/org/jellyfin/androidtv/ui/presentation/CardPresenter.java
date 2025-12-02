@@ -30,6 +30,8 @@ import org.jellyfin.androidtv.util.apiclient.JellyfinImage;
 import org.jellyfin.androidtv.util.apiclient.JellyfinImageKt;
 import org.jellyfin.sdk.model.api.BaseItemDto;
 import org.jellyfin.sdk.model.api.BaseItemKind;
+import org.jellyfin.sdk.model.api.MediaSourceInfo;
+import org.jellyfin.sdk.model.api.MediaStream;
 import org.jellyfin.sdk.model.api.UserItemDataDto;
 import org.koin.java.KoinJavaComponent;
 
@@ -251,7 +253,7 @@ public class CardPresenter extends Presenter {
                     }
                     cardHeight = !m.getStaticHeight() ? (aspect > 1 ? lHeight : pHeight) : sHeight;
                     cardWidth = (int) (aspect * cardHeight);
-                    
+
                     // For List layout, use specific dimensions for each image type
                     if (isListLayout && mImageType != null) {
                         switch (mImageType) {
@@ -272,7 +274,7 @@ public class CardPresenter extends Presenter {
                                 break;
                         }
                     }
-                    
+
                     if (cardWidth < 5) {
                         cardWidth = 115;  //Guard against zero size images causing picasso to barf
                     }
@@ -321,6 +323,29 @@ public class CardPresenter extends Presenter {
                         } else {
                             if (mCardView instanceof LegacyImageCardView) {
                                 ((LegacyImageCardView) mCardView).setProgress(0);
+                            }
+                        }
+                    }
+
+                    // resolution indicator and audio codec indicator for movies if preference is enabled
+                    if (itemDto != null && itemDto.getType() == BaseItemKind.VIDEO && KoinJavaComponent.<org.jellyfin.androidtv.preference.UserPreferences>get(org.jellyfin.androidtv.preference.UserPreferences.class).get(org.jellyfin.androidtv.preference.UserPreferences.Companion.getShowResolutionBadge())) {
+                        String resolution = getResolutionFromMediaSources(itemDto);
+                        if (resolution != null) {
+                            if (mCardView instanceof LegacyImageCardView) {
+                                ((LegacyImageCardView) mCardView).setResolutionIndicator(resolution);
+                            } else if (mCardView instanceof InfoUnderSummaryCardView) {
+                                ((InfoUnderSummaryCardView) mCardView).setResolutionIndicator(resolution);
+                            }
+                        }
+                    }
+
+                    if (itemDto != null && itemDto.getType() == BaseItemKind.MOVIE && KoinJavaComponent.<org.jellyfin.androidtv.preference.UserPreferences>get(org.jellyfin.androidtv.preference.UserPreferences.class).get(org.jellyfin.androidtv.preference.UserPreferences.Companion.getShowAudioCodecBadge())) {
+                        String codec = getAudioCodecFromMediaSources(itemDto);
+                        if (codec != null) {
+                            if (mCardView instanceof LegacyImageCardView) {
+                                ((LegacyImageCardView) mCardView).setAudioCodecIndicator(codec);
+                            } else if (mCardView instanceof InfoUnderSummaryCardView) {
+                                ((InfoUnderSummaryCardView) mCardView).setAudioCodecIndicator(codec);
                             }
                         }
                     }
@@ -528,6 +553,11 @@ public class CardPresenter extends Presenter {
                 ((LegacyImageCardView) mCardView).setProgress(0);
                 ((LegacyImageCardView) mCardView).setRating(null);
                 ((LegacyImageCardView) mCardView).setBadgeImage(null);
+                ((LegacyImageCardView) mCardView).setResolutionIndicator(null);
+                ((LegacyImageCardView) mCardView).setAudioCodecIndicator(null);
+            } else if (mCardView instanceof InfoUnderSummaryCardView) {
+                ((InfoUnderSummaryCardView) mCardView).setResolutionIndicator(null);
+                ((InfoUnderSummaryCardView) mCardView).setAudioCodecIndicator(null);
             }
 
             // Cancel any pending image load and clear image
@@ -544,7 +574,7 @@ public class CardPresenter extends Presenter {
         initializeCachedResources(parent.getContext());
 
         BaseCardView cardView;
-        
+
         // Use different card view based on layout mode
         if (isListLayout) {
             // For List layout, use InfoUnderSummaryCardView with horizontal layout
@@ -559,7 +589,6 @@ public class CardPresenter extends Presenter {
             }
             cardView = legacyCardView;
         }
-        
         cardView.setFocusable(true);
         cardView.setFocusableInTouchMode(true);
 
@@ -599,25 +628,21 @@ public class CardPresenter extends Presenter {
             if (holder.mCardView instanceof InfoUnderSummaryCardView) {
                 // Use InfoUnderSummaryCardView specific methods
                 InfoUnderSummaryCardView infoCardView = (InfoUnderSummaryCardView) holder.mCardView;
-                
                 // Set title, summary, and ratings
                 infoCardView.setTitle(rowItem.getCardName(infoCardView.getContext()));
                 infoCardView.setSummary(rowItem.getSummary(infoCardView.getContext()) != null ? rowItem.getSummary(infoCardView.getContext()) : "");
-                
                 BaseItemDto itemDto = rowItem.getBaseItem();
                 if (itemDto != null) {
                     infoCardView.setCommunityRating(itemDto.getCommunityRating());
                     infoCardView.setCriticRating(itemDto.getCriticRating());
                     infoCardView.setYear(itemDto.getProductionYear());
                     infoCardView.setDuration(itemDto.getRunTimeTicks());
-                    
                     // Set watched indicator
                     if (itemDto.getUserData() != null) {
                         boolean watched = itemDto.getUserData().getPlayed();
-                        int unwatchedCount = itemDto.getUserData().getUnplayedItemCount() != null ? 
+                        int unwatchedCount = itemDto.getUserData().getUnplayedItemCount() != null ?
                             itemDto.getUserData().getUnplayedItemCount() : 0;
                         infoCardView.setWatchedIndicator(watched, unwatchedCount);
-                        
                         // Set resume progress
                         if (itemDto.getUserData() != null) {
                             Long runTimeTicks = itemDto.getRunTimeTicks();
@@ -798,5 +823,54 @@ public class CardPresenter extends Presenter {
             cachedTileLandSeriesTimer = ContextCompat.getDrawable(context, R.drawable.tile_land_series_timer);
             cachedStarDrawable = ContextCompat.getDrawable(context, R.drawable.ic_star);
         }
+    }
+
+    private String getResolutionFromMediaSources(org.jellyfin.sdk.model.api.BaseItemDto item) {
+        if (item.getMediaSources() == null || item.getMediaSources().isEmpty()) {
+            return null;
+        }
+
+        for (org.jellyfin.sdk.model.api.MediaSourceInfo mediaSource : item.getMediaSources()) {
+            if (mediaSource.getMediaStreams() != null) {
+                for (org.jellyfin.sdk.model.api.MediaStream mediaStream : mediaSource.getMediaStreams()) {
+                    if (mediaStream.getType() == org.jellyfin.sdk.model.api.MediaStreamType.VIDEO && mediaStream.getWidth() != null && mediaStream.getHeight() != null) {
+                        int width = mediaStream.getWidth();
+                        int height = mediaStream.getHeight();
+
+                        if (height >= 2160) {
+                            return "4K";
+                        } else if (height >= 1440) {
+                            return "FHD";
+                        } else if (height >= 1080) {
+                            return "HD";
+                        } else if (height >= 720) {
+                            return "HD";
+                        } else {
+                            return "SD";
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private String getAudioCodecFromMediaSources(BaseItemDto itemDto) {
+        if (itemDto.getMediaSources() != null && !itemDto.getMediaSources().isEmpty()) {
+            // Use the first media source
+            MediaSourceInfo mediaSource = itemDto.getMediaSources().get(0);
+            if (mediaSource.getMediaStreams() != null) {
+                // Look for audio streams
+                for (MediaStream mediaStream : mediaSource.getMediaStreams()) {
+                    if (mediaStream.getType() == org.jellyfin.sdk.model.api.MediaStreamType.AUDIO && mediaStream.getCodec() != null) {
+                        // Return the codec as-is, convert to uppercase for consistency
+                        return mediaStream.getCodec().toUpperCase();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }
