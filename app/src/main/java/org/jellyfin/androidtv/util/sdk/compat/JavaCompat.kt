@@ -55,9 +55,9 @@ fun MediaSourceInfo.getVideoStream() = mediaStreams?.firstOrNull {
 }
 
 fun BaseItemDto.copyWithMediaSources(
-    mediaSources: List<MediaSourceInfo>
+	mediaSources: List<MediaSourceInfo>?
 ) = copy(
-    mediaSources = mediaSources.toList()
+	mediaSources = mediaSources
 )
 
 val BaseItemDto.canResume get() = (userData?.playbackPositionTicks ?: 0) > 0

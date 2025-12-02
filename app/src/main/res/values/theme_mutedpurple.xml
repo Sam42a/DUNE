@@ -44,7 +44,7 @@
         <item name="android:colorButtonNormal">@color/muted_purple_button_normal</item>
         <item name="buttonDefaultNormalBackground">@color/muted_purple_button_normal</item>
         <item name="buttonDefaultHighlightBackground">@color/muted_purple_button_highlight</item>
-        <item name="buttonRounding">3dp</item>
+        <item name="buttonRounding">5dp</item>
 
         <!-- Input fields -->
         <item name="inputDefaultStrokeWidth">2dp</item>

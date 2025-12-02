@@ -38,7 +38,7 @@
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <item name="android:popupWindowStyle">@style/PopupWindow</item>
         <item name="cardRounding">4dp</item>
-        <item name="buttonRounding">3dp</item>
+        <item name="buttonRounding">5dp</item>
         <item name="inputRounding">3dp</item>
         <item name="popupMenuRounding">3dp</item>
         <item name="overlayDimDimmedLevel">30%</item>
@@ -52,7 +52,7 @@
 
         <!-- Focus Border Color -->
         <item name="focusBorderColor">@color/white</item>
-        
+
         <!-- Media Folders Buttons -->
         <item name="mediaFolderButtonBackground">@color/transparent</item>
         <item name="mediaFolderButtonFocusedBackground">@color/white</item>

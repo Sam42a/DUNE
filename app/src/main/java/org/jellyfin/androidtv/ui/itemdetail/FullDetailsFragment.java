@@ -407,14 +407,9 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     private int posterHeight;
 
 
-      // Preloads all video versions with complete media source information to ensure
-      // that audio and subtitle tracks are immediately available when selecting any version,useful for gelato plugin
-
     private void preloadVideoVersions() {
         if (mBaseItem == null || mBaseItem.getMediaSources() == null || mBaseItem.getMediaSources().size() <= 1) {
-            Timber.d("Skipping version preload - no multiple media sources found (mBaseItem=%s, mediaSources=%s)",
-                mBaseItem != null ? "exists" : "null",
-                (mBaseItem != null && mBaseItem.getMediaSources() != null) ? mBaseItem.getMediaSources().size() : "null");
+            Timber.d("Skipping version preload - no multiple media sources found");
             return;
         }
 
@@ -450,7 +445,6 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             });
         }
     }
-
     private void probeMediaSource(String mediaSourceId, java.util.function.Consumer<org.jellyfin.sdk.model.api.MediaSourceInfo> callback) {
         try {
             UserPreferences userPreferences = KoinJavaComponent.get(UserPreferences.class);
@@ -512,15 +506,6 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             posterHeight = aspect > 1 ? Utils.convertDpToPixel(requireContext(), 160) : Utils.convertDpToPixel(requireContext(), item.getType() == BaseItemKind.PERSON || item.getType() == BaseItemKind.MUSIC_ARTIST ? 300 : 200);
 
             mDetailsOverviewRow = new MyDetailsOverviewRow(item);
-
-            String savedMediaItemId = userPreferences.getValue().get(UserPreferences.Companion.getCurrentMediaItemId());
-            if (savedMediaItemId != null && savedMediaItemId.equals(item.getId())) {
-                int savedIndex = userPreferences.getValue().get(UserPreferences.Companion.getSelectedMediaSourceIndex());
-                if (savedIndex >= 0) {
-                    Timber.d("Restoring selected media source index: %d for item: %s", savedIndex, item.getId());
-                    mDetailsOverviewRow.setSelectedMediaSourceIndex(savedIndex);
-                }
-            }
 
             String primaryImageUrl = imageHelper.getValue().getLogoImageUrl(mBaseItem, 600);
             if (primaryImageUrl == null) {
@@ -620,6 +605,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
                         mProgramInfo.getRunTimeTicks()
                 );
             }
+            preloadVideoVersions();
             new BuildDorTask().execute(item);
         }
     }
@@ -912,7 +898,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             // Add External Player button
             if (BaseItemExtensionsKt.canPlay(mBaseItem) && mBaseItem.getMediaSources() != null && !mBaseItem.getMediaSources().isEmpty()) {
                 TextUnderButton externalPlayerButton = TextUnderButton.create(requireContext(),
-                    R.drawable.ic_external_player, buttonSize, 2,
+                        R.drawable.play_external, buttonSize, 2,
                     getString(R.string.lbl_play_external), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1002,7 +988,6 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
                     } else {
                         versions = new ArrayList<>(mBaseItem.getMediaSources());
                         addVersionsMenu(v);
-                        preloadVideoVersions();
                     }
                 }
             });
@@ -1133,7 +1118,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
         if (mBaseItem.getType() == BaseItemKind.EPISODE && mBaseItem.getSeriesId() != null) {
             //add the prev button first so it will be there in proper position - we'll show it later if needed
-            mPrevButton = TextUnderButton.create(requireContext(), R.drawable.ic_previous_episode, buttonSize, 3, getString(R.string.lbl_previous_episode), new View.OnClickListener() {
+            mPrevButton = TextUnderButton.create(requireContext(), R.drawable.arrow_back, buttonSize, 3, getString(R.string.lbl_previous_episode), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mPrevItemId != null) {
@@ -1147,7 +1132,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             //now go get our prev episode id
             FullDetailsFragmentHelperKt.populatePreviousButton(FullDetailsFragment.this);
 
-            goToSeriesButton = TextUnderButton.create(requireContext(), R.drawable.ic_tv, buttonSize, 0, getString(R.string.lbl_goto_series), new View.OnClickListener() {
+            goToSeriesButton = TextUnderButton.create(requireContext(), R.drawable.go_back, buttonSize, 0, getString(R.string.lbl_goto_series), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     gotoSeries();
@@ -1253,11 +1238,6 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 mDetailsOverviewRow.setSelectedMediaSourceIndex(menuItem.getItemId());
-
-                Timber.d("Saving selected media source index: %d for item: %s", menuItem.getItemId(), mBaseItem.getId());
-                userPreferences.getValue().set(UserPreferences.Companion.getSelectedMediaSourceIndex(), menuItem.getItemId());
-                userPreferences.getValue().set(UserPreferences.Companion.getCurrentMediaItemId(), mBaseItem.getId().toString());
-
                 FullDetailsFragmentHelperKt.getItem(FullDetailsFragment.this, UUIDSerializerKt.toUUID(versions.get(mDetailsOverviewRow.getSelectedMediaSourceIndex()).getId()), item -> {
                     if (item == null) return null;
 

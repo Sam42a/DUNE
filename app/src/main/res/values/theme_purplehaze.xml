@@ -43,7 +43,7 @@
         <item name="android:colorButtonNormal">@color/white_transparent</item>
         <item name="buttonDefaultNormalBackground">@color/purplehaze_button_normal</item>
         <item name="buttonDefaultHighlightBackground">@color/white_transparent</item>
-        <item name="buttonRounding">3dp</item>
+        <item name="buttonRounding">5dp</item>
 
         <!-- Input fields -->
         <item name="inputDefaultStrokeWidth">2dp</item>

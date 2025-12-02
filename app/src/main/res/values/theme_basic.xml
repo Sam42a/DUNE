@@ -18,6 +18,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
+        <item name="buttonRounding">5dp</item>
     </style>
 
     <!-- Basic ProgressBar Style -->

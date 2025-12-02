@@ -49,7 +49,7 @@
         <item name="android:colorButtonNormal">@color/emerald_button_normal</item>
         <item name="buttonDefaultNormalBackground">@color/emerald_button_normal</item>
         <item name="buttonDefaultHighlightBackground">@color/emerald_button_highlight</item>
-        <item name="buttonRounding">3dp</item>
+        <item name="buttonRounding">5dp</item>
 
         <!-- Input fields -->
         <item name="inputDefaultStrokeWidth">2dp</item>
