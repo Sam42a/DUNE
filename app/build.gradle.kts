@@ -85,7 +85,7 @@ android {
 			applicationId = "Dune.enhanced.tv"
 
 			// Set specific version name for enhanced variant
-			versionName = "0.0.9"
+			versionName = "0.1.0"
 
 			// Set app name for the enhanced version
 			resValue("string", "app_name_release", "DUNE")
@@ -112,7 +112,7 @@ android {
 		variant.outputs.all {
 			val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
 			if (variantName == "enhanced") {
-				output.outputFileName = "Dune.androidtv-0.0.9.apk"
+				output.outputFileName = "Dune.androidtv-0.1.0.apk"
 			} else {
 				output.outputFileName = "Dune.androidtv-${versionName}.apk"
 			}
@@ -142,9 +142,9 @@ tasks.register("buildEnhanced") {
 	doLast {
 		println("\nBuilding Enhanced version with:")
 		println("Package ID: Dune.enhanced.tv")
-		println("Version: 0.0.9")
+		println("Version: 0.1.0")
 		println("App Name: DUNE")
-		println("Filename: Dune.androidtv-0.0.9.apk")
+		println("Filename: Dune.androidtv-0.1.0.apk")
 		println("The APK will be available in: app/build/outputs/apk/enhanced/release/")
 	}
 }
@@ -192,6 +192,9 @@ dependencies {
 	implementation(libs.androidx.cardview)
 	implementation(libs.androidx.startup)
 	implementation(libs.bundles.androidx.compose)
+	implementation("androidx.tv:tv-material:1.0.0")
+	implementation("androidx.palette:palette:1.0.0")
+	implementation("androidx.compose.material3:material3:1.2.1")
 
 	// Dependency Injection
 	implementation(libs.bundles.koin)
@@ -230,8 +233,8 @@ dependencies {
 
 	// Network
 	implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation(libs.androidx.foundation.android)
 
-	// Compatibility (desugaring)
 	coreLibraryDesugaring(libs.android.desugar)
 
 	// Testing
