@@ -83,8 +83,7 @@ class ClockUserView @JvmOverloads constructor(
         val imageUrl = if (currentUser != null && currentUser.primaryImageTag != null) {
             apiClient.imageApi.getUserImageUrl(
                 userId = currentUser.id,
-                tag = currentUser.primaryImageTag,
-                maxHeight = imageHelper.getMaxImageHeight()
+                tag = currentUser.primaryImageTag
             )
         } else null
 

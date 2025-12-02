@@ -151,6 +151,15 @@ class ImageHelper(
 		item.itemImages[ImageType.BANNER]?.getUrl(api, fillWidth = fillWidth, fillHeight = fillHeight)
 			?: getPrimaryImageUrl(item, true, fillWidth, fillHeight)
 
+	fun getBackdropImageUrl(
+		item: BaseItemDto,
+		maxWidth: Int? = null,
+		maxHeight: Int? = null
+	): String? {
+		val backdropImage = item.itemImages[ImageType.BACKDROP] ?: item.parentImages[ImageType.BACKDROP]
+		return backdropImage?.getUrl(api, maxWidth = maxWidth, maxHeight = maxHeight)
+	}
+
 	/**
 	 * A utility to return a URL reference to an image resource
 	 *

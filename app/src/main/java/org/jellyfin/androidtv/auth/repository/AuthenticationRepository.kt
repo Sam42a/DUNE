@@ -211,8 +211,7 @@ class AuthenticationRepositoryImpl(
     user.imageTag?.let { tag ->
         return jellyfin.createApi(server.address).imageApi.getUserImageUrl(
             userId = user.id,
-            tag = tag,
-            maxHeight = imageHelper.getMaxImageHeight()
+            tag = tag
         )
     }
 

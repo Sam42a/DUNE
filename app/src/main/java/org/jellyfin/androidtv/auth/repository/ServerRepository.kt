@@ -20,18 +20,21 @@ import org.jellyfin.androidtv.util.sdk.toServer
 import org.jellyfin.sdk.Jellyfin
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.exception.ApiClientException
-import org.jellyfin.sdk.api.client.exception.InvalidContentException
 import org.jellyfin.sdk.api.client.extensions.brandingApi
 import org.jellyfin.sdk.api.client.extensions.systemApi
 import org.jellyfin.sdk.discovery.RecommendedServerInfo
 import org.jellyfin.sdk.discovery.RecommendedServerInfoScore
 import org.jellyfin.sdk.model.ServerVersion
-import org.jellyfin.sdk.model.api.BrandingOptions
 import org.jellyfin.sdk.model.api.ServerDiscoveryInfo
 import org.jellyfin.sdk.model.serializer.toUUID
 import timber.log.Timber
 import java.time.Instant
 import java.util.UUID
+
+private data class BrandingInfo(
+    val loginDisclaimer: String?,
+    val splashscreenEnabled: Boolean
+)
 
 /**
  * Repository to maintain servers.
@@ -130,7 +133,7 @@ class ServerRepositoryImpl(
 
 			// Get branding info
 			val api = jellyfin.createApi(chosenRecommendation.address)
-			val branding = api.getBrandingOptionsOrDefault()
+			val branding = api.getBrandingOptions()
 
 			val id = systemInfo.id!!.toUUID()
 
@@ -200,7 +203,7 @@ class ServerRepositoryImpl(
 			val api = jellyfin.createApi(server.address)
 
 			// Get login disclaimer
-			val branding = api.getBrandingOptionsOrDefault()
+			val branding = api.getBrandingOptions()
 			val systemInfo by api.systemApi.getPublicSystemInfo()
 
 			server.copy(
@@ -239,14 +242,19 @@ class ServerRepositoryImpl(
 	 * Try to retrieve the branding options. If the response JSON is invalid it will return a default value.
 	 * This makes sure we can still work with older Jellyfin versions.
 	 */
-	private suspend fun ApiClient.getBrandingOptionsOrDefault() = try {
-		brandingApi.getBrandingOptions().content
-	} catch (exception: InvalidContentException) {
-		Timber.w(exception, "Invalid branding options response, using default value")
-		BrandingOptions(
-			loginDisclaimer = null,
-			customCss = null,
-			splashscreenEnabled = false,
-		)
+	private suspend fun ApiClient.getBrandingOptions(): BrandingInfo {
+		return try {
+			val response = brandingApi.getBrandingOptions()
+			BrandingInfo(
+				loginDisclaimer = response.content?.loginDisclaimer,
+				splashscreenEnabled = response.content?.splashscreenEnabled ?: false
+			)
+		} catch (exception: Exception) {
+			Timber.w(exception, "Error getting branding options, using default values")
+			BrandingInfo(
+				loginDisclaimer = null,
+				splashscreenEnabled = false
+			)
+		}
 	}
 }
