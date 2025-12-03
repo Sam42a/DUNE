@@ -12,6 +12,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="120dp"
         android:textSize="20sp"
+        android:visibility="gone"
         android:maxLines="1"
         android:ellipsize="end"
         android:fontFamily="sans-serif-light"
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="20sp"
         android:layout_below="@id/title"
+        android:visibility="gone"
         android:layout_alignStart="@id/title"
         android:layout_toStartOf="@id/clock"
         android:layout_marginTop="5sp"
@@ -31,25 +33,20 @@
 
     <LinearLayout
         android:id="@+id/toolBar"
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="46dp"
-        android:alpha=".75"
-        android:dividerPadding="4dp"
-        android:gravity="bottom|end"
-        android:orientation="horizontal"
-        android:showDividers="middle" />
+        android:layout_marginStart="376dp"
+        android:layout_marginTop="34dp"
+        android:orientation="horizontal" />
 
     <FrameLayout
         android:id="@+id/rowsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="1dp"
         android:layout_below="@id/infoRow"
         android:layout_above="@id/statusText"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="90dp" />
 
     <TextView
         android:id="@+id/statusText"

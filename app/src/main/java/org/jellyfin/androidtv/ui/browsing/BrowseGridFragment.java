@@ -5,6 +5,7 @@ import static org.koin.java.KoinJavaComponent.inject;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -79,7 +81,27 @@ import kotlin.Lazy;
 import kotlinx.serialization.json.Json;
 import timber.log.Timber;
 
-class LeftAlignedVerticalGridPresenter extends VerticalGridPresenter {
+class CustomVerticalGridPresenter extends VerticalGridPresenter {
+    @Override
+    protected void initializeGridViewHolder(ViewHolder vh) {
+        super.initializeGridViewHolder(vh);
+        try {
+            java.lang.reflect.Field field = VerticalGridPresenter.ViewHolder.class.getDeclaredField("mItemBridgeAdapter");
+            field.setAccessible(true);
+            androidx.leanback.widget.ItemBridgeAdapter adapter = (androidx.leanback.widget.ItemBridgeAdapter) field.get(vh);
+            if (adapter != null) {
+                androidx.leanback.widget.FocusHighlightHelper.setupBrowseItemFocusHighlight(
+                        adapter,
+                        androidx.leanback.widget.FocusHighlight.ZOOM_FACTOR_LARGE,
+                        false); // Pass false to disable dimmer
+            }
+        } catch (Exception e) {
+            Timber.e(e, "Failed to disable dimming for vertical grid");
+        }
+    }
+}
+
+class LeftAlignedVerticalGridPresenter extends CustomVerticalGridPresenter {
     @Override
     protected void initializeGridViewHolder(ViewHolder vh) {
         super.initializeGridViewHolder(vh);
@@ -139,9 +161,9 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
     private int mCardsScreenStride = 0;
     private double mCardFocusScale = 1.15; // 115%, just a default we use the resource card_scale_focus otherwise
     private final int MIN_NUM_CARDS = 5; // minimum number of visible cards we allow, this results in more empty space
-    private final double CARD_SPACING_PCT = 1.0; // 100% expressed as relative to the padding_left/top, which depends on the mCardFocusScale and AspectRatio
+    private final double CARD_SPACING_PCT = 4.0; // 100% expressed as relative to the padding_left/top, which depends on the mCardFocusScale and AspectRatio
     private final double CARD_SPACING_HORIZONTAL_BANNER_PCT = 0.5; // 50% allow horizontal card overlapping for banners, otherwise spacing is too large
-    private final int VIEW_SELECT_UPDATE_DELAY = 250; // delay in ms until we update the top-row info for a selected item
+    private final int VIEW_SELECT_UPDATE_DELAY = 0; // delay in ms until we update the top-row info for a selected item
 
     private boolean mDirty = true; // CardHeight, RowDef or GridSize changed
 
@@ -168,7 +190,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         mCardFocusScale = getResources().getFraction(R.fraction.card_scale_focus, 1, 1);
 
         if (mGridDirection.equals(GridDirection.VERTICAL))
-            setGridPresenter(new VerticalGridPresenter());
+            setGridPresenter(new CustomVerticalGridPresenter());
         else if (mGridDirection.equals(GridDirection.LIST))
             setGridPresenter(new LeftAlignedVerticalGridPresenter());
         else
@@ -681,7 +703,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             mGridDirection = gridDirection;
 
             if (mGridDirection.equals(GridDirection.VERTICAL) && (mGridPresenter == null || !(mGridPresenter instanceof VerticalGridPresenter))) {
-                setGridPresenter(new VerticalGridPresenter());
+                setGridPresenter(new CustomVerticalGridPresenter());
             } else if (mGridDirection.equals(GridDirection.HORIZONTAL) && (mGridPresenter == null || !(mGridPresenter instanceof HorizontalGridPresenter))) {
                 setGridPresenter(new HorizontalGridPresenter());
             } else if (mGridDirection.equals(GridDirection.LIST) && (mGridPresenter == null || !(mGridPresenter instanceof VerticalGridPresenter))) {
@@ -714,7 +736,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
     }
 
     private void buildAdapter() {
-        mCardPresenter = new CardPresenter(false, mImageType, mCardHeight, mGridDirection.equals(GridDirection.LIST));
+        mCardPresenter = new CardPresenter(true, mImageType, mCardHeight, mGridDirection.equals(GridDirection.LIST));
         mCardPresenter.setUniformAspect(true); // make grid layouts always uniform
 
         Timber.d("buildAdapter cardHeight <%s> getCardWidthBy <%s> chunks <%s> type <%s>", mCardHeight, (int) getCardWidthBy(mCardHeight, mImageType, mFolder), mRowDef.getChunkSize(), mRowDef.getQueryType().toString());
@@ -820,6 +842,24 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         });
     }
 
+
+    private void addToolbarButton(ImageButton button) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        int margin = (int) TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            8,
+            getResources().getDisplayMetrics()
+        );
+
+        params.setMargins(0, 0, margin, 0);
+        button.setLayoutParams(params);
+        binding.toolBar.addView(button);
+    }
+
     private void addTools() {
         //Add tools - Increased icon size by 5% (27.3dp rounded to 27)
         int size = Utils.convertDpToPixel(requireContext(), 27);
@@ -886,8 +926,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             }
         });
         mSortButton.setContentDescription(getString(R.string.lbl_sort_by));
-
-        binding.toolBar.addView(mSortButton);
+        addToolbarButton(mSortButton);
 
         // Add masks button for genre filtering
         mMasksButton = new ImageButton(requireContext(), null, 0, R.style.Button_Icon);
@@ -945,8 +984,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             }
         });
         mMasksButton.setContentDescription(getString(R.string.lbl_genres));
-
-        binding.toolBar.addView(mMasksButton);
+        addToolbarButton(mMasksButton);
 
         if (mRowDef.getQueryType() == QueryType.Items) {
             mUnwatchedButton = new ImageButton(requireContext(), null, 0, R.style.Button_Icon);
@@ -969,7 +1007,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                 }
             });
             mUnwatchedButton.setContentDescription(getString(R.string.lbl_unwatched));
-            binding.toolBar.addView(mUnwatchedButton);
+            addToolbarButton(mUnwatchedButton);
         }
 
         mFavoriteButton = new ImageButton(requireContext(), null, 0, R.style.Button_Icon);
@@ -992,7 +1030,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             }
         });
         mFavoriteButton.setContentDescription(getString(R.string.lbl_favorite));
-        binding.toolBar.addView(mFavoriteButton);
+        addToolbarButton(mFavoriteButton);
 
         JumplistPopup jumplistPopup = new JumplistPopup();
         mLetterButton = new ImageButton(requireContext(), null, 0, R.style.Button_Icon);
@@ -1008,7 +1046,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             }
         });
         mLetterButton.setContentDescription(getString(R.string.lbl_by_letter));
-        binding.toolBar.addView(mLetterButton);
+        addToolbarButton(mLetterButton);
 
         mSettingsButton = new ImageButton(requireContext(), null, 0, R.style.Button_Icon);
         mSettingsButton.setImageResource(R.drawable.ic_settings);
