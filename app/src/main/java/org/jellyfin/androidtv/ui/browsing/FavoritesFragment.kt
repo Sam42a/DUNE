@@ -88,7 +88,7 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 			)
 		))
 
-		// 2. Movies Watched
+		// 4. Movies Watched
 		mRows.add(createRow(
 			getString(R.string.lbl_Watched_History_Movies),
 			GetItemsRequest(
@@ -104,23 +104,7 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 			)
 		))
 
-		// 2. Series Watched
-		mRows.add(createRow(
-			getString(R.string.lbl_Watched_History_Series),
-			GetItemsRequest(
-				includeItemTypes = setOf(BaseItemKind.SERIES),
-				filters = setOf(ItemFilter.IS_PLAYED),
-				sortBy = setOf(ItemSortBy.DATE_PLAYED),
-				sortOrder = setOf(SortOrder.DESCENDING),
-				recursive = true,
-				limit = 20,
-				fields = ItemRepository.itemFields,
-				enableImages = true,
-				enableUserData = true
-			)
-		))
-
-		// 4. Collections
+		// 5. Collections
 		mRows.add(createRow(
 			header = getString(R.string.lbl_collections),
 			query = GetItemsRequest(
@@ -139,7 +123,23 @@ class FavoritesFragment : EnhancedBrowseFragment() {
 			isMusicVideo = true
 		))
 
-		// 4. Music Videos
+		// 6. playlists
+		mRows.add(createRow(
+			getString(R.string.lbl_playlists),
+			GetItemsRequest(
+				includeItemTypes = setOf(BaseItemKind.PLAYLIST),
+				filters = setOf(ItemFilter.IS_FAVORITE),
+				sortBy = setOf(ItemSortBy.DATE_CREATED),
+				sortOrder = setOf(SortOrder.DESCENDING),
+				recursive = true,
+				limit = 20,
+				fields = ItemRepository.itemFields,
+				enableImages = true,
+				enableUserData = true
+			)
+		))
+
+		// 7. Music Videos
 		mRows.add(createRow(
 			header = getString(R.string.lbl_music_videos),
 			query = GetItemsRequest(

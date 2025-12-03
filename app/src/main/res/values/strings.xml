@@ -67,6 +67,8 @@
     <string name="lbl_shuffle_all">Shuffle all</string>
     <string name="lbl_Watched_History_Series">Watched Series</string>
     <string name="lbl_Watched_History_Movies">Watched Movies</string>
+    <string name="lbl_Playlists">Playlists</string>
+
 
     <string name="lbl_play">Play</string>
     <string name="lbl_pause">Pause</string>
@@ -414,7 +416,7 @@
     <string name="login_help_title">Need help?</string>
     <string name="login_help_description">Dune requires a server to connect with. Visit the documentation at docs.jellyfin.org or scan the QR code to get started.</string>
     <string name="pref_watched_indicator">Show watched indicators</string>
-    <string name="pref_show_resolution_badge">Show Resolution badge</string>
+    <string name="pref_show_resolution_badge">Show resolution badge</string>
     <string name="pref_show_audio_codec_badge">Show Audio Codec badge</string>
     <string name="lbl_hide_unwatched_count">When the item is watched</string>
     <string name="lbl_hide_watched_checkmark">When there are episodes remaining</string>
@@ -861,6 +863,8 @@
     <string name="sort_date_created">Date Created</string>
     <string name="sort_parent_rating">Parent Rating</string>
     <string name="pref_genre_sort_by">Sort Genre</string>
+    <string name="pref_carousel_sort_by">Carousel sort options</string>
+    <string name="pref_carousel_sort_by_description">Choose how items are sorted in the carousel</string>
 
     <!-- Screensaver sorting -->
     <string name="pref_screensaver_sort_by">Screensaver Sort Order</string>
