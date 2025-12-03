@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager
 import org.jellyfin.androidtv.preference.constant.AppLanguage
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
+import org.jellyfin.androidtv.preference.constant.CarouselSortBy
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
 import org.jellyfin.androidtv.preference.constant.GenreSortBy
 import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
@@ -241,6 +242,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Genre sorting method for home screen genre rows
 		 */
 		var genreSortBy = enumPreference("genre_sort_by", GenreSortBy.DEFAULT)
+
+		/**
+		 * Sorting method for carousel items
+		 */
+		var carouselSortBy = enumPreference("carousel_sort_by", CarouselSortBy.RELEASE_DATE)
 
 		/**
 		 * Subtitles foreground color

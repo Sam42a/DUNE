@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jellyfin.androidtv.preference.UserPreferences
+import org.jellyfin.androidtv.preference.constant.CarouselSortBy
 import org.jellyfin.androidtv.util.ImageHelper
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.itemsApi
@@ -20,7 +22,8 @@ import timber.log.Timber
 
 class CarouselViewModel(
     private val api: ApiClient,
-    private val imageHelper: ImageHelper
+    private val imageHelper: ImageHelper,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<CarouselUiState>(CarouselUiState.Loading)
@@ -38,12 +41,17 @@ class CarouselViewModel(
             try {
                 _uiState.value = CarouselUiState.Loading
 
+                val carouselSortBy: CarouselSortBy = userPreferences[UserPreferences.carouselSortBy]
+                val sortBy = setOf(carouselSortBy.itemSortBy)
+
+                Timber.d("Loading carousel items with sort: ${carouselSortBy.name}")
+
                 val response = api.itemsApi.getItems(
                     request = GetItemsRequest(
                         parentId = null,
                         includeItemTypes = setOf(org.jellyfin.sdk.model.api.BaseItemKind.MOVIE),
 						filters = setOf(ItemFilter.IS_UNPLAYED),
-						sortBy = setOf(ItemSortBy.DATE_CREATED),
+						sortBy = sortBy,
                         sortOrder = setOf(SortOrder.DESCENDING),
                         limit = 15,
                         recursive = true,
@@ -51,7 +59,7 @@ class CarouselViewModel(
                         org.jellyfin.sdk.model.api.ImageType.BACKDROP,
                         org.jellyfin.sdk.model.api.ImageType.THUMB
                     ),
-                        fields = setOf(org.jellyfin.sdk.model.api.ItemFields.OVERVIEW),
+                        fields = setOf(org.jellyfin.sdk.model.api.ItemFields.OVERVIEW), // Request overview field
                         enableTotalRecordCount = false
                     )
                 )
@@ -106,6 +114,11 @@ class CarouselViewModel(
     }
 
     fun refresh() {
+        loadFeaturedItems()
+    }
+
+    fun refreshWithNewSort() {
+        Timber.d("Refreshing carousel items with new sort preference")
         loadFeaturedItems()
     }
 }

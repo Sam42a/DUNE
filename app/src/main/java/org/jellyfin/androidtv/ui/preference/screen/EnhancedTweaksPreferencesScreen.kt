@@ -6,6 +6,7 @@ import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.preference.constant.AppTheme
+import org.jellyfin.androidtv.preference.constant.CarouselSortBy
 import org.jellyfin.androidtv.preference.constant.GenreSortBy
 import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
 import org.jellyfin.androidtv.ui.preference.dsl.checkbox
@@ -51,6 +52,11 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
                 setTitle(R.string.use_classic_home_screen)
                 setContent(R.string.use_classic_home_screen_summary)
                 bind(userSettingPreferences, userSettingPreferences.useClassicHomeScreen)
+            }
+
+            enum<CarouselSortBy> {
+                setTitle(R.string.pref_carousel_sort_by)
+                bind(userPreferences, UserPreferences.carouselSortBy)
             }
 
             checkbox {
