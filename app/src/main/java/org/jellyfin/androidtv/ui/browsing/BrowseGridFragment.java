@@ -279,9 +279,8 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         if (mGridViewHolder instanceof HorizontalGridPresenter.ViewHolder) {
             mGridView = ((HorizontalGridPresenter.ViewHolder) mGridViewHolder).getGridView();
             mGridView.setGravity(Gravity.CENTER_VERTICAL);
-            ViewGroup.MarginLayoutParams titleMargin = (ViewGroup.MarginLayoutParams) binding.title.getLayoutParams();
             ViewGroup.MarginLayoutParams clockMargin = (ViewGroup.MarginLayoutParams) binding.clock.getLayoutParams();
-            mGridView.setPadding(titleMargin.getMarginStart(), mGridPaddingTop, clockMargin.getMarginEnd(), mGridPaddingTop); // prevent initial card cutoffs
+            mGridView.setPadding(0, mGridPaddingTop, clockMargin.getMarginEnd(), mGridPaddingTop); // prevent initial card cutoffs
         } else if (mGridViewHolder instanceof VerticalGridPresenter.ViewHolder) {
             mGridView = ((VerticalGridPresenter.ViewHolder) mGridViewHolder).getGridView();
             if (mGridDirection.equals(GridDirection.LIST)) {
@@ -295,6 +294,12 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         mGridView.setHorizontalSpacing(mGridItemSpacingHorizontal);
         mGridView.setVerticalSpacing(mGridItemSpacingVertical);
         mGridView.setFocusable(true);
+        
+        // Clear focus before removing views to prevent focus navigation crashes
+        if (binding.rowsFragment.hasFocus()) {
+            binding.rowsFragment.clearFocus();
+        }
+        
         binding.rowsFragment.removeAllViews();
         binding.rowsFragment.addView(mGridViewHolder.view);
 
@@ -340,13 +345,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             // Binding is not available, view is likely destroyed
             return;
         }
-        if (item != null) {
-            binding.title.setText(item.getFullName(requireContext()));
-            InfoLayoutHelper.addInfoRow(requireContext(), item.getBaseItem(), binding.infoRow, true, false);
-        } else {
-            binding.title.setText("");
-            binding.infoRow.removeAllViews();
-        }
+        // Item display handled by grid presenter
     }
 
     public class SortOption {
@@ -744,10 +743,10 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         // adapt chunk size if needed
         int chunkSize = mRowDef.getChunkSize();
         if (mCardsScreenEst > 0 && mCardsScreenEst >= chunkSize) {
-            chunkSize = Math.min(mCardsScreenEst + mCardsScreenStride, 100); // cap at 150
+            chunkSize = Math.min(mCardsScreenEst + mCardsScreenStride, 150); // cap at 150
             Timber.d("buildAdapter adjusting chunkSize to <%s> screenEst <%s>", chunkSize, mCardsScreenEst);
         }
-        chunkSize=50;
+        chunkSize=100;
 
         switch (mRowDef.getQueryType()) {
             case NextUp:
@@ -802,8 +801,6 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                     mHandler.postDelayed(() -> {
                         if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED))
                             return;
-
-                        binding.title.setText(mFolder.getName());
                     }, 500);
                 } else if (mGridView != null) {
                     mGridView.setFocusable(true);
@@ -1197,6 +1194,13 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                                   RowPresenter.ViewHolder rowViewHolder, Row row) {
 
             if (!(item instanceof BaseRowItem)) return;
+
+            // Check if fragment is still attached to a context before proceeding
+            if (!isAdded()) {
+                Timber.w("ItemViewClickedListener: Fragment not attached to context, ignoring click");
+                return;
+            }
+
             itemLauncher.getValue().launch((BaseRowItem) item, mAdapter, requireContext());
         }
     }
@@ -1222,13 +1226,10 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             mHandler.removeCallbacks(mDelayedSetItem);
             if (!(item instanceof BaseRowItem)) {
                 mCurrentItem = null;
-                binding.title.setText(mainTitle);
                 //fill in default background
                 backgroundService.getValue().clearBackgrounds();
             } else {
                 mCurrentItem = (BaseRowItem) item;
-                binding.title.setText(mCurrentItem.getName(requireContext()));
-                binding.infoRow.removeAllViews();
                 mHandler.postDelayed(mDelayedSetItem, VIEW_SELECT_UPDATE_DELAY);
 
                 if (!determiningPosterSize)
