@@ -57,6 +57,7 @@ import org.jellyfin.androidtv.ui.livetv.LiveTvGuide;
 import org.jellyfin.androidtv.ui.livetv.LiveTvGuideFragment;
 import org.jellyfin.androidtv.ui.livetv.LiveTvGuideFragmentHelperKt;
 import org.jellyfin.androidtv.ui.livetv.TvManager;
+import org.jellyfin.androidtv.preference.UserPreferences;
 import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.playback.overlay.LeanbackOverlayFragment;
@@ -90,6 +91,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     protected VlcPlayerInterfaceBinding binding;
     private OverlayTvGuideBinding tvGuideBinding;
     private final MediaSegmentRepository mediaSegmentRepository = (MediaSegmentRepository) org.koin.java.KoinJavaComponent.inject(MediaSegmentRepository.class).getValue();
+    private final Lazy<UserPreferences> userPreferences = org.koin.java.KoinJavaComponent.inject(UserPreferences.class);
 
     private RowsSupportFragment mPopupRowsFragment;
     private ListRow mChapterRow;
@@ -123,10 +125,10 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     private AudioManager mAudioManager;
 
     private boolean mFadeEnabled = false;
-    private boolean mSkipOperationInProgress = false;
     private boolean mIsVisible = false;
     private boolean mPopupPanelVisible = false;
     private boolean navigating = false;
+    private boolean mSkipOperationInProgress = false;
 
     protected LeanbackOverlayFragment leanbackOverlayFragment;
 
@@ -654,7 +656,10 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     private void startFadeTimer() {
         mFadeEnabled = true;
         mHandler.removeCallbacks(mHideTask);
-        mHandler.postDelayed(mHideTask, 6000);
+        // Use the playerControlsHideDuration preference instead of hardcoded 6 seconds
+        int hideDuration = userPreferences.getValue().get(UserPreferences.Companion.getPlayerControlsHideDuration());
+        mHandler.postDelayed(mHideTask, hideDuration);
+        Timber.d("Fade timer started with duration: %dms", hideDuration);
     }
 
     @Override
@@ -1233,6 +1238,14 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
         if (binding != null) binding.skipOverlay.setTargetPositionMs(null);
     }
 
+    public boolean isSkipOperationInProgress() {
+        return mSkipOperationInProgress;
+    }
+
+    public void setSkipOperationInProgress(boolean inProgress) {
+        mSkipOperationInProgress = inProgress;
+    }
+
     public void updateDisplay() {
         BaseItemDto current = playbackControllerContainer.getValue().getPlaybackController().getCurrentlyPlayingItem();
         if (current != null && getContext() != null) {
@@ -1333,11 +1346,4 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
         }
     }
 
-    public boolean isSkipOperationInProgress() {
-        return mSkipOperationInProgress;
-    }
-
-    public void setSkipOperationInProgress(boolean skipOperationInProgress) {
-        mSkipOperationInProgress = skipOperationInProgress;
-    }
 }

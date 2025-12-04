@@ -3,8 +3,6 @@ package org.jellyfin.androidtv.ui.playback.overlay;
 import static org.koin.java.KoinJavaComponent.inject;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -31,8 +29,6 @@ public class LeanbackOverlayFragment extends PlaybackSupportFragment {
     private Lazy<ImageLoader> imageLoader = inject(ImageLoader.class);
     private Lazy<ApiClient> api = inject(ApiClient.class);
     private Lazy<UserPreferences> userPreferences = inject(UserPreferences.class);
-    private final Handler mAutoHideHandler = new Handler(Looper.getMainLooper());
-    private final Runnable mAutoHideRunnable = () -> hideControlsOverlay(true);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +52,6 @@ public class LeanbackOverlayFragment extends PlaybackSupportFragment {
         super.onViewCreated(view, savedInstanceState);
 
         super.hideControlsOverlay(false);
-        scheduleAutoHide();
     }
 
     public void initFromView(CustomPlaybackOverlayFragment customPlaybackOverlayFragment) {
@@ -69,7 +64,6 @@ public class LeanbackOverlayFragment extends PlaybackSupportFragment {
         if (shouldShowOverlay) {
             super.showControlsOverlay(runAnimation);
             playerAdapter.getMasterOverlayFragment().show();
-            scheduleAutoHide();
         }
     }
 
@@ -122,19 +116,9 @@ public class LeanbackOverlayFragment extends PlaybackSupportFragment {
     @Override
     public void onPause() {
         super.onPause();
-        // Cancel auto-hide when paused
-        mAutoHideHandler.removeCallbacks(mAutoHideRunnable);
         if (playerAdapter != null) {
             playerAdapter.getMasterOverlayFragment().onPause();
         }
-    }
-    private void scheduleAutoHide() {
-        mAutoHideHandler.removeCallbacks(mAutoHideRunnable);
-
-        int hideDuration = userPreferences.getValue().get(UserPreferences.Companion.getPlayerControlsHideDuration());
-
-        mAutoHideHandler.postDelayed(mAutoHideRunnable, hideDuration);
-        Timber.d("Controls auto-hide scheduled for %dms", hideDuration);
     }
 
     public CustomPlaybackTransportControlGlue getPlayerGlue() {
