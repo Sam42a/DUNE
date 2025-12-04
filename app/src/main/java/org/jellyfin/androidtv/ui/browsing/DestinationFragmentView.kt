@@ -147,6 +147,9 @@ class DestinationFragmentView @JvmOverloads constructor(
 			setReorderingAllowed(true)
 			setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
 
+			// Clear focus from current fragment before detaching to prevent focus navigation crashes
+			fragmentManager.findFragmentByTag(FRAGMENT_TAG_CONTENT)?.view?.clearFocus()
+
 			// Detach current fragment
 			fragmentManager.findFragmentByTag(FRAGMENT_TAG_CONTENT)?.let(::detach)
 
