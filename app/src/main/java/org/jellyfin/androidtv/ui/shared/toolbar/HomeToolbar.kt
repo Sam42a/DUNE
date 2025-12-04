@@ -2,11 +2,13 @@ package org.jellyfin.androidtv.ui.shared.toolbar
 
 import android.R.attr.scaleX
 import android.R.attr.scaleY
+import android.os.Build
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -71,6 +73,7 @@ import timber.log.Timber
 import org.jellyfin.androidtv.data.repository.UserViewsRepository
 import org.jellyfin.androidtv.ui.base.Text
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun HomeToolbar(
     openSearch: () -> Unit,

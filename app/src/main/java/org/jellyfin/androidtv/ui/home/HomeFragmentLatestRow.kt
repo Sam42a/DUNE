@@ -13,13 +13,16 @@ import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.CollectionType
 import org.jellyfin.sdk.model.api.request.GetLatestMediaRequest
+import timber.log.Timber
 
 class HomeFragmentLatestRow(
 	private val userRepository: UserRepository,
 	private val userViews: Collection<BaseItemDto>,
 ) : HomeFragmentRow {
+
 	@SuppressLint("StringFormatInvalid")
 	override fun addToRowsAdapter(context: Context, cardPresenter: CardPresenter, rowsAdapter: MutableObjectAdapter<Row>) {
+		// For now, use the sequential approach to avoid coroutine complexity
 		// Get configuration (to find excluded items)
 		val configuration = userRepository.currentUser.value?.configuration
 
@@ -33,7 +36,7 @@ class HomeFragmentLatestRow(
 		val latestItemsExcludes = configuration?.latestItemsExcludes.orEmpty()
 		userViews
 			.filterNot { item -> item.collectionType in EXCLUDED_COLLECTION_TYPES || item.id in latestItemsExcludes }
-			.map { item ->
+			.forEach { item ->
 				// Create query and add it to a new row
 				val request = GetLatestMediaRequest(
 					fields = ItemRepository.itemFields,
@@ -49,8 +52,7 @@ class HomeFragmentLatestRow(
 					// Format the string with the library name
 					context.resources.getString(R.string.lbl_latest_in, item.name)
 				}
-				HomeFragmentBrowseRowDefRow(BrowseRowDef(title, request, arrayOf(ChangeTriggerType.LibraryUpdated)))
-			}.forEach { row ->
+				val row = HomeFragmentBrowseRowDefRow(BrowseRowDef(title, request, arrayOf(ChangeTriggerType.LibraryUpdated)))
 				// Add row to adapter with the no-info card presenter
 				row.addToRowsAdapter(context, noInfoCardPresenter, rowsAdapter)
 			}

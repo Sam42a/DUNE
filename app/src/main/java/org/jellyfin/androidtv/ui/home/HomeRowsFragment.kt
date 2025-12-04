@@ -103,6 +103,7 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 		adapter = MutableObjectAdapter<Row>(rowPresenter)
 
 		lifecycleScope.launch(Dispatchers.IO) {
+			val startTime = System.currentTimeMillis()
 			val currentUser = withTimeout(30.seconds) {
 				userRepository.currentUser.filterNotNull().first()
 			}
@@ -141,22 +142,45 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 			// Check for coroutine cancellation
 			if (!isActive) return@launch
 
-			for (section in homesections) when (section) {
-				HomeSectionType.LATEST_MEDIA -> rows.add(helper.loadRecentlyAdded(userViewsRepository.views.first()))
-				HomeSectionType.LIBRARY_TILES_SMALL -> rows.add(HomeFragmentViewsRow(small = false))
-				HomeSectionType.LIBRARY_BUTTONS -> rows.add(HomeFragmentViewsRow(small = true))
-				HomeSectionType.RESUME -> rows.add(helper.loadResumeVideo())
-				HomeSectionType.RESUME_AUDIO -> rows.add(helper.loadResumeAudio())
-				HomeSectionType.RESUME_BOOK -> Unit // Books are not (yet) supported
-				HomeSectionType.ACTIVE_RECORDINGS -> rows.add(helper.loadLatestLiveTvRecordings())
-				HomeSectionType.NEXT_UP -> rows.add(helper.loadNextUp())
-				HomeSectionType.LIVE_TV -> if (includeLiveTvRows) {
-					rows.add(liveTVRow)
-					rows.add(helper.loadOnNow())
-				}
-
-				HomeSectionType.NONE -> Unit
+			Timber.d("Starting parallel loading of ${homesections.size} home sections")
+			val userViewsDeferred = async(Dispatchers.IO) {
+				userViewsRepository.views.first()
 			}
+
+			// Load all home sections in parallel for better performance
+			val sectionRows = homesections.map { section ->
+				async(Dispatchers.IO) {
+					when (section) {
+						HomeSectionType.LATEST_MEDIA -> {
+							val views = userViewsDeferred.await()
+							helper.loadRecentlyAdded(views)
+						}
+						HomeSectionType.LIBRARY_TILES_SMALL -> HomeFragmentViewsRow(small = false)
+						HomeSectionType.LIBRARY_BUTTONS -> HomeFragmentViewsRow(small = true)
+						HomeSectionType.RESUME -> helper.loadResumeVideo()
+						HomeSectionType.RESUME_AUDIO -> helper.loadResumeAudio()
+						HomeSectionType.RESUME_BOOK -> null // Books are not (yet) supported
+						HomeSectionType.ACTIVE_RECORDINGS -> helper.loadLatestLiveTvRecordings()
+						HomeSectionType.NEXT_UP -> helper.loadNextUp()
+						HomeSectionType.LIVE_TV -> if (includeLiveTvRows) {
+							listOf(liveTVRow, helper.loadOnNow())
+						} else {
+							emptyList<HomeFragmentRow>()
+						}
+						HomeSectionType.NONE -> null
+					}
+				}
+			}.awaitAll()
+
+			sectionRows.forEach { sectionResult ->
+				when (sectionResult) {
+					is List<*> -> rows.addAll(sectionResult.filterNotNull().map { it as HomeFragmentRow })
+					else -> sectionResult?.let { rows.add(it as HomeFragmentRow) }
+				}
+			}
+
+			val sectionLoadTime = System.currentTimeMillis() - startTime
+			Timber.d("Loaded ${rows.size} home sections in parallel in ${sectionLoadTime}ms")
 
 			// Add sections to layout
 			withContext(Dispatchers.Main) {
@@ -165,6 +189,7 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
                 }
 
 				val rowsAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
+				val layoutStartTime = System.currentTimeMillis()
 
 				notificationsRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
 				nowPlaying.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
@@ -192,7 +217,12 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 					Timber.d("No genre rows enabled")
 				}
 
+				val layoutTime = System.currentTimeMillis() - layoutStartTime
+				Timber.d("Home sections layout completed in ${layoutTime}ms")
 			}
+
+			val totalLoadTime = System.currentTimeMillis() - startTime
+			Timber.d("HomeRowsFragment initialization completed in ${totalLoadTime}ms")
 		}
 
 		onItemViewClickedListener = CompositeClickedListener().apply {
