@@ -96,7 +96,9 @@ class LeanbackChannelWorker(
 			// Get latest media
 			val (latestEpisodes, latestMovies, latestMedia) = getLatestMedia()
 			val myMedia = getMyMedia()
-			val allMovies = getAllMovies()
+			val movies = getMovies()
+			val movieCollections = getMovieCollections()
+			val shows = getShows()
 			// Delete current items from the channels
 			context.contentResolver.delete(TvContractCompat.PreviewPrograms.CONTENT_URI, null, null)
 
@@ -126,7 +128,7 @@ class LeanbackChannelWorker(
 			val latestMoviesChannel = getChannelUri(
 				"latest_movies", Channel.Builder()
 					.setType(TvContractCompat.Channels.TYPE_PREVIEW)
-					.setDisplayName(context.getString(R.string.lbl_movies))
+					.setDisplayName(context.getString(R.string.lbl_latest)+context.getString(R.string.lbl_movies))
 					.setAppLinkIntent(Intent(context, StartupActivity::class.java))
 					.build()
 			)
@@ -137,10 +139,24 @@ class LeanbackChannelWorker(
 					.setAppLinkIntent(Intent(context, StartupActivity::class.java))
 					.build()
 			)
-			val allMoviesChannel = getChannelUri(
-				"all_movies", Channel.Builder()
+			val moviesChannel = getChannelUri(
+				"movies", Channel.Builder()
 					.setType(TvContractCompat.Channels.TYPE_PREVIEW)
-					.setDisplayName("All Movies")
+					.setDisplayName(context.getString(R.string.lbl_movies))
+					.setAppLinkIntent(Intent(context, StartupActivity::class.java))
+					.build()
+			)
+			val movieCollectionsChannel = getChannelUri(
+				"movie_collections", Channel.Builder()
+					.setType(TvContractCompat.Channels.TYPE_PREVIEW)
+					.setDisplayName(context.getString(R.string.lbl_collections))
+					.setAppLinkIntent(Intent(context, StartupActivity::class.java))
+					.build()
+			)
+			val showsChannel = getChannelUri(
+				"shows", Channel.Builder()
+					.setType(TvContractCompat.Channels.TYPE_PREVIEW)
+					.setDisplayName(context.getString(R.string.lbl_series))
 					.setAppLinkIntent(Intent(context, StartupActivity::class.java))
 					.build()
 			)
@@ -153,7 +169,9 @@ class LeanbackChannelWorker(
 				latestMovies to latestMoviesChannel,
 				latestEpisodes to latestEpisodesChannel,
 				myMedia to myMediaChannel,
-				allMovies to allMoviesChannel
+				movies to moviesChannel,
+				movieCollections to movieCollectionsChannel,
+				shows to showsChannel
 			).forEach { (items, channel) ->
 				if (channel == null) {
 					Timber.e("Skipping channel because it was not available")
@@ -327,7 +345,7 @@ class LeanbackChannelWorker(
 			Triple(latestEpisodes.await(), latestMovies.await(), latestMedia.await())
 		}
 
-	private suspend fun getAllMovies(): List<BaseItemDto> =
+	private suspend fun getMovies(): List<BaseItemDto> =
 		withContext(Dispatchers.IO) {
 			try {
 				api.itemsApi.getItems(
@@ -336,10 +354,38 @@ class LeanbackChannelWorker(
 					fields = ItemRepository.itemFields
 				).content.items
 			} catch (e: Exception) {
-				Timber.e(e, "Error getting all movies")
+				Timber.e(e, "Error getting movies")
 				emptyList()
 			}
 		}
+
+		private suspend fun getMovieCollections(): List<BaseItemDto> =
+			withContext(Dispatchers.IO) {
+				try {
+					api.itemsApi.getItems(
+						includeItemTypes = listOf(BaseItemKind.BOX_SET),
+						recursive = true,
+						fields = ItemRepository.itemFields
+					).content.items
+				} catch (e: Exception) {
+					Timber.e(e, "Error getting collections")
+					emptyList()
+				}
+			}
+
+		private suspend fun getShows(): List<BaseItemDto> =
+			withContext(Dispatchers.IO) {
+				try {
+					api.itemsApi.getItems(
+						includeItemTypes = listOf(BaseItemKind.SERIES),
+						recursive = true,
+						fields = ItemRepository.itemFields
+					).content.items
+				} catch (e: Exception) {
+					Timber.e(e, "Error getting shows")
+					emptyList()
+				}
+			}
 
 	@SuppressLint("RestrictedApi")
 	private fun createPreviewProgram(
