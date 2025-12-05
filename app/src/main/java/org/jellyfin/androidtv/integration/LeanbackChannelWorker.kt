@@ -128,7 +128,7 @@ class LeanbackChannelWorker(
 			val latestMoviesChannel = getChannelUri(
 				"latest_movies", Channel.Builder()
 					.setType(TvContractCompat.Channels.TYPE_PREVIEW)
-					.setDisplayName(context.getString(R.string.lbl_latest)+context.getString(R.string.lbl_movies))
+					.setDisplayName(context.getString(R.string.lbl_new)+" "+context.getString(R.string.lbl_movies))
 					.setAppLinkIntent(Intent(context, StartupActivity::class.java))
 					.build()
 			)
