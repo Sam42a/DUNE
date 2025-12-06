@@ -238,6 +238,10 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var seriesThumbnailsEnabled = booleanPreference("pref_enable_series_thumbnails", true)
 
+		/** Enable thumbnails in GoogleTV Launcher
+		*/
+		var launcherThumbnailsEnabled = booleanPreference("pref_enable_launcher_thumbnails", true)
+
 		/**
 		 * Genre sorting method for home screen genre rows
 		 */
