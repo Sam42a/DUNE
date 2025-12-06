@@ -90,6 +90,13 @@ class LeanbackChannelWorker(
 		!isSupported -> Result.failure()
 		// Retry later if no authenticated user is found
 		!api.isUsable -> Result.retry()
+		// Check if launcher channels are enabled
+		!userPreferences[UserPreferences.launcherChannelsEnabled] -> {
+			// Delete all existing channels and programs when disabled
+			context.contentResolver.delete(TvContractCompat.PreviewPrograms.CONTENT_URI, null, null)
+			context.contentResolver.delete(TvContractCompat.Channels.CONTENT_URI, null, null)
+			Result.success()
+		}
 		else -> try {
 			// Get next up episodes
 			val (resumeItems, nextUpItems) = getNextUpItems()
@@ -368,6 +375,7 @@ class LeanbackChannelWorker(
 				api.itemsApi.getItems(
 					includeItemTypes = listOf(BaseItemKind.MOVIE),
 					recursive = true,
+					limit = 50,
 					fields = ItemRepository.itemFields
 				).content.items
 			} catch (e: Exception) {
@@ -376,33 +384,34 @@ class LeanbackChannelWorker(
 			}
 		}
 
-		private suspend fun getMovieCollections(): List<BaseItemDto> =
-			withContext(Dispatchers.IO) {
-				try {
-					api.itemsApi.getItems(
-						includeItemTypes = listOf(BaseItemKind.BOX_SET),
-						recursive = true,
-						fields = ItemRepository.itemFields
-					).content.items
-				} catch (e: Exception) {
-					Timber.e(e, "Error getting collections")
-					emptyList()
-				}
+	private suspend fun getMovieCollections(): List<BaseItemDto> =
+		withContext(Dispatchers.IO) {
+			try {
+				api.itemsApi.getItems(
+					includeItemTypes = listOf(BaseItemKind.BOX_SET),
+					recursive = true,
+					limit = 50,
+					fields = ItemRepository.itemFields
+				).content.items
+			} catch (e: Exception) {
+				Timber.e(e, "Error getting collections")
+				emptyList()
 			}
+		}
 
-		private suspend fun getShows(): List<BaseItemDto> =
-			withContext(Dispatchers.IO) {
-				try {
-					api.itemsApi.getItems(
-						includeItemTypes = listOf(BaseItemKind.SERIES),
-						recursive = true,
-						fields = ItemRepository.itemFields
-					).content.items
-				} catch (e: Exception) {
-					Timber.e(e, "Error getting shows")
-					emptyList()
-				}
+	private suspend fun getShows(): List<BaseItemDto> =
+		withContext(Dispatchers.IO) {
+			try {
+				api.itemsApi.getItems(
+					includeItemTypes = listOf(BaseItemKind.SERIES),
+					recursive = true,
+					fields = ItemRepository.itemFields
+				).content.items
+			} catch (e: Exception) {
+				Timber.e(e, "Error getting shows")
+				emptyList()
 			}
+		}
 
 	@SuppressLint("RestrictedApi")
 	private fun createPreviewProgram(
@@ -455,7 +464,19 @@ class LeanbackChannelWorker(
 			)
 			.setIntent(Intent(context, StartupActivity::class.java).apply {
 				putExtra(StartupActivity.EXTRA_ITEM_ID, item.id.toString())
-				putExtra(StartupActivity.EXTRA_ITEM_IS_USER_VIEW, item.type == BaseItemKind.COLLECTION_FOLDER)
+				when (item.type) {
+					BaseItemKind.COLLECTION_FOLDER -> {
+						putExtra(StartupActivity.EXTRA_ITEM_IS_USER_VIEW, true)
+						putExtra("ItemType", "COLLECTION_FOLDER")
+					}
+					BaseItemKind.BOX_SET -> {
+						putExtra(StartupActivity.EXTRA_ITEM_IS_USER_VIEW, false)
+						putExtra("ItemType", "BOX_SET")
+					}
+					else -> {
+						putExtra(StartupActivity.EXTRA_ITEM_IS_USER_VIEW, false)
+					}
+				}
 			})
 			.setDurationMillis(
 				if (item.runTimeTicks?.ticks != null) {

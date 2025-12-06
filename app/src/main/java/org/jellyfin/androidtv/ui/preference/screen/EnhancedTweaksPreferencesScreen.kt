@@ -63,14 +63,23 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
                 setTitle(R.string.lbl_use_series_thumbnails)
                 setContent(R.string.lbl_use_series_thumbnails_description)
                 bind(userPreferences, UserPreferences.seriesThumbnailsEnabled)
-            }
+			}
+		}
 
+			category {
+				setTitle(R.string.android_channels)
 			checkbox {
 				setTitle(R.string.lbl_use_launcher_thumbnails)
 				setContent(R.string.lbl_use_launcher_thumbnails_description)
 				bind(userPreferences, UserPreferences.launcherThumbnailsEnabled)
 			}
-        }
+
+			checkbox {
+				setTitle(R.string.lbl_enable_launcher_channels)
+				setContent(R.string.lbl_enable_launcher_channels_description)
+				bind(userPreferences, UserPreferences.launcherChannelsEnabled)
+			}
+		}
 
         category {
             setTitle(R.string.genre_rows)

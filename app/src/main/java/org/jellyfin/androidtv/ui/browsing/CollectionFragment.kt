@@ -1,12 +1,16 @@
 package org.jellyfin.androidtv.ui.browsing
 
+import androidx.leanback.widget.Row
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.data.repository.ItemRepository
+import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.request.GetItemsRequest
 
 class CollectionFragment : EnhancedBrowseFragment() {
 	override fun setupQueries(rowLoader: RowLoader) {
+		// prevent duplicates
+		mRows.clear()
 		val movies = GetItemsRequest(
 			fields = ItemRepository.itemFields,
 			parentId = mFolder.id,
@@ -29,5 +33,7 @@ class CollectionFragment : EnhancedBrowseFragment() {
 		mRows.add(BrowseRowDef(getString(R.string.lbl_other), others, 100))
 
 		rowLoader.loadRows(mRows)
+	}
+	override fun addAdditionalRows(rowAdapter: MutableObjectAdapter<Row>) {
 	}
 }

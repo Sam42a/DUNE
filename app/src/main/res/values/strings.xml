@@ -164,6 +164,7 @@
     <string name="desc_debug">Provide extra information for debugging</string>
     <string name="lbl_showing">Showing</string>
     <string name="genre_rows">Genre Rows</string>
+    <string name="android_channels">Android TV Channels</string>
     <string name="genre_rows_description">Enable 5 or less for better performance</string>
 
     <string name="lbl_all_items">All items</string>
@@ -421,7 +422,9 @@
     <string name="lbl_hide_unwatched_count">When the item is watched</string>
     <string name="lbl_hide_watched_checkmark">When there are episodes remaining</string>
     <string name="lbl_use_launcher_thumbnails">Prefer thumbnails in launcher</string>
-    <string name="lbl_use_launcher_thumbnails_description">Use thumbnails over Posters for all content that appears in the GoogleTV launcher</string>
+    <string name="lbl_use_launcher_thumbnails_description">Use thumbnails over Posters for all content recommendations</string>
+    <string name="lbl_enable_launcher_channels">Enable launcher channels</string>
+    <string name="lbl_enable_launcher_channels_description">Show all app channels recommendations</string>
     <string name="lbl_use_series_thumbnails">Prefer series thumbnails</string>
     <string name="lbl_use_series_thumbnails_description">Use series thumbnails instead of individual episode thumbnails AKA no spoilers</string>
     <string name="auto_sign_in">Automatic sign in</string>

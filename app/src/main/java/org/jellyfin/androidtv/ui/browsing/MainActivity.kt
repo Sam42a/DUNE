@@ -44,8 +44,11 @@ import org.jellyfin.androidtv.util.isMediaSessionKeyEvent
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.MediaType
+import org.jellyfin.sdk.api.client.ApiClient
+import org.jellyfin.sdk.api.client.extensions.userLibraryApi
 import org.jellyfin.androidtv.util.LocaleUtils
 import android.content.Context
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -62,10 +65,12 @@ class MainActivity : FragmentActivity() {
 	private val screensaverViewModel by viewModel<ScreensaverViewModel>()
 	private val workManager by inject<WorkManager>()
 	private val socketHandler by inject<SocketHandler>()
+	private val api by inject<ApiClient>()
 
 	private lateinit var binding: ActivityMainBinding
 
 	private var isAtRoot = true
+	private var lastProcessedIntent: String? = null // Flag to prevent duplicate intent processing
 	private val backPressedCallback = object : OnBackPressedCallback(true) {
 		override fun handleOnBackPressed() {
 			if (navigationRepository.canGoBack) {
@@ -140,30 +145,60 @@ class MainActivity : FragmentActivity() {
 			// Check for item ID in extras
 			val itemId = intent.getStringExtra("ItemId") ?: return
 			val isUserView = intent.getBooleanExtra("ItemIsUserView", false)
+			val itemType = intent.getStringExtra("ItemType")
 			val searchQuery = if (intent.action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
 				intent.getStringExtra(SearchManager.QUERY) ?: ""
 			} else null
 			val startPlayback = !searchQuery.isNullOrBlank()
 
-			Timber.d("Handling intent with item: $itemId, isUserView: $isUserView, startPlayback: $startPlayback, searchQuery: $searchQuery")
-
-			// Create a minimal BaseItemDto with required fields
-			val item = BaseItemDto(
-				id = UUID.fromString(itemId),
-				type = if (isUserView) BaseItemKind.USER_VIEW else BaseItemKind.FOLDER,
-				mediaType = MediaType.UNKNOWN,
-				name = ""
-			)
-
-			// Reset navigation first to ensure clean state
+			val intentKey = "$itemId-$itemType-$isUserView"
+			if (lastProcessedIntent == intentKey) {
+				return
+			}
+			lastProcessedIntent = intentKey
 			navigationRepository.reset(clearHistory = true)
+			lifecycleScope.launch {
+				try {
+					val destination = when (itemType) {
+						"COLLECTION_FOLDER" -> {
+							val item = BaseItemDto(
+								id = UUID.fromString(itemId),
+								type = BaseItemKind.COLLECTION_FOLDER,
+								mediaType = MediaType.UNKNOWN,
+								name = "",
+								displayPreferencesId = itemId.toString()
+							)
+							Destinations.libraryBrowser(item)
+						}
+						"BOX_SET" -> {
+							val item = BaseItemDto(
+								id = UUID.fromString(itemId),
+								type = BaseItemKind.BOX_SET,
+								mediaType = MediaType.UNKNOWN,
+								name = "",
+								displayPreferencesId = itemId.toString()
+							)
+							Destinations.collectionBrowser(item)
+						}
+						else -> {
+							val item = BaseItemDto(
+								id = UUID.fromString(itemId),
+								type = if (isUserView) BaseItemKind.USER_VIEW else BaseItemKind.FOLDER,
+								mediaType = MediaType.UNKNOWN,
+								name = "",
+								displayPreferencesId = itemId.toString()
+							)
+							Destinations.itemDetails(item.id!!)
+						}
+					}
 
-			// Use itemDetails for navigation as it's more reliable with minimal item data
-			val destination = Destinations.itemDetails(item.id!!)
-			navigationRepository.navigate(destination)
+					navigationRepository.navigate(destination)
 
-			// Clear the intent to prevent handling it multiple times
-			setIntent(Intent())
+					setIntent(Intent())
+				} catch (e: Exception) {
+					Timber.e(e, "Error in async navigation handling")
+				}
+			}
 		} catch (e: Exception) {
 			Timber.e(e, "Error handling intent navigation")
 		}
@@ -310,7 +345,7 @@ class MainActivity : FragmentActivity() {
 	private fun showExitConfirmation() {
 		val dialog = AlertDialog.Builder(this, R.style.ExitDialogTheme).apply {
 			setMessage(R.string.exit_app_message)
-			setPositiveButton(R.string.yes) { _, _ -> 
+			setPositiveButton(R.string.yes) { _, _ ->
 				// Force close the app completely
 				finishAffinity()
 				android.os.Process.killProcess(android.os.Process.myPid())

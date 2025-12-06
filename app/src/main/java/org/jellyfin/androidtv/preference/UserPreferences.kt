@@ -238,9 +238,15 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var seriesThumbnailsEnabled = booleanPreference("pref_enable_series_thumbnails", true)
 
-		/** Enable thumbnails in GoogleTV Launcher
-		*/
+		/**
+		 * Enable thumbnails in GoogleTV Launcher
+		 */
 		var launcherThumbnailsEnabled = booleanPreference("pref_enable_launcher_thumbnails", true)
+
+		/**
+		 * Enable all Android TV launcher channels
+		 */
+		var launcherChannelsEnabled = booleanPreference("pref_enable_launcher_channels", true)
 
 		/**
 		 * Genre sorting method for home screen genre rows

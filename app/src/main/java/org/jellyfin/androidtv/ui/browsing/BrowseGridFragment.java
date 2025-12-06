@@ -183,7 +183,13 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         mFolder = Json.Default.decodeFromString(BaseItemDto.Companion.serializer(), getArguments().getString(Extras.Folder));
         mParentId = mFolder.getId();
         mainTitle = mFolder.getName();
-        libraryPreferences = preferencesRepository.getValue().getLibraryPreferences(Objects.requireNonNull(mFolder.getDisplayPreferencesId()));
+
+        // Use item ID as fallback for display preferences ID to prevent crashes
+        String displayPreferencesId = mFolder.getDisplayPreferencesId() != null ?
+            mFolder.getDisplayPreferencesId() :
+            mFolder.getId().toString();
+
+        libraryPreferences = preferencesRepository.getValue().getLibraryPreferences(displayPreferencesId);
         mPosterSizeSetting = libraryPreferences.get(LibraryPreferences.Companion.getPosterSize());
         mImageType = libraryPreferences.get(LibraryPreferences.Companion.getImageType());
         mGridDirection = libraryPreferences.get(LibraryPreferences.Companion.getGridDirection());
@@ -294,12 +300,10 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         mGridView.setHorizontalSpacing(mGridItemSpacingHorizontal);
         mGridView.setVerticalSpacing(mGridItemSpacingVertical);
         mGridView.setFocusable(true);
-
         // Clear focus before removing views to prevent focus navigation crashes
         if (binding.rowsFragment.hasFocus()) {
             binding.rowsFragment.clearFocus();
         }
-
         binding.rowsFragment.removeAllViews();
         binding.rowsFragment.addView(mGridViewHolder.view);
 
@@ -746,7 +750,6 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
             chunkSize = Math.min(mCardsScreenEst + mCardsScreenStride, 150); // cap at 150
             Timber.d("buildAdapter adjusting chunkSize to <%s> screenEst <%s>", chunkSize, mCardsScreenEst);
         }
-        chunkSize=100;
 
         switch (mRowDef.getQueryType()) {
             case NextUp:
@@ -796,13 +799,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
                 }
                 // Always show the letter button regardless of sort order
                 mLetterButton.setVisibility(View.VISIBLE);
-                if (mAdapter.getItemsLoaded() == 0) {
-                    mGridView.setFocusable(false);
-                    mHandler.postDelayed(() -> {
-                        if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED))
-                            return;
-                    }, 500);
-                } else if (mGridView != null) {
+                if (mAdapter.getItemsLoaded() > 0 && mGridView != null) {
                     mGridView.setFocusable(true);
                     mGridView.requestFocus();
                 }
@@ -842,14 +839,14 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
 
     private void addToolbarButton(ImageButton button) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
         int margin = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                8,
-                getResources().getDisplayMetrics()
+            TypedValue.COMPLEX_UNIT_DIP,
+            8,
+            getResources().getDisplayMetrics()
         );
 
         params.setMargins(0, 0, margin, 0);
