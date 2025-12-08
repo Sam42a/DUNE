@@ -11,9 +11,12 @@ import org.jellyfin.androidtv.auth.repository.UserRepository
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.ui.browsing.BrowseRowDef
 import androidx.leanback.widget.BaseCardView
+import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ListRow
 import org.jellyfin.androidtv.ui.card.LegacyImageCardView
 import org.jellyfin.androidtv.ui.presentation.CardPresenter
 import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter
+import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.model.api.BaseItemKind
 import org.jellyfin.sdk.model.api.ItemSortBy
 import org.jellyfin.sdk.model.api.MediaType
@@ -124,6 +127,48 @@ class HomeFragmentHelper(
                     query,
                     arrayOf(ChangeTriggerType.TvPlayback)
                 )).addToRowsAdapter(context, customCardPresenter, rowsAdapter)
+            }
+        }
+    }
+
+    fun loadContinueWatchingCombined(): HomeFragmentRow {
+        // Combined continue watching and next up
+        return object : HomeFragmentRow {
+            override fun addToRowsAdapter(
+                context: Context,
+                cardPresenter: CardPresenter,
+                rowsAdapter: MutableObjectAdapter<Row>
+            ) {
+                val useThumbnails = userPreferences[UserPreferences.seriesThumbnailsEnabled]
+
+                val combinedPresenter = object : CardPresenter(true, if (useThumbnails) ImageType.THUMB else ImageType.POSTER, 220) {
+                    override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
+                        super.onBindViewHolder(viewHolder, item)
+                        val cardView = viewHolder.view as? LegacyImageCardView
+                        cardView?.setMainImageDimensions(200, 110) // Standard card dimensions
+                        cardView?.cardType = BaseCardView.CARD_TYPE_MAIN_ONLY
+                    }
+                }.apply {
+                    setHomeScreen(true)
+                    setUniformAspect(true)
+                }
+
+                val apiClient: ApiClient by org.koin.java.KoinJavaComponent.inject(ApiClient::class.java)
+                val combinedAdapter = CombinedResumeNextUpAdapter(
+                    userRepository = userRepository,
+                    userPreferences = userPreferences,
+                    cardPresenter = combinedPresenter,
+                    rowsAdapter = rowsAdapter,
+                    apiClient = apiClient
+                )
+
+                val header =
+                    HeaderItem(context.getString(R.string.home_section_continue_nextup))
+                val row = ListRow(header, combinedAdapter)
+                combinedAdapter.setRow(row)
+                rowsAdapter.add(row)
+
+                combinedAdapter.loadData()
             }
         }
     }

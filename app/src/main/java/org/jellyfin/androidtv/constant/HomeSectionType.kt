@@ -13,6 +13,7 @@ enum class HomeSectionType(
 	override val nameRes: Int,
 ) : PreferenceEnum {
 	LATEST_MEDIA("latestmedia", R.string.home_section_latest_media),
+	CONTINUE_WATCHING_COMBINED("continuewatchingcombined", R.string.home_section_continue_watching_combined),
 	LIBRARY_TILES_SMALL("smalllibrarytiles", R.string.home_section_library),
 	LIBRARY_BUTTONS("librarybuttons", R.string.home_section_library_small),
 	RESUME("resume", R.string.home_section_resume),
