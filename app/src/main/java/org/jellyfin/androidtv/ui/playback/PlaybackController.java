@@ -561,6 +561,14 @@ public class PlaybackController implements PlaybackControllerNotifiable {
                 if (stream.getType() != MediaStreamType.AUDIO || stream.getLanguage() == null) {
                     continue;
                 }
+                
+                if (userPreferences.getValue().get(UserPreferences.Companion.getSkipCommentaryTracks())) {
+                    String displayTitle = stream.getDisplayTitle();
+                    if (displayTitle != null && displayTitle.toLowerCase().contains("commentary")) {
+                        Timber.d("Skipping commentary track: %s (index %d)", displayTitle, stream.getIndex());
+                        continue;
+                    }
+                }
 
                 String streamLang = stream.getLanguage().toLowerCase();
 

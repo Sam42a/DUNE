@@ -296,6 +296,12 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var defaultAudioLanguage = enumPreference("default_audio_language", AudioLanguage.ENGLISH)
 
 		/**
+		 * Skip commentary audio tracks
+		 * When enabled, audio tracks marked as commentary will be skipped during selection
+		 */
+		var skipCommentaryTracks = booleanPreference("skip_commentary_tracks", true)
+
+		/**
 		 * Show screensaver in app
 		 */
 		var screensaverInAppEnabled = booleanPreference("screensaver_inapp_enabled", true)

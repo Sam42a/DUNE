@@ -43,6 +43,7 @@ import org.jellyfin.androidtv.data.repository.CustomMessageRepository;
 import org.jellyfin.androidtv.data.service.BackgroundService;
 import org.jellyfin.androidtv.databinding.OverlayTvGuideBinding;
 import org.jellyfin.androidtv.databinding.VlcPlayerInterfaceBinding;
+import org.jellyfin.androidtv.preference.UserPreferences;
 import org.jellyfin.androidtv.ui.GuideChannelHeader;
 import org.jellyfin.androidtv.ui.GuidePagingButton;
 import org.jellyfin.androidtv.ui.HorizontalScrollViewListener;
@@ -90,6 +91,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     protected VlcPlayerInterfaceBinding binding;
     private OverlayTvGuideBinding tvGuideBinding;
     private final MediaSegmentRepository mediaSegmentRepository = (MediaSegmentRepository) org.koin.java.KoinJavaComponent.inject(MediaSegmentRepository.class).getValue();
+    private final Lazy<UserPreferences> userPreferences = org.koin.java.KoinJavaComponent.inject(UserPreferences.class);
 
     private RowsSupportFragment mPopupRowsFragment;
     private ListRow mChapterRow;
@@ -654,7 +656,10 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     private void startFadeTimer() {
         mFadeEnabled = true;
         mHandler.removeCallbacks(mHideTask);
-        mHandler.postDelayed(mHideTask, 6000);
+        // Use the playerControlsHideDuration preference instead of hardcoded 6 seconds
+        int hideDuration = userPreferences.getValue().get(UserPreferences.Companion.getPlayerControlsHideDuration());
+        mHandler.postDelayed(mHideTask, hideDuration);
+        Timber.d("Fade timer started with duration: %dms", hideDuration);
     }
 
     @Override

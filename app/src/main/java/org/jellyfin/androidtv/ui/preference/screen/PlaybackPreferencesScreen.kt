@@ -86,6 +86,19 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 				}
 				bind(userSettingPreferences, userSettingPreferences.skipForwardLength)
 			}
+
+			@Suppress("MagicNumber")
+			seekbar {
+				setTitle(R.string.player_controls_hide_duration)
+				setContent(R.string.player_controls_hide_duration_summary)
+				min = 1_000
+				max = 30_000
+				increment = 1_000
+				valueFormatter = object : DurationSeekBarPreference.ValueFormatter() {
+					override fun display(value: Int) = "${value / 1000}s"
+				}
+				bind(userPreferences, UserPreferences.playerControlsHideDuration)
+			}
 		}
 
 		category {
@@ -105,6 +118,11 @@ class PlaybackPreferencesScreen : OptionsFragment() {
 				}
 
 				bind(userPreferences, UserPreferences.defaultAudioLanguage)
+			}
+
+			checkbox {
+				setTitle(R.string.pref_skip_commentary_tracks)
+				bind(userPreferences, UserPreferences.skipCommentaryTracks)
 			}
 		}
 
