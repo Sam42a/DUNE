@@ -142,7 +142,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Whether ExoPlayer should prefer FFmpeg renderers to core ones.
 		 */
 		var preferExoPlayerFfmpeg = booleanPreference("exoplayer_prefer_ffmpeg", defaultValue = false)
-
 		/**
 		 * Selected media source index for the current media item
 		 * Used to persist version selection when navigating back to details screenn
@@ -257,6 +256,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Sorting method for carousel items
 		 */
 		var carouselSortBy = enumPreference("carousel_sort_by", CarouselSortBy.RELEASE_DATE)
+
+		/**
+		 * Enable Series in carousel alongside Movies
+		 */
+		var carouselIncludeSeries = booleanPreference("carousel_include_series", false)
 
 		/**
 		 * Subtitles foreground color

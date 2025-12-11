@@ -7,13 +7,37 @@
     android:layout_height="match_parent">
 
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/innerConstraint"
+        android:layout_width="950dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/toolbar"
+            android:layout_width="436dp"
+            android:layout_height="44dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.64"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/content_view"
         android:name="org.jellyfin.androidtv.ui.home.HomeRowsFragment"
         android:layout_width="965dp"
-        android:layout_height="224dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginBottom="4dp"
+        android:layout_height="213dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="1dp"
         android:contentDescription="@string/home_content_description"
         android:descendantFocusability="afterDescendants"
         android:focusable="true"
@@ -29,113 +53,17 @@
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/carousel_container"
-        android:layout_width="907dp"
-        android:layout_height="232dp"
+        android:layout_width="910dp"
+        android:layout_height="249dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="24dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.compose.ui.platform.ComposeView>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/innerConstraint"
-        android:layout_width="969dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/toolbar"
-            android:layout_width="436dp"
-            android:layout_height="48dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.59"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.333" />
-
-        <org.jellyfin.androidtv.ui.shared.ShadowedClock
-            android:id="@+id/textClock3"
-            android:layout_width="79dp"
-            android:layout_height="26dp"
-            android:layout_marginStart="872dp"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="sans-serif-thin"
-            android:gravity="end"
-            android:textAlignment="viewEnd"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="VisualLintBounds,TextSizeCheck"
-            tools:layout_marginTop="39dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="917dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="336dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/bebas_neue"
-        android:letterSpacing="0.02"
-        android:lineSpacingExtra="2dp"
-        android:maxLines="1"
-        android:text=""
-        android:textAllCaps="false"
-        android:textColor="@color/basic_button_text"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:typeface="monospace"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="VisualLintBounds" />
-
-    <LinearLayout
-        android:id="@+id/infoRow"
-        android:layout_width="500dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="380dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="VisualLintBounds" />
-
-    <org.jellyfin.androidtv.ui.shared.ShadowedTextView
-        android:id="@+id/summary"
-        android:layout_width="500dp"
-        android:layout_height="74dp"
-        android:layout_marginTop="408dp"
-        android:layout_marginEnd="435dp"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:justificationMode="inter_word"
-        android:lineSpacingExtra="1dp"
-        android:maxLines="4"
-        android:paddingEnd="16dp"
-        android:text=""
-        android:textAlignment="viewStart"
-        android:textSize="13.8sp"
-        android:typeface="monospace"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="VisualLintBounds" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

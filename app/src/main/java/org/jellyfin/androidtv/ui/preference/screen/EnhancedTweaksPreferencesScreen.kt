@@ -60,6 +60,12 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             }
 
             checkbox {
+                setTitle(R.string.pref_carousel_include_series)
+                setContent(R.string.pref_carousel_include_series_description)
+                bind(userPreferences, UserPreferences.carouselIncludeSeries)
+            }
+
+            checkbox {
                 setTitle(R.string.lbl_use_series_thumbnails)
                 setContent(R.string.lbl_use_series_thumbnails_description)
                 bind(userPreferences, UserPreferences.seriesThumbnailsEnabled)

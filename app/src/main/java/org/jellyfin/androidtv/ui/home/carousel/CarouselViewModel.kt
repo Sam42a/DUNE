@@ -13,9 +13,7 @@ import org.jellyfin.androidtv.preference.constant.CarouselSortBy
 import org.jellyfin.androidtv.util.ImageHelper
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.itemsApi
-import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ItemFilter
-import org.jellyfin.sdk.model.api.ItemSortBy
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.request.GetItemsRequest
 import timber.log.Timber
@@ -43,13 +41,18 @@ class CarouselViewModel(
 
                 val carouselSortBy: CarouselSortBy = userPreferences[UserPreferences.carouselSortBy]
                 val sortBy = setOf(carouselSortBy.itemSortBy)
+                val includeItemTypes = if (userPreferences[UserPreferences.carouselIncludeSeries]) {
+                    setOf(org.jellyfin.sdk.model.api.BaseItemKind.MOVIE, org.jellyfin.sdk.model.api.BaseItemKind.SERIES)
+                } else {
+                    setOf(org.jellyfin.sdk.model.api.BaseItemKind.MOVIE)
+                }
 
-                Timber.d("Loading carousel items with sort: ${carouselSortBy.name}")
+                Timber.d("Loading carousel items with sort: ${carouselSortBy.name}, item types: ${includeItemTypes.joinToString(", ")}")
 
                 val response = api.itemsApi.getItems(
                     request = GetItemsRequest(
                         parentId = null,
-                        includeItemTypes = setOf(org.jellyfin.sdk.model.api.BaseItemKind.MOVIE),
+                        includeItemTypes = includeItemTypes,
 						filters = setOf(ItemFilter.IS_UNPLAYED),
 						sortBy = sortBy,
                         sortOrder = setOf(SortOrder.DESCENDING),

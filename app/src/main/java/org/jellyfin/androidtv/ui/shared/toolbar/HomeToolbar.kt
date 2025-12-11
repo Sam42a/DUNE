@@ -2,11 +2,13 @@ package org.jellyfin.androidtv.ui.shared.toolbar
 
 import android.R.attr.scaleX
 import android.R.attr.scaleY
+import android.os.Build
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -71,6 +73,7 @@ import timber.log.Timber
 import org.jellyfin.androidtv.data.repository.UserViewsRepository
 import org.jellyfin.androidtv.ui.base.Text
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun HomeToolbar(
     openSearch: () -> Unit,
@@ -97,7 +100,7 @@ fun HomeToolbar(
                 .offset(x = 25.dp)
                 .padding(top = 14.dp) // Move down
                 .wrapContentWidth(Alignment.Start),
-            horizontalArrangement = Arrangement.spacedBy(8.5.dp), // 8% of icon size
+            horizontalArrangement = Arrangement.spacedBy(7.5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // User Profile Button
@@ -120,7 +123,7 @@ fun HomeToolbar(
 
             Box(
                 modifier = Modifier
-                    .size(36.dp) // 40dp - 10%
+                    .size(32.dp)
                     .clip(CircleShape)
                     .background(
                         if (isFocused) Color.White.copy(alpha = 0.85f) else Color.Transparent,
@@ -131,7 +134,7 @@ fun HomeToolbar(
                 IconButton(
                     onClick = switchUsers,
                     interactionSource = interactionSource,
-                    modifier = Modifier.size(40.dp) // 42dp - 5%
+                    modifier = Modifier.size(36.dp)
                 ) {
                     if (userImageUrl != null) {
                         AndroidView(
@@ -149,13 +152,13 @@ fun HomeToolbar(
                                     load(url = userImageUrl)
                                 }
                             },
-                            modifier = Modifier.size(29.dp) // 31dp - 5%
+                            modifier = Modifier.size(26.dp)
                         )
                     } else {
                         Icon(
                             painter = painterResource(R.drawable.ic_user),
                             contentDescription = stringResource(R.string.lbl_switch_user),
-                            modifier = Modifier.size(19.dp), // 21dp - 5%
+                            modifier = Modifier.size(17.dp),
                             tint = Color.White
                         )
                     }
@@ -177,7 +180,7 @@ fun HomeToolbar(
                                 .clip(RoundedCornerShape(20.dp))
                         } else {
                             modifier
-                                .size(36.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                         }
                     }
@@ -195,7 +198,7 @@ fun HomeToolbar(
                                     .padding(horizontal = 12.dp)
                             } else {
                                 modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                             }
                         }
                         .clickable(
@@ -215,7 +218,7 @@ fun HomeToolbar(
                                 if (isSearchFocused) {
                                     modifier.size(16.dp)
                                 } else {
-                                    modifier.size(21.dp)
+                                    modifier.size(19.dp)
                                 }
                             }
                     )
@@ -248,7 +251,7 @@ fun HomeToolbar(
                                 .clip(RoundedCornerShape(12.5.dp))
                         } else {
                             modifier
-                                .size(36.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                         }
                     }
@@ -266,7 +269,7 @@ fun HomeToolbar(
                                     .padding(horizontal = 12.dp)
                             } else {
                                 modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                             }
                         }
                         .clickable(
@@ -286,7 +289,7 @@ fun HomeToolbar(
                                 if (isLibraryFocused) {
                                     modifier.size(16.dp)
                                 } else {
-                                    modifier.size(21.dp)
+                                    modifier.size(19.dp)
                                 }
                             }
                     )
@@ -320,7 +323,7 @@ fun HomeToolbar(
                                     .clip(RoundedCornerShape(12.5.dp))
                             } else {
                                 modifier
-                                    .size(34.dp)
+                                    .size(31.dp)
                                     .clip(CircleShape)
                             }
                         }
@@ -338,7 +341,7 @@ fun HomeToolbar(
                                         .padding(horizontal = 12.dp)
                                 } else {
                                     modifier
-                                        .size(34.dp)
+                                        .size(31.dp)
                                 }
                             }
                             .clickable(
@@ -358,7 +361,7 @@ fun HomeToolbar(
                                     if (isLiveTvFocused) {
                                         modifier.size(16.dp)
                                     } else {
-                                        modifier.size(22.dp)
+                                        modifier.size(20.dp)
                                     }
                                 }
                         )
@@ -442,7 +445,7 @@ fun HomeToolbar(
                                     .clip(RoundedCornerShape(12.5.dp))
                             } else {
                                 modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                                     .clip(CircleShape)
                             }
                         }
@@ -460,7 +463,7 @@ fun HomeToolbar(
                                         .padding(horizontal = 12.dp)
                                 } else {
                                     modifier
-                                        .size(36.dp)
+                                        .size(32.dp)
                                 }
                             }
                             .clickable(
@@ -480,7 +483,7 @@ fun HomeToolbar(
                                     if (isMasksFocused) {
                                         modifier.size(16.dp)
                                     } else {
-                                        modifier.size(21.dp)
+                                        modifier.size(19.dp)
                                     }
                                 }
                         )
@@ -513,7 +516,7 @@ fun HomeToolbar(
                                 .clip(RoundedCornerShape(12.5.dp))
                         } else {
                             modifier
-                                .size(36.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                         }
                     }
@@ -531,7 +534,7 @@ fun HomeToolbar(
                                     .padding(horizontal = 12.dp)
                             } else {
                                 modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                             }
                         }
                         .clickable(
@@ -551,7 +554,7 @@ fun HomeToolbar(
                                 if (isSettingsFocused) {
                                     modifier.size(16.dp)
                                 } else {
-                                    modifier.size(24.dp)
+                                    modifier.size(22.dp)
                                 }
                             }
                     )
@@ -583,7 +586,7 @@ fun HomeToolbar(
                                 .clip(RoundedCornerShape(12.5.dp))
                         } else {
                             modifier
-                                .size(36.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                         }
                     }
@@ -601,7 +604,7 @@ fun HomeToolbar(
                                     .padding(horizontal = 13.dp)
                             } else {
                                 modifier
-                                    .size(36.dp)
+                                    .size(32.dp)
                             }
                         }
                         .clickable(
@@ -621,7 +624,7 @@ fun HomeToolbar(
                                 if (isFavoritesFocused) {
                                     modifier.size(16.dp)
                                 } else {
-                                    modifier.size(24.dp)
+                                    modifier.size(22.dp) 
                                 }
                             }
                     )

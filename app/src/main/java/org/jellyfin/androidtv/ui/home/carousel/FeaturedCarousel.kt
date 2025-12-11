@@ -1,10 +1,6 @@
 package org.jellyfin.androidtv.ui.home.carousel
 
 import android.os.Build
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
@@ -35,21 +31,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
-import androidx.tv.material3.Carousel
 import androidx.tv.material3.CarouselDefaults
 import androidx.tv.material3.CarouselState
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -301,8 +296,9 @@ private fun CarouselItemForeground(
 		Column(
 			modifier = Modifier
 				.fillMaxSize()
-				.padding(20.dp),
-			verticalArrangement = Arrangement.Bottom
+				.padding(start = 28.dp, top = 28.dp, bottom = 28.dp, end = 0.dp),
+			verticalArrangement = Arrangement.Bottom,
+			horizontalAlignment = Alignment.Start
 		) {
 			Text(
 				text = item.title,
@@ -372,7 +368,7 @@ private fun CarouselItemForeground(
 					maxLines = 2,
 					overflow = TextOverflow.Ellipsis,
 					modifier = Modifier
-						.padding(top = 10.dp)
+						.padding(top = 15.dp)
 						.fillMaxWidth(0.595f)
 				)
 			} else {
@@ -409,7 +405,7 @@ private fun CarouselItemBackground(item: CarouselItem, modifier: Modifier = Modi
 				.aspectRatio(16f / 9f)
 				.align(androidx.compose.ui.Alignment.TopEnd),
 			url = imageUrl,
-			scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+			scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
 		)
 
 		// Dimmingg effect
@@ -455,27 +451,32 @@ private fun WatchNowButton(onItemSelected: () -> Unit) {
 	Button(
 		onClick = onItemSelected,
 		modifier = Modifier
-			.padding(top = 10.dp)
+			.padding(top = 15.dp)
 			.focusRequester(buttonFocusRequester),
-		contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+		contentPadding = androidx.compose.foundation.layout.PaddingValues(
+			start = 1.dp,
+			end = 17.dp,
+			bottom = 0.dp
+		),
 		shape = ButtonDefaults.shape(shape = RoundedCornerShape(16.dp)),
 		colors = ButtonDefaults.colors(
 			containerColor = Color(0xFFFFFFFF),
 			contentColor = Color.Black,
 			focusedContentColor = Color.White.copy(alpha = 0.7f),
 		),
-		scale = ButtonDefaults.scale(scale = 0.90f),
+		scale = ButtonDefaults.scale(scale = 0.95f),
 		glow = ButtonDefaults.glow()
 	) {
 		Icon(
 			imageVector = Icons.Outlined.PlayArrow,
 			contentDescription = null,
 			modifier = Modifier.size(21.dp)
+
 		)
-		Spacer(Modifier.size(2.dp))
+		Spacer(Modifier.size(4.dp))
 		Text(
 			text = "Play",
-			style = MaterialTheme.typography.titleSmall.copy(
+			style = MaterialTheme.typography.titleMedium.copy(
 				fontSize = 12.sp,
 				fontWeight = FontWeight.Medium
 			)

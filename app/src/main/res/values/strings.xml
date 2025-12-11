@@ -163,7 +163,7 @@
     <string name="lbl_enable_debug">Debug options</string>
     <string name="desc_debug">Provide extra information for debugging</string>
     <string name="lbl_showing">Showing</string>
-    <string name="genre_rows">Genre Rows</string>
+    <string name="genre_rows">Home Screen Genre Rows</string>
     <string name="android_channels">Android TV Channels</string>
     <string name="genre_rows_description">Enable 5 or less for better performance</string>
 
@@ -819,7 +819,7 @@
     <string name="lbl_music_videos">Music Videos</string>
 
     <!-- Audio Language preference -->
-    <string name="pref_audio_default_language">Default Audio Language</string>
+    <string name="pref_audio_default_language">Default audio language</string>
     <string name="pref_skip_commentary_tracks">Skip commentary tracks</string>
     <string name="pref_audio_default_language_summary">Set the default language for audio tracks</string>
     <string name="pref_audio_language_none">(Default)</string>
@@ -873,6 +873,8 @@
     <string name="pref_genre_sort_by">Sort Genre</string>
     <string name="pref_carousel_sort_by">Carousel sort options</string>
     <string name="pref_carousel_sort_by_description">Choose how items are sorted in the carousel</string>
+    <string name="pref_carousel_include_series">Include Series in Carousel</string>
+    <string name="pref_carousel_include_series_description">Add TV Series alongside Movies in the featured carousel</string>
 
     <!-- Screensaver sorting -->
     <string name="pref_screensaver_sort_by">Screensaver Sort Order</string>
