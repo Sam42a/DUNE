@@ -11,7 +11,7 @@ object TrailerUtils {
 	private const val YOUTUBE_URL = "https://youtube.com/watch?v="
 	private const val YOUTUBE_ID_LENGTH = 11
 	private const val FRAMEWORK_STUB_PACKAGE = "com.android.tv.frameworkpackagestubs"
-	private const val SMARTTUBE_PACKAGE = "com.teamsmart.videomanager.tv"
+	private const val SMARTTUBE_PACKAGE = "org.smarttube.stable"
 
 	fun getExternalTrailerIntent(context: Context, src: String): Intent {
 		val uri = src.toUri()
