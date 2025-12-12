@@ -50,6 +50,7 @@ import org.jellyfin.androidtv.databinding.PopupEmptyBinding;
 import org.jellyfin.androidtv.preference.LibraryPreferences;
 import org.jellyfin.androidtv.preference.PreferencesRepository;
 import org.jellyfin.androidtv.ui.AlphaPickerView;
+import org.jellyfin.androidtv.ui.VerticalAlphaPickerView;
 import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem;
 import org.jellyfin.androidtv.ui.itemhandling.ItemLauncher;
 import org.jellyfin.androidtv.ui.itemhandling.ItemRowAdapter;
@@ -254,6 +255,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         createGrid();
         loadGrid();
         addTools();
+        setupAlphabetSidebar();
     }
 
     @Override
@@ -825,6 +827,7 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
     private ImageButton mFavoriteButton;
     private ImageButton mLetterButton;
     private ImageButton mMasksButton;
+    private VerticalAlphaPickerView mAlphabetSidebar;
 
     private void updateDisplayPrefs() {
         CoroutineUtils.runOnLifecycle(getLifecycle(), (coroutineScope, continuation) -> {
@@ -1056,6 +1059,24 @@ public class BrowseGridFragment extends Fragment implements View.OnKeyListener {
         });
         mSettingsButton.setContentDescription(getString(R.string.lbl_settings));
         binding.toolBar.addView(mSettingsButton);
+    }
+
+    private void setupAlphabetSidebar() {
+        mAlphabetSidebar = new VerticalAlphaPickerView(requireContext());
+        mAlphabetSidebar.setOnAlphaSelected(letter -> {
+            mAdapter.setStartLetter(letter.toString());
+            loadGrid();
+            return null;
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        LinearLayout innerLayout = (LinearLayout) binding.alphabetSidebar.getRoot().getChildAt(0);
+        innerLayout.addView(mAlphabetSidebar, params);
+
+        Timber.d("Alphabet sidebar setup completed");
     }
 
     /**

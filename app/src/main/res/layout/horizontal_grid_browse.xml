@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/alphabetSidebar"
+        layout="@layout/alphabet_sidebar" />
+
     <LinearLayout
         android:id="@+id/toolBar"
         android:layout_width="300dp"
@@ -16,7 +20,7 @@
         android:id="@+id/rowsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="1dp"
+        android:layout_marginStart="60dp"
         android:layout_above="@id/statusText"
         android:layout_marginTop="90dp" />
 
@@ -25,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/counter"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="6sp"
         android:textSize="12sp"
         android:alpha=".6"
@@ -37,8 +42,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="60sp"
-        android:layout_marginBottom="13sp"
-        android:textSize="18sp"
+        android:layout_marginBottom="18sp"
+        android:textSize="12sp"
         android:textAlignment="viewEnd"
         android:fontFamily="sans-serif-light"
         tools:text="0 | 0" />
