@@ -20,6 +20,7 @@ import org.jellyfin.sdk.model.api.ItemSortBy
 import org.jellyfin.sdk.model.api.MediaType
 import org.jellyfin.sdk.model.api.SortOrder
 import org.jellyfin.sdk.model.api.request.GetItemsRequest
+import org.jellyfin.sdk.api.client.ApiClient
 import timber.log.Timber
 
 /**
@@ -30,7 +31,8 @@ class GenreManager(
 	private val context: Context,
 	private val userRepository: UserRepository,
 	private val userPreferences: UserPreferences,
-	private val userSettingPreferences: UserSettingPreferences
+	private val userSettingPreferences: UserSettingPreferences,
+	private val api: ApiClient
 ) {
 
 	companion object {
@@ -56,6 +58,12 @@ class GenreManager(
 	// Performance optimization: Lazy-loaded genre configurations
 	private val genreConfigs by lazy {
 		listOf(
+			GenreConfig(
+				name = "SuggestedMovies",
+				displayName = "Suggested Movies",
+				preference = userSettingPreferences.showSuggestedMoviesRow,
+				loader = { createSuggestedMoviesRow() }
+			),
 			GenreConfig(
 				name = "Collections",
 				displayName = "Collections",
@@ -326,7 +334,7 @@ class GenreManager(
 		val query = GetItemsRequest(
 			userId = currentUserId,
 			includeItemTypes = listOf(BaseItemKind.BOX_SET),
-			sortBy = listOf(userPreferences[UserPreferences.genreSortBy].itemSortBy),
+			sortBy = setOf(ItemSortBy.DATE_CREATED),
 			sortOrder = listOf(SortOrder.DESCENDING),
 			limit = GENRE_ITEM_LIMIT,
 			recursive = true,
@@ -343,28 +351,15 @@ class GenreManager(
 				rowsAdapter: MutableObjectAdapter<Row>
 			) {
 				// Create a card presenter for collections with thumbnail images and specific dimensions to match Music Videos row
-				val collectionsCardPresenter = object : CardPresenter(false, ImageType.THUMB, 165) {
-					init {
+				val collectionsCardPresenter = CardPresenter(false, GENRE_CARD_HEIGHT).apply {
 						setHomeScreen(true)
 						setUniformAspect(true)
 					}
-
-					override fun onBindViewHolder(viewHolder: Presenter.ViewHolder, item: Any?) {
-						super.onBindViewHolder(viewHolder, item)
-
-						// Set fixed dimensions for all cards in the row (same as Music Videos)
-						(viewHolder.view as? org.jellyfin.androidtv.ui.card.LegacyImageCardView)?.let { cardView ->
-							cardView.setMainImageDimensions(210, 110)
-							cardView.cardType = BaseCardView.CARD_TYPE_MAIN_ONLY
-						}
-					}
-				}
-
 				// Create the row definition with chunk size and change triggers
 				val rowDef = BrowseRowDef(
 					"Collections",
 					query,
-					10, // chunkSize
+					15, // chunkSize
 					false, // preferParentThumb
 					true, // staticHeight
 					arrayOf(ChangeTriggerType.LibraryUpdated)
@@ -374,6 +369,9 @@ class GenreManager(
 				HomeFragmentBrowseRowDefRow(rowDef).addToRowsAdapter(context, collectionsCardPresenter, rowsAdapter)
 			}
 		}
+	}
+	private fun createSuggestedMoviesRow(): HomeFragmentRow {
+		return HomeFragmentSuggestedMoviesFragmentRow(userRepository, api)
 	}
 
 	fun hasEnabledGenres(): Boolean {

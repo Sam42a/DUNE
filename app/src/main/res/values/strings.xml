@@ -748,6 +748,7 @@
     <string name="show_thriller_row">Show Thriller Row</string>
     <string name="show_war_row">Show War Row</string>
     <string name="show_collections_row">Show Collections Row</string>
+    <string name="show_suggested_movies_row">Because you watched rows</string>
     <string name="show_music_videos_row">Show Music Videos Row</string>
     <string name="music_videos">Music Videos</string>
 

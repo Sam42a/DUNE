@@ -108,6 +108,12 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
                 bind(userSettingPreferences, userSettingPreferences.showCollectionsRow)
             }
 
+            // Suggested Movies
+            checkbox {
+                setTitle(R.string.show_suggested_movies_row)
+                bind(userSettingPreferences, userSettingPreferences.showSuggestedMoviesRow)
+            }
+
             // Genre rows in specified order
             checkbox {
                 setTitle(R.string.show_sci_fi_row)
