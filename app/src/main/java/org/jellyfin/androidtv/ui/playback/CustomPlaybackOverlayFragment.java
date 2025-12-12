@@ -43,7 +43,6 @@ import org.jellyfin.androidtv.data.repository.CustomMessageRepository;
 import org.jellyfin.androidtv.data.service.BackgroundService;
 import org.jellyfin.androidtv.databinding.OverlayTvGuideBinding;
 import org.jellyfin.androidtv.databinding.VlcPlayerInterfaceBinding;
-import org.jellyfin.androidtv.preference.UserPreferences;
 import org.jellyfin.androidtv.ui.GuideChannelHeader;
 import org.jellyfin.androidtv.ui.GuidePagingButton;
 import org.jellyfin.androidtv.ui.HorizontalScrollViewListener;
@@ -58,6 +57,7 @@ import org.jellyfin.androidtv.ui.livetv.LiveTvGuide;
 import org.jellyfin.androidtv.ui.livetv.LiveTvGuideFragment;
 import org.jellyfin.androidtv.ui.livetv.LiveTvGuideFragmentHelperKt;
 import org.jellyfin.androidtv.ui.livetv.TvManager;
+import org.jellyfin.androidtv.preference.UserPreferences;
 import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.playback.overlay.LeanbackOverlayFragment;
@@ -1238,6 +1238,14 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
         if (binding != null) binding.skipOverlay.setTargetPositionMs(null);
     }
 
+    public boolean isSkipOperationInProgress() {
+        return mSkipOperationInProgress;
+    }
+
+    public void setSkipOperationInProgress(boolean inProgress) {
+        mSkipOperationInProgress = inProgress;
+    }
+
     public void updateDisplay() {
         BaseItemDto current = playbackControllerContainer.getValue().getPlaybackController().getCurrentlyPlayingItem();
         if (current != null && getContext() != null) {
@@ -1248,23 +1256,28 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
             // set other information
             tvGuideBinding.guideCurrentTitle.setText(current.getName());
 
-            // Update the title and subtitle
             if (current.getType() == BaseItemKind.EPISODE) {
-                binding.itemTitle.setText(current.getSeriesName());
                 binding.itemSubtitle.setText(BaseItemExtensionsKt.getDisplayName(current, requireContext()));
+                binding.itemSubtitle.setVisibility(View.VISIBLE);
             } else {
-                binding.itemTitle.setText(current.getName());
+                binding.itemSubtitle.setVisibility(View.GONE);
+            }
+
+
+            if (current.getOverview() != null && !current.getOverview().isEmpty()) {
+                binding.itemDescription.setText(current.getOverview());
+                binding.itemDescription.setVisibility(View.VISIBLE);
+            } else {
+                binding.itemDescription.setVisibility(View.GONE);
             }
             // Update the logo
             String imageUrl = imageHelper.getValue().getLogoImageUrl(current, 440);
             if (imageUrl != null) {
                 binding.itemLogo.setVisibility(View.VISIBLE);
-                binding.itemTitle.setVisibility(View.GONE);
                 binding.itemLogo.setContentDescription(current.getName());
                 binding.itemLogo.load(imageUrl, null, null, 1.0, 0);
             } else {
                 binding.itemLogo.setVisibility(View.GONE);
-                binding.itemTitle.setVisibility(View.VISIBLE);
             }
 
             if (playbackControllerContainer.getValue().getPlaybackController().isLiveTv()) {
@@ -1338,11 +1351,4 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
         }
     }
 
-    public boolean isSkipOperationInProgress() {
-        return mSkipOperationInProgress;
-    }
-
-    public void setSkipOperationInProgress(boolean skipOperationInProgress) {
-        mSkipOperationInProgress = skipOperationInProgress;
-    }
 }
