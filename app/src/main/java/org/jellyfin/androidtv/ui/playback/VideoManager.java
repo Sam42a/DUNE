@@ -191,16 +191,21 @@ public class VideoManager {
             }
         });
     }
-
     public void subscribe(@NonNull PlaybackControllerNotifiable notifier) {
         mPlaybackControllerNotifiable = notifier;
     }
 
     private int determineExoPlayerExtensionRendererMode() {
-        if (userPreferences.get(UserPreferences.Companion.getPreferExoPlayerFfmpeg())) {
+        boolean hardwareAccelerationEnabled = userPreferences.get(UserPreferences.Companion.getHardwareAccelerationEnabled());
+        boolean preferFfmpeg = userPreferences.get(UserPreferences.Companion.getPreferExoPlayerFfmpeg());
+        Timber.i("Hardware acceleration setting: %s", hardwareAccelerationEnabled ? "ENABLED" : "DISABLED");
+
+        if (!hardwareAccelerationEnabled) {
             return DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER;
         }
-
+        if (preferFfmpeg) {
+            return DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER;
+        }
         return DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
     }
 

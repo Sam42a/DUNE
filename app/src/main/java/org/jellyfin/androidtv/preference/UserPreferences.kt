@@ -142,6 +142,12 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Whether ExoPlayer should prefer FFmpeg renderers to core ones.
 		 */
 		var preferExoPlayerFfmpeg = booleanPreference("exoplayer_prefer_ffmpeg", defaultValue = false)
+
+		/**
+		 * Enable hardware acceleration for video decoding.
+		 */
+		var hardwareAccelerationEnabled = booleanPreference("hardware_acceleration_enabled", defaultValue = false)
+
 		/**
 		 * Selected media source index for the current media item
 		 * Used to persist version selection when navigating back to details screenn

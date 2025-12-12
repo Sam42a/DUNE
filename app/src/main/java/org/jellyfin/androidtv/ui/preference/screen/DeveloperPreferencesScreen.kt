@@ -63,6 +63,12 @@ class DeveloperPreferencesScreen : OptionsFragment() {
 				bind(userPreferences, UserPreferences.preferExoPlayerFfmpeg)
 			}
 
+			checkbox {
+				setTitle(R.string.hardware_acceleration_enabled)
+				setContent(R.string.hardware_acceleration_enabled_content)
+				bind(userPreferences, UserPreferences.hardwareAccelerationEnabled)
+			}
+
 			action {
 				setTitle(R.string.clear_image_cache)
 				content = getString(R.string.clear_image_cache_content, Formatter.formatFileSize(context, imageLoader.diskCache?.size ?: 0))
