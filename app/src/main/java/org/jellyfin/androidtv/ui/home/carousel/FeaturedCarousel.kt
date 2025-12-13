@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,12 +46,20 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Canvas
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.withFrameMillis
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import kotlin.math.sin
+import kotlin.random.Random
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.CarouselDefaults
@@ -66,25 +75,98 @@ import org.jellyfin.androidtv.ui.composable.AsyncImage
 import org.jellyfin.androidtv.ui.composable.modifier.getBackdropFadingColor
 import org.koin.compose.koinInject
 
+@Composable
+private fun SnowfallEffect(modifier: Modifier = Modifier) {
+    val snowflakes = remember {
+        List(30) {
+            SnowflakeState(
+                x = Random.nextFloat(),
+                y = Random.nextFloat() * -0.3f,
+                size = Random.nextFloat() * 6f + 4f,
+                speed = Random.nextFloat() * 0.2f + 0.1f,
+                drift = Random.nextFloat() * 0.2f - 0.1f
+            )
+        }
+    }
+
+    var time by remember { mutableFloatStateOf(0f) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            withFrameMillis { frameTime ->
+                time = frameTime / 1000f
+            }
+        }
+    }
+
+    Canvas(modifier = modifier.fillMaxSize()) {
+        snowflakes.forEach { snowflake ->
+            val adjustedTime = time * snowflake.speed
+            val yPos = ((snowflake.y + adjustedTime) % 1.3f) * size.height
+            val xPos = (snowflake.x + sin(adjustedTime * 2) * snowflake.drift) * size.width
+
+            drawCircle(
+                color = Color.White.copy(alpha = 0.8f),
+                radius = snowflake.size,
+                center = Offset(xPos, yPos)
+            )
+        }
+    }
+}
+
+private data class SnowflakeState(
+    val x: Float,
+    val y: Float,
+    val size: Float,
+    val speed: Float,
+    val drift: Float
+)
+
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun FeaturedCarousel(
 	items: List<CarouselItem>,
 	onItemSelected: (CarouselItem) -> Unit,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	isPaused: Boolean = false
 ) {
 	if (items.isEmpty()) {
+		timber.log.Timber.d("FeaturedCarousel: Showing no items message")
 		Box(
 			modifier = modifier
 				.fillMaxSize()
+				.focusable()
+				.onKeyEvent { keyEvent ->
+					if (keyEvent.type == KeyEventType.KeyDown) {
+						when (keyEvent.key) {
+							Key.DirectionDown -> {
+								// Let focus move to the next focusable element (toolbar)
+								false
+							}
+							else -> false
+						}
+					} else false
+				}
 				.background(MaterialTheme.colorScheme.surface)
 		) {
-			Text(
-				text = "No featured items available",
-				style = MaterialTheme.typography.bodyLarge,
-				color = MaterialTheme.colorScheme.onSurface,
-				modifier = Modifier.align(Alignment.Center)
-			)
+			timber.log.Timber.d("FeaturedCarousel: Creating error message Box")
+			Box(
+				modifier = Modifier
+					.align(Alignment.Center)
+					.background(Color.Magenta)
+					.padding(16.dp)
+			) {
+				timber.log.Timber.d("FeaturedCarousel: Creating error message Text")
+				Text(
+					text = "NO FEATURED ITEMS - DEBUG TEST",
+					style = MaterialTheme.typography.bodyLarge.copy(
+						fontSize = 24.sp,
+						fontWeight = FontWeight.Bold
+					),
+					color = Color.Cyan,
+					textAlign = TextAlign.Center
+				)
+			}
 		}
 		return
 	}
@@ -98,72 +180,68 @@ fun FeaturedCarousel(
 	val context = LocalContext.current
 	var isManualNavigation by remember { mutableStateOf(false) } // Flag to prevent auto-scroll during manual navigation
 	var lastManualNavigationTime by remember { mutableLongStateOf(0L) } // Track last manual navigation time
-    val isAndroid12OrLower = remember { Build.VERSION.SDK_INT <= Build.VERSION_CODES.S }
-    var autoScrollJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
-    var autoScrollEnabled by remember { mutableStateOf(true) }
-    val startAutoScroll = {
-        autoScrollJob?.cancel()
+	val isAndroid12OrLower = remember { Build.VERSION.SDK_INT <= Build.VERSION_CODES.S }
+	var autoScrollEnabled by remember { mutableStateOf(true) }
 
-        autoScrollJob = kotlinx.coroutines.GlobalScope.launch {
-            while (true) {
-                kotlinx.coroutines.delay(8000L) // 8 seconds delay
-                if (autoScrollEnabled && !isCarouselFocused) {
-                    currentIndex = (currentIndex + 1) % items.size
-                    timber.log.Timber.d("Carousel auto-scrolled to index: $currentIndex")
+	LaunchedEffect(isPaused, autoScrollEnabled, isCarouselFocused) {
+		if (items.size > 1 && autoScrollEnabled && !isCarouselFocused && !isPaused) {
+			while (true) {
+				kotlinx.coroutines.delay(8000L) // 8 seconds delay
+				timber.log.Timber.d("Auto-scroll check - enabled: $autoScrollEnabled, focused: $isCarouselFocused, paused: $isPaused")
 
-                    // For Android 12 and bellow, we rely on the visual index change
-                    if (isAndroid12OrLower) {
-                        timber.log.Timber.d("Android 12 compatibility mode - visual index updated to $currentIndex")
-                    }
-                }
-            }
-        }
-    }
+				if (autoScrollEnabled && !isCarouselFocused && !isPaused) {
+					currentIndex = (currentIndex + 1) % items.size
+					timber.log.Timber.d("Carousel auto-scrolled to index: $currentIndex")
 
-    val disableAutoScrollTemporarily = {
-        autoScrollEnabled = false
-        timber.log.Timber.d("Auto-scroll disabled temporarily")
+					if (isAndroid12OrLower) {
+						timber.log.Timber.d("Android 12 compatibility mode - visual index updated to $currentIndex")
+					}
+				} else {
+					break
+				}
+			}
+		} else {
+			timber.log.Timber.d("Auto-scroll paused - enabled: $autoScrollEnabled, focused: $isCarouselFocused, paused: $isPaused")
+		}
+	}
 
-        kotlinx.coroutines.GlobalScope.launch {
-            kotlinx.coroutines.delay(5000L) // 5 second delay
-            autoScrollEnabled = true
-            timber.log.Timber.d("Auto-scroll re-enabled after delay")
-        }
-    }
-    LaunchedEffect(Unit) {
-        if (items.size > 1) {
-            timber.log.Timber.d("Starting initial auto-scroll timer")
-            startAutoScroll()
-        }
-    }
+	val disableAutoScrollTemporarily = {
+		autoScrollEnabled = false
+		timber.log.Timber.d("Auto-scroll disabled temporarily")
 
-    // Don't steal focus pls
-Android12CompatibleCarousel(
-    items = items,
-    currentIndex = currentIndex,
-    onItemSelected = onItemSelected,
-    onNavigate = { newIndex ->
-        currentIndex = newIndex
-        timber.log.Timber.d("Manual navigation updated currentIndex to: $newIndex")
-    },
-    onManualNavigation = { isManual ->
-        isManualNavigation = isManual
-        if (isManual) {
-            lastManualNavigationTime = System.currentTimeMillis()
-            timber.log.Timber.d("Manual navigation flag set to: $isManual, disabling auto-scroll")
-            disableAutoScrollTemporarily()
-        } else {
-            timber.log.Timber.d("Manual navigation flag set to: $isManual")
-        }
-    },
-    isCarouselFocused = isCarouselFocused,
-    borderAlpha = borderAlpha,
-    modifier = modifier
-        .onFocusChanged { focusState ->
-            isCarouselFocused = focusState.isFocused
-            timber.log.Timber.d("Main carousel focus updated from Android12CompatibleCarousel: ${focusState.isFocused}")
-        }
-)
+		kotlinx.coroutines.GlobalScope.launch {
+			kotlinx.coroutines.delay(5000L) // 5 second delay
+			autoScrollEnabled = true
+			timber.log.Timber.d("Auto-scroll re-enabled after delay")
+		}
+	}
+	// Don't steal focus pls
+	Android12CompatibleCarousel(
+		items = items,
+		currentIndex = currentIndex,
+		onItemSelected = onItemSelected,
+		onNavigate = { newIndex ->
+			currentIndex = newIndex
+			timber.log.Timber.d("Manual navigation updated currentIndex to: $newIndex")
+		},
+		onManualNavigation = { isManual ->
+			isManualNavigation = isManual
+			if (isManual) {
+				lastManualNavigationTime = System.currentTimeMillis()
+				timber.log.Timber.d("Manual navigation flag set to: $isManual, disabling auto-scroll")
+				disableAutoScrollTemporarily()
+			} else {
+				timber.log.Timber.d("Manual navigation flag set to: $isManual")
+			}
+		},
+		isCarouselFocused = isCarouselFocused,
+		borderAlpha = borderAlpha,
+		modifier = modifier
+			.onFocusChanged { focusState ->
+				isCarouselFocused = focusState.isFocused
+				timber.log.Timber.d("Main carousel focus updated from Android12CompatibleCarousel: ${focusState.isFocused}")
+			}
+	)
 }
 
 @Composable
@@ -177,82 +255,87 @@ private fun Android12CompatibleCarousel(
 	borderAlpha: Float,
 	modifier: Modifier = Modifier
 ) {
-    val carouselFocusRequester = remember { FocusRequester() }
-    var carouselHasFocus by remember { mutableStateOf(false) }
+	val carouselFocusRequester = remember { FocusRequester() }
+	var carouselHasFocus by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        carouselFocusRequester.requestFocus()
-    }
+	LaunchedEffect(Unit) {
+		carouselFocusRequester.requestFocus()
+	}
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .focusRequester(carouselFocusRequester)
-            .focusable()
-            .onFocusChanged { focusState ->
-                carouselHasFocus = focusState.isFocused
-                timber.log.Timber.d("Android12CompatibleCarousel focus changed: ${focusState.isFocused}")
-            }
-            .onKeyEvent { keyEvent ->
-                if (keyEvent.type != KeyEventType.KeyDown) {
-                    return@onKeyEvent false
-                }
+	Box(
+		modifier = modifier
+			.fillMaxSize()
+			.focusRequester(carouselFocusRequester)
+			.focusable()
+			.onFocusChanged { focusState ->
+				carouselHasFocus = focusState.isFocused
+				timber.log.Timber.d("Android12CompatibleCarousel focus changed: ${focusState.isFocused}")
+			}
+			.onKeyEvent { keyEvent ->
+				if (keyEvent.type != KeyEventType.KeyDown) {
+					return@onKeyEvent false
+				}
 
-                when (keyEvent.key) {
-                    Key.DirectionCenter, Key.Enter -> {
-                        onItemSelected(items[currentIndex])
-                        true
-                    }
-                    Key.DirectionLeft -> {
-                        if (items.isNotEmpty()) {
-                            onManualNavigation(true) // Disable auto-scroll temporarily
-                            val newIndex = if (currentIndex == 0) items.size - 1 else currentIndex - 1
-                            timber.log.Timber.d("Manual navigation: previous item $newIndex")
-                            onNavigate(newIndex)
-                        }
-                        true
-                    }
-                    Key.DirectionRight -> {
-                        if (items.isNotEmpty()) {
-                            onManualNavigation(true) // Disable auto-scroll temporarily
-                            val newIndex = (currentIndex + 1) % items.size
-                            timber.log.Timber.d("Manual navigation: next item $newIndex")
-                            onNavigate(newIndex)
-                        }
-                        true
-                    }
-                    else -> false
-                }
-            }
-            .border(
-                width = 2.dp,
-                color = Color.White.copy(alpha = borderAlpha),
-                shape = RoundedCornerShape(12.dp),
-            )
-            .clip(RoundedCornerShape(12.dp))
-            .semantics {
-                contentDescription = "Featured items carousel - Android 12 compatibility mode"
-            }
-    ) {
-        if (items.isNotEmpty()) {
-            val currentItem = items[currentIndex]
+				when (keyEvent.key) {
+					Key.DirectionCenter, Key.Enter -> {
+						onItemSelected(items[currentIndex])
+						true
+					}
+					Key.DirectionLeft -> {
+						if (items.isNotEmpty()) {
+							onManualNavigation(true)
+							val newIndex = if (currentIndex == 0) items.size - 1 else currentIndex - 1
+							timber.log.Timber.d("Manual navigation: previous item $newIndex")
+							onNavigate(newIndex)
+						}
+						true
+					}
+					Key.DirectionRight -> {
+						if (items.isNotEmpty()) {
+							onManualNavigation(true)
+							val newIndex = (currentIndex + 1) % items.size
+							timber.log.Timber.d("Manual navigation: next item $newIndex")
+							onNavigate(newIndex)
+						}
+						true
+					}
+					else -> false
+				}
+			}
+			.border(
+				width = 2.dp,
+				color = Color.White.copy(alpha = borderAlpha),
+				shape = RoundedCornerShape(12.dp),
+			)
+			.clip(RoundedCornerShape(12.dp))
+			.semantics {
+				contentDescription = "Featured items carousel - Android 12 compatibility mode"
+			}
+	) {
+		if (items.isNotEmpty()) {
+			val currentItem = items[currentIndex]
 
-            CarouselItemBackground(item = currentItem, modifier = Modifier.fillMaxSize())
-            CarouselItemForeground(
-                item = currentItem,
-                isCarouselFocused = carouselHasFocus,
-                onItemSelected = { onItemSelected(currentItem) },
-                modifier = Modifier.fillMaxSize()
-            )
+			CarouselItemBackground(item = currentItem, modifier = Modifier.fillMaxSize())
+			CarouselItemForeground(
+				item = currentItem,
+				isCarouselFocused = carouselHasFocus,
+				onItemSelected = { onItemSelected(currentItem) },
+				modifier = Modifier.fillMaxSize()
+			)
 
-            // Indicator
-            CarouselIndicator(
-                itemCount = items.size,
-                activeItemIndex = currentIndex,
-                modifier = Modifier.align(Alignment.BottomEnd)
-            )
-        }
-    }
+			val userPreferences = koinInject<UserPreferences>()
+			if (userPreferences[UserPreferences.snowfallEnabled]) {
+				SnowfallEffect(modifier = Modifier.fillMaxSize())
+			}
+
+			// Indicator
+			CarouselIndicator(
+				itemCount = items.size,
+				activeItemIndex = currentIndex,
+				modifier = Modifier.align(Alignment.BottomEnd)
+			)
+		}
+	}
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
@@ -306,9 +389,9 @@ private fun CarouselItemForeground(
 					fontSize = 24.sp,
 					fontWeight = FontWeight.Bold,
 					shadow = Shadow(
-						color = Color.Black.copy(alpha = 0.5f),
+						color = Color.Black.copy(alpha = 0.7f),
 						offset = Offset(x = 2f, y = 4f),
-						blurRadius = 2f
+						blurRadius = 4f
 					)
 				),
 				maxLines = 1,
@@ -318,46 +401,105 @@ private fun CarouselItemForeground(
 			val yearAndRuntime = listOfNotNull(
 				item.getYear().takeIf { it.isNotEmpty() },
 				item.getRuntime().takeIf { it.isNotEmpty() }
-			).joinToString(" • ")
+			).joinToString("  •  ")
 
 			val userPreferences = koinInject<UserPreferences>()
 			val ratingType = userPreferences[UserPreferences.defaultRatingType]
 
-			val infoLineParts = mutableListOf<String>()
+			Row(
+				modifier = Modifier.padding(top = 4.dp),
+				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				if (yearAndRuntime.isNotEmpty()) {
+					Text(
+						text = yearAndRuntime,
+						style = MaterialTheme.typography.titleMedium.copy(
+							fontSize = 16.sp,
+							color = Color.White.copy(alpha = 0.8f)
+						)
+					)
+				}
 
-			if (yearAndRuntime.isNotEmpty()) {
-				infoLineParts.add(yearAndRuntime)
-			}
+				if (ratingType != RatingType.RATING_HIDDEN) {
+					item.communityRating?.let { communityRating ->
+						if (communityRating > 0) {
+							if (yearAndRuntime.isNotEmpty()) {
+								Text(
+									text = "•",
+									style = MaterialTheme.typography.titleMedium.copy(
+										fontSize = 16.sp,
+										color = Color.White.copy(alpha = 0.8f)
+									)
+								)
+							}
+							Row(
+								horizontalArrangement = Arrangement.spacedBy(4.dp),
+								verticalAlignment = Alignment.CenterVertically
+							) {
+								Icon(
+									painter = painterResource(id = org.jellyfin.androidtv.R.drawable.ic_star),
+									contentDescription = null,
+									tint = Color.Unspecified,
+									modifier = Modifier.size(16.dp)
+								)
+								Spacer(Modifier.size(2.dp))
+								Text(
+									text = String.format("%.1f", communityRating),
+									style = MaterialTheme.typography.titleMedium.copy(
+										fontSize = 16.sp,
+										color = Color.White.copy(alpha = 0.8f)
+									)
+								)
+							}
+						}
+					}
 
-			if (ratingType != RatingType.RATING_HIDDEN) {
-				item.communityRating?.let { communityRating ->
-					if (communityRating > 0) {
-						infoLineParts.add("⭐ ${String.format("%.1f", communityRating)}")
+					item.criticRating?.let { criticRating ->
+						if (criticRating > 0) {
+							if (yearAndRuntime.isNotEmpty() || (item.communityRating ?: 0f) > 0) {
+								Text(
+									text = "•",
+									style = MaterialTheme.typography.titleMedium.copy(
+										fontSize = 16.sp,
+										color = Color.White.copy(alpha = 0.8f)
+									)
+								)
+							}
+							Row(
+								horizontalArrangement = Arrangement.spacedBy(4.dp),
+								verticalAlignment = Alignment.CenterVertically
+							) {
+								val tomatoDrawable = if (criticRating >= 60f) {
+									org.jellyfin.androidtv.R.drawable.ic_rt_fresh
+								} else {
+									org.jellyfin.androidtv.R.drawable.ic_rt_rotten
+								}
+								Icon(
+									painter = painterResource(id = tomatoDrawable),
+									contentDescription = null,
+									tint = Color.Unspecified,
+									modifier = Modifier.size(16.dp)
+								)
+								Spacer(Modifier.size(2.dp))
+								Text(
+									text = "${String.format("%.0f", criticRating)}%",
+									style = MaterialTheme.typography.titleMedium.copy(
+										fontSize = 16.sp,
+										color = Color.White.copy(alpha = 0.8f)
+									)
+								)
+							}
+						}
 					}
 				}
-				item.criticRating?.let { criticRating ->
-					if (criticRating > 0) {
-						val tomatoIcon = if (criticRating >= 60f) "🍅" else "🍊"
-						infoLineParts.add("$tomatoIcon ${String.format("%.0f", criticRating)}%")
-					}
-				}
 			}
 
-			if (infoLineParts.isNotEmpty()) {
-				Text(
-					text = infoLineParts.joinToString(" • "),
-					style = MaterialTheme.typography.titleMedium.copy(
-						fontSize = 16.sp,
-						color = Color.White.copy(alpha = 0.8f)
-					),
-					modifier = Modifier.padding(top = 4.dp)
-				)
-			}
 			if (item.description.isNotBlank()) {
 				Text(
 					text = item.description,
 					style = MaterialTheme.typography.titleMedium.copy(
-						fontSize = 14.sp,
+						fontSize = 16.sp,
 						color = Color.White.copy(alpha = 0.9f),
 						shadow = Shadow(
 							color = Color.Black.copy(alpha = 0.7f),
@@ -402,10 +544,10 @@ private fun CarouselItemBackground(item: CarouselItem, modifier: Modifier = Modi
 		AsyncImage(
 			modifier = androidx.compose.ui.Modifier
 				.width(600.dp)
-				.aspectRatio(16f / 9f)
+				.aspectRatio(16f / 10f)
 				.align(androidx.compose.ui.Alignment.TopEnd),
 			url = imageUrl,
-			scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
+			scaleType = android.widget.ImageView.ScaleType.FIT_END
 		)
 
 		// Dimmingg effect
@@ -470,7 +612,7 @@ private fun WatchNowButton(onItemSelected: () -> Unit) {
 		Icon(
 			imageVector = Icons.Outlined.PlayArrow,
 			contentDescription = null,
-			modifier = Modifier.size(21.dp)
+			modifier = Modifier.size(25.dp)
 
 		)
 		Spacer(Modifier.size(4.dp))

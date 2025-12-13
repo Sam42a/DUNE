@@ -7,6 +7,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -44,6 +57,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -67,6 +85,8 @@ class HomeFragment : Fragment() {
     private var scrollCheckRunnable: Runnable? = null
     private val scrollCheckDelay = 350L // ms to wait after scroll stops
     private var interactionDelayRunnable: Runnable? = null
+    private var _isCarouselPaused = mutableStateOf(false)
+    val isCarouselPaused: Boolean get() = _isCarouselPaused.value
 
     /**
      * Set up scroll listeners for all RecyclerViews in the fragment
@@ -213,6 +233,9 @@ class HomeFragment : Fragment() {
         super.onResume()
         isReadyForInteraction = true
 
+        _isCarouselPaused.value = false
+        Timber.tag("HomeFragment").d("onResume called - Carousel resumed, isCarouselPaused: ${_isCarouselPaused.value}")
+
         // Start preloading images when the fragment resumes
         preloadHomeScreenImages()
 
@@ -221,6 +244,10 @@ class HomeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+
+        _isCarouselPaused.value = true
+        Timber.tag("HomeFragment").d("onPause called - Carousel paused, isCarouselPaused: ${_isCarouselPaused.value}")
+
         try {
             backgroundService.unblockAllBackgrounds() // Unblock for other screens
             Timber.tag("HomeFragment").d("Backgrounds unblocked on pause")
@@ -500,18 +527,55 @@ class HomeFragment : Fragment() {
                             } catch (e: Exception) {
                                 Timber.e(e, "Error parsing item ID for navigation: ${item.id}")
                             }
-                        }
+                        },
+                        isPaused = isCarouselPaused
                     )
+
+                    // Debug logging to track isPaused state
+                    Timber.tag("HomeFragment").d("FeaturedCarousel rendered with isPaused: $isCarouselPaused")
                 }
                 is CarouselUiState.Empty -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .focusable()
+                            .onKeyEvent { keyEvent ->
+                                if (keyEvent.type == KeyEventType.KeyDown) {
+                                    when (keyEvent.key) {
+                                        Key.DirectionUp -> {
+                                            // Move focus to toolbar when down key is pressed
+                                            toolbarBinding.requestFocus()
+                                            true
+                                        }
+                                        else -> false
+                                    }
+                                } else false
+                            },
                         contentAlignment = Alignment.Center
                     ) {
-                        androidx.compose.material3.Text(
-                            text = "No featured content available",
-                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
-                        )
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    Color.Transparent.copy(alpha = 0.1f),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .padding(horizontal = 20.dp, vertical = 16.dp)
+                        ) {
+                            androidx.compose.material3.Text(
+                                text = "No featured content available",
+                                style = androidx.compose.material3.MaterialTheme.typography.bodyLarge.copy(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                color = Color.White,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                        }
                     }
                 }
                 is CarouselUiState.Error -> {

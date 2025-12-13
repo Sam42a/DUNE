@@ -60,6 +60,12 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             }
 
             checkbox {
+                setTitle(R.string.pref_snowfall_enabled)
+                setContent(R.string.pref_snowfall_enabled_description)
+                bind(userPreferences, UserPreferences.snowfallEnabled)
+            }
+
+            checkbox {
                 setTitle(R.string.pref_carousel_include_series)
                 setContent(R.string.pref_carousel_include_series_description)
                 bind(userPreferences, UserPreferences.carouselIncludeSeries)
@@ -106,12 +112,6 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             checkbox {
                 setTitle(R.string.show_collections_row)
                 bind(userSettingPreferences, userSettingPreferences.showCollectionsRow)
-            }
-
-            // Suggested Movies
-            checkbox {
-                setTitle(R.string.show_suggested_movies_row)
-                bind(userSettingPreferences, userSettingPreferences.showSuggestedMoviesRow)
             }
 
             // Genre rows in specified order
@@ -178,6 +178,11 @@ class EnhancedTweaksPreferencesScreen : OptionsFragment() {
             checkbox {
                 setTitle(R.string.show_war_row)
                 bind(userSettingPreferences, userSettingPreferences.showWarRow)
+
+				checkbox {
+					setTitle(R.string.show_suggested_movies_row)
+					bind(userSettingPreferences, userSettingPreferences.showSuggestedMoviesRow)
+				}
             }
         }
     }

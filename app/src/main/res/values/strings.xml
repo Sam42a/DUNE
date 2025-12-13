@@ -876,6 +876,8 @@
     <string name="pref_genre_sort_by">Sort Genre</string>
     <string name="pref_carousel_sort_by">Carousel sort options</string>
     <string name="pref_carousel_sort_by_description">Choose how items are sorted in the carousel</string>
+    <string name="pref_snowfall_enabled">Christmas Snowfall Effect</string>
+    <string name="pref_snowfall_enabled_description">Enable animated snowfall effect on the carousel for a festive Christmas atmosphere</string>
     <string name="pref_carousel_include_series">Include Series in Carousel</string>
     <string name="pref_carousel_include_series_description">Add TV Series alongside Movies in the featured carousel</string>
 

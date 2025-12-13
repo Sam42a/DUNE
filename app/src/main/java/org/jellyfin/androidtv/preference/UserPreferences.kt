@@ -90,6 +90,11 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var mediaManagementEnabled = booleanPreference("enable_media_management", false)
 
+		/**
+		 * Enable Christmas snowfall effect on carousel
+		 */
+		var snowfallEnabled = booleanPreference("pref_snowfall_enabled", false)
+
 		/* Playback - General*/
 		/**
 		 * Maximum bitrate in megabit for playback.
@@ -146,7 +151,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		/**
 		 * Enable hardware acceleration for video decoding.
 		 */
-		var hardwareAccelerationEnabled = booleanPreference("hardware_acceleration_enabled", defaultValue = false)
+		var hardwareAccelerationEnabled = booleanPreference("hardware_acceleration_enabled", defaultValue = true)
 
 		/**
 		 * Selected media source index for the current media item
