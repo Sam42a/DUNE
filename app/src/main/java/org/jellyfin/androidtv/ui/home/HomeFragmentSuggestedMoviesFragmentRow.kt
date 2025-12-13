@@ -65,7 +65,7 @@ class HomeFragmentSuggestedMoviesFragmentRow(
                     includeItemTypes = setOf(BaseItemKind.MOVIE),
                     sortOrder = setOf(SortOrder.DESCENDING,),
                     sortBy = setOf(ItemSortBy.DATE_PLAYED),
-                    limit = 4,
+                    limit = 2,
                     recursive = true,
                     fields = setOf(
                         ItemFields.PRIMARY_IMAGE_ASPECT_RATIO,
@@ -89,7 +89,7 @@ class HomeFragmentSuggestedMoviesFragmentRow(
                                 ItemFields.MEDIA_STREAMS,
                                 ItemFields.MEDIA_SOURCES
                             ),
-                            limit = 5,
+                            limit = 2,
                         )
 
                         val rowDef = BrowseRowDef(
