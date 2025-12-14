@@ -179,16 +179,16 @@ public class CardPresenter extends Presenter {
                             break;
                         case SEASON:
                         case SERIES:
-                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                             if (imageType != null && imageType.equals(ImageType.POSTER))
                                 aspect = ImageHelper.ASPECT_RATIO_2_3;
                             break;
                         case EPISODE:
                             if (m instanceof BaseItemDtoBaseRowItem && ((BaseItemDtoBaseRowItem) m).getPreferSeriesPoster()) {
-                                mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                                mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                                 aspect = ImageHelper.ASPECT_RATIO_2_3;
                             } else {
-                                mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                                mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                                 aspect = ImageHelper.ASPECT_RATIO_16_9;
                                 // Reduce size by 10% for home screen
                                 cardWidth = (int)(cardWidth * 0.9);
@@ -221,7 +221,7 @@ public class CardPresenter extends Presenter {
                             // Force the aspect ratio to 16x9 because the server is returning the wrong value of 1
                             // When this is fixed we should still force 16x9 if an image is not set to be consistent
                             aspect = ImageHelper.ASPECT_RATIO_16_9;
-                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                             isUserView = true;
                             break;
                         case FOLDER:
@@ -236,17 +236,17 @@ public class CardPresenter extends Presenter {
                         case PHOTO_ALBUM:
                         case PLAYLIST:
                             showWatched = false;
-                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                             break;
                         case MOVIE:
                         case VIDEO:
-                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                             showProgress = true;
                             if (imageType != null && imageType.equals(ImageType.POSTER))
                                 aspect = ImageHelper.ASPECT_RATIO_2_3;
                             break;
                         default:
-                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.fakeblur);
+                            mDefaultCardImage = ContextCompat.getDrawable(mCardView.getContext(), R.drawable.card_white_fake);
                             if (imageType != null && imageType.equals(ImageType.POSTER))
                                 aspect = ImageHelper.ASPECT_RATIO_2_3;
                             break;
@@ -817,7 +817,7 @@ public class CardPresenter extends Presenter {
             // common drawables
             cachedTilePortVideo = ContextCompat.getDrawable(context, R.drawable.tile_port_video);
             cachedTileTv = ContextCompat.getDrawable(context, R.drawable.tile_tv);
-            cachedFakeBlur = ContextCompat.getDrawable(context, R.drawable.fakeblur);
+            cachedFakeBlur = ContextCompat.getDrawable(context, R.drawable.card_white_fake);
             cachedTilePortPerson = ContextCompat.getDrawable(context, R.drawable.tile_port_person);
             cachedTileChapter = ContextCompat.getDrawable(context, R.drawable.tile_chapter);
             cachedTileLandSeriesTimer = ContextCompat.getDrawable(context, R.drawable.tile_land_series_timer);

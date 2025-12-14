@@ -93,6 +93,16 @@ class ButtonViewPresenter : Presenter() {
         val textView = ExtraSmallTextView(parent.context)
         textView.isFocusable = true
         textView.isFocusableInTouchMode = true
+        val screenWidth = parent.context.resources.displayMetrics.widthPixels
+        val marginStart = (screenWidth * 0.02).toInt()
+
+        val marginParams = ViewGroup.MarginLayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        marginParams.marginStart = marginStart
+        textView.layoutParams = marginParams
+
         return ViewHolder(textView)
     }
 
@@ -124,6 +134,10 @@ class HomeFragmentViewsRow(
         return item is BaseRowItem && item.baseItem?.type == org.jellyfin.sdk.model.api.BaseItemKind.USER_VIEW
     }
 
+    fun shouldUseCenteredLayout(): Boolean {
+        return small
+    }
+
 	override fun addToRowsAdapter(context: Context, cardPresenter: CardPresenter, rowsAdapter: MutableObjectAdapter<Row>) {
 		// Get user preferences to check if extra small option is enabled
 		val userPrefs = KoinJavaComponent.get<UserSettingPreferences>(UserSettingPreferences::class.java)
@@ -141,7 +155,6 @@ class HomeFragmentViewsRow(
 
 		// Set empty header text to hide the title
 		val headerText = ""
-
 		val header = HeaderItem(headerText)
 		val row = ListRow(header, rowAdapter)
 		rowAdapter.setRow(row)

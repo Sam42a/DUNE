@@ -1,14 +1,8 @@
 package org.jellyfin.androidtv.ui.home
 
-import org.jellyfin.androidtv.R
-import org.jellyfin.androidtv.ui.home.HomeFragmentViewsRow
-import org.jellyfin.androidtv.preference.UserPreferences
-
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.leanback.app.RowsSupportFragment
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.OnItemViewClickedListener
@@ -32,6 +26,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.auth.repository.UserRepository
 import org.jellyfin.androidtv.constant.CustomMessage
 import org.jellyfin.androidtv.constant.HomeSectionType
@@ -40,6 +35,7 @@ import org.jellyfin.androidtv.data.repository.CustomMessageRepository
 import org.jellyfin.androidtv.data.repository.NotificationsRepository
 import org.jellyfin.androidtv.data.repository.UserViewsRepository
 import org.jellyfin.androidtv.data.service.BackgroundService
+import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.ui.browsing.CompositeClickedListener
 import org.jellyfin.androidtv.ui.browsing.CompositeSelectedListener
@@ -53,7 +49,6 @@ import org.jellyfin.androidtv.ui.playback.MediaManager
 import org.jellyfin.androidtv.ui.presentation.CardPresenter
 import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter
 import org.jellyfin.androidtv.ui.presentation.PositionableListRowPresenter
-import androidx.leanback.widget.RowHeaderPresenter
 import org.jellyfin.androidtv.util.KeyProcessor
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
@@ -89,14 +84,15 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 	private val notificationsRow by lazy { NotificationsHomeFragmentRow(lifecycleScope, notificationsRepository) }
 	private val nowPlaying by lazy { HomeFragmentNowPlayingRow(mediaManager) }
 	private val liveTVRow by lazy { HomeFragmentLiveTVRow(requireActivity(), userRepository, navigationRepository) }
+	private val genreManager by lazy { GenreManager(requireContext(), userRepository, userPreferences, userSettingPreferences, api) }
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		// Create a custom row presenter that keeps headers always visible
-		val rowPresenter = PositionableListRowPresenter(requireContext()).apply {
+		val rowPresenter = PositionableListRowPresenter(requireContext(), false, true).apply {
 			// Enable select effect for rows
-			setSelectEffectEnabled(true)
+			setSelectEffectEnabled(false)
 		}
 
 		// Set the adapter with our custom row presenter
@@ -197,7 +193,11 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 
 				rows.forEach { row ->
 					try {
-						row.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+						if (row is HomeFragmentViewsRow && row.shouldUseCenteredLayout()) {
+							row.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+						} else {
+							row.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
+						}
 					} catch (e: Exception) {
 						Timber.e(e, "Error adding row to adapter")
 					}
@@ -210,9 +210,8 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
                         Timber.e(e, "Error adding Music Videos row")
                     }
                 }
-				// Load genre rows using New GenreManager
-				val genreManager = GenreManager(requireContext(), userRepository, userPreferences, userSettingPreferences)
 				if (genreManager.hasEnabledGenres()) {
+					val genreCount = genreManager.getEnabledGenreCount()
 					genreManager.loadGenreRows(cardPresenter, rowsAdapter)
 				} else {
 					Timber.d("No genre rows enabled")
@@ -252,8 +251,11 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 					.launchIn(this)
 
 				api.webSocket.subscribe<LibraryChangedMessage>()
-					.onEach { refreshRows(force = true, delayed = false) }
-					.launchIn(this)
+				.onEach {
+					genreManager.refreshEnabledGenres()
+					refreshRows(force = true, delayed = false)
+				}
+				.launchIn(this)
 			}
 		}
 
@@ -277,11 +279,12 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 		}
 
 		if (!justLoaded) {
-			//Re-retrieve anything that needs it but delay slightly so we don't take away gui landing
 			refreshCurrentItem()
 			refreshRows()
+			genreManager.clearEnabledGenresCache()
 		} else {
 			justLoaded = false
+			genreManager.preloadGenreConfigs()
 		}
 		// Ensure views are updated when fragment is resumed
 		ensureViewsInitialized()
