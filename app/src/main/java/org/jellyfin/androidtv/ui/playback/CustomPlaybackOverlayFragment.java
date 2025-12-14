@@ -62,6 +62,7 @@ import org.jellyfin.androidtv.ui.navigation.Destinations;
 import org.jellyfin.androidtv.ui.navigation.NavigationRepository;
 import org.jellyfin.androidtv.ui.playback.overlay.LeanbackOverlayFragment;
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentRepository;
+import org.jellyfin.androidtv.util.PlaybackHelper;
 import org.jellyfin.androidtv.ui.presentation.CardPresenter;
 import org.jellyfin.androidtv.ui.presentation.ChannelCardPresenter;
 import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter;
@@ -69,7 +70,6 @@ import org.jellyfin.androidtv.ui.presentation.PositionableListRowPresenter;
 import org.jellyfin.androidtv.util.CoroutineUtils;
 import org.jellyfin.androidtv.util.DateTimeExtensionsKt;
 import org.jellyfin.androidtv.util.ImageHelper;
-import org.jellyfin.androidtv.util.InfoLayoutHelper;
 import org.jellyfin.androidtv.util.TextUtilsKt;
 import org.jellyfin.androidtv.util.TimeUtils;
 import org.jellyfin.androidtv.util.Utils;
@@ -78,6 +78,7 @@ import org.jellyfin.androidtv.util.sdk.BaseItemExtensionsKt;
 import org.jellyfin.sdk.model.api.BaseItemDto;
 import org.jellyfin.sdk.model.api.BaseItemKind;
 import org.jellyfin.sdk.model.api.ChapterInfo;
+import org.jellyfin.sdk.model.api.request.GetItemsRequest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -92,6 +93,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
     private OverlayTvGuideBinding tvGuideBinding;
     private final MediaSegmentRepository mediaSegmentRepository = (MediaSegmentRepository) org.koin.java.KoinJavaComponent.inject(MediaSegmentRepository.class).getValue();
     private final Lazy<UserPreferences> userPreferences = org.koin.java.KoinJavaComponent.inject(UserPreferences.class);
+    private final Lazy<PlaybackHelper> playbackHelper = org.koin.java.KoinJavaComponent.inject(PlaybackHelper.class);
 
     private RowsSupportFragment mPopupRowsFragment;
     private ListRow mChapterRow;
@@ -384,9 +386,28 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
                 Long start = rowItem.getChapterInfo().getStartPositionTicks() / 10000;
                 playbackControllerContainer.getValue().getPlaybackController().seek(start);
                 hidePopupPanel();
-            } else if (item instanceof BaseItemDto) {
+            } else if (item instanceof org.jellyfin.androidtv.ui.itemhandling.BaseItemDtoBaseRowItem) {
+                org.jellyfin.androidtv.ui.itemhandling.BaseItemDtoBaseRowItem rowItem = (org.jellyfin.androidtv.ui.itemhandling.BaseItemDtoBaseRowItem) item;
+                BaseItemDto selectedItem = rowItem.getBaseItem();
                 hidePopupPanel();
-                switchChannel(((BaseItemDto) item).getId());
+
+                if (selectedItem.getType() == BaseItemKind.EPISODE) {
+                    switchToEpisode(selectedItem.getId());
+                } else {
+
+                    switchChannel(selectedItem.getId());
+                }
+
+            } else if (item instanceof BaseItemDto) {
+                BaseItemDto selectedItem = (BaseItemDto) item;
+                hidePopupPanel();
+                if (selectedItem.getType() == BaseItemKind.EPISODE) {
+                    switchToEpisode(selectedItem.getId());
+                } else {
+                    switchChannel(selectedItem.getId());
+                }
+            } else {
+                Timber.d("Unknown item type clicked: %s", item != null ? item.getClass().getName() : "null");
             }
         }
     };
@@ -497,7 +518,12 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
                         leanbackOverlayFragment.setShouldShowOverlay(false);
                         if (binding != null) clearSkipOverlay();
                         // Clear flag after delay to ensure seek completes
-                        mHandler.postDelayed(() -> setSkipOperationInProgress(false), 100);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setSkipOperationInProgress(false);
+                            }
+                        }, 100);
                         return true;
                     }
                 }
@@ -1154,6 +1180,20 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
         }, 500);
     }
 
+    public void showEpisodeSelector() {
+        showChapterPanel();
+        prepareEpisodeAdapter();
+        mHandler.postDelayed(() -> {
+            if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;
+
+            int ndx = getCurrentEpisodeIndex(playbackControllerContainer.getValue().getPlaybackController().getCurrentlyPlayingItem());
+            if (ndx > 0) {
+                mPopupRowPresenter.setPosition(ndx);
+            }
+            mPopupPanelVisible = true;
+        }, 500);
+    }
+
     private int getCurrentChapterIndex(BaseItemDto item, long pos) {
         int ndx = 0;
         Timber.d("*** looking for chapter at pos: %d", pos);
@@ -1165,6 +1205,23 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
             }
         }
         return ndx - 1;
+    }
+
+    private int getCurrentEpisodeIndex(BaseItemDto currentEpisode) {
+        if (currentEpisode == null || currentEpisode.getSeasonId() == null) return 0;
+
+        UUID seasonId = currentEpisode.getSeasonId();
+        List<BaseItemDto> seasonEpisodes = getSeasonEpisodes(seasonId);
+
+        if (seasonEpisodes == null) return 0;
+
+        for (int i = 0; i < seasonEpisodes.size(); i++) {
+            BaseItemDto episode = seasonEpisodes.get(i);
+            if (episode.getId().equals(currentEpisode.getId())) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void toggleRecording(BaseItemDto item) {
@@ -1263,7 +1320,6 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
                 binding.itemSubtitle.setVisibility(View.GONE);
             }
 
-
             if (current.getOverview() != null && !current.getOverview().isEmpty()) {
                 binding.itemDescription.setText(current.getOverview());
                 binding.itemDescription.setVisibility(View.VISIBLE);
@@ -1303,6 +1359,21 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
 
     }
 
+    private void prepareEpisodeAdapter() {
+        BaseItemDto currentEpisode = playbackControllerContainer.getValue().getPlaybackController().getCurrentlyPlayingItem();
+        if (currentEpisode == null || currentEpisode.getSeasonId() == null) return;
+        GetItemsRequest episodesRequest = org.jellyfin.androidtv.ui.browsing.BrowsingUtils.createNextEpisodesRequest(
+            currentEpisode.getSeasonId(),
+            0
+        );
+
+        ItemRowAdapter episodeAdapter = new ItemRowAdapter(requireContext(), episodesRequest, 100, false, new CardPresenter(true, 110), new MutableObjectAdapter<Row>());
+        episodeAdapter.Retrieve();
+        if (mChapterRow != null) mPopupRowAdapter.remove(mChapterRow);
+        mChapterRow = new ListRow(new HeaderItem(requireContext().getString(R.string.lbl_episodes)), episodeAdapter);
+        mPopupRowAdapter.add(mChapterRow);
+    }
+
     private void prepareChannelAdapter() {
         // create quick channel change row
         TvManager.loadAllChannels(this, response -> {
@@ -1315,6 +1386,54 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
             mPopupRowAdapter.add(mChapterRow);
             return null;
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void switchToEpisode(UUID episodeId) {
+        PlaybackController controller = playbackControllerContainer.getValue().getPlaybackController();
+        List<BaseItemDto> items = null;
+        try {
+            java.lang.reflect.Field itemsField = controller.getClass().getDeclaredField("mItems");
+            itemsField.setAccessible(true);
+            items = (List<BaseItemDto>) itemsField.get(controller);
+        } catch (Exception e) {
+            playbackHelper.getValue().retrieveAndPlay(episodeId, false, requireContext());
+            return;
+        }
+
+        if (items == null) {
+            playbackHelper.getValue().retrieveAndPlay(episodeId, false, requireContext());
+            return;
+        }
+
+        for (int i = 0; i < items.size(); i++) {
+            BaseItemDto item = items.get(i);
+            if (item.getId().equals(episodeId)) {
+                controller.stop();
+
+                try {
+                    java.lang.reflect.Field currentIndexField = controller.getClass().getDeclaredField("mCurrentIndex");
+                    currentIndexField.setAccessible(true);
+                    currentIndexField.set(controller, i);
+
+                    videoQueueManager.getValue().setCurrentMediaPosition(i);
+
+                    controller.play(0);
+                } catch (Exception e) {
+                    Timber.e(e, "Error switching to episode");
+                    // Fallback to using retrieveAndPlay if switching fails
+                    playbackHelper.getValue().retrieveAndPlay(episodeId, false, requireContext());
+                }
+                return;
+            }
+        }
+
+        playbackHelper.getValue().retrieveAndPlay(episodeId, false, requireContext());
+    }
+
+    private List<BaseItemDto> getSeasonEpisodes(UUID seasonId) {
+        // Let ItemRowAdapter handle the API call - this method is just for validation
+        return null;
     }
 
     public void closePlayer() {

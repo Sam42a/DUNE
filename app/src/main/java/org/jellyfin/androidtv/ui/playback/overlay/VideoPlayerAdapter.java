@@ -174,4 +174,9 @@ public class VideoPlayerAdapter extends PlayerAdapter {
         List<ChapterInfo> chapters = item.getChapters();
         return chapters != null && chapters.size() > 0;
     }
+
+    boolean isEpisode() {
+        org.jellyfin.sdk.model.api.BaseItemDto item = getCurrentlyPlayingItem();
+        return item != null && item.getType() == org.jellyfin.sdk.model.api.BaseItemKind.EPISODE;
+    }
 }

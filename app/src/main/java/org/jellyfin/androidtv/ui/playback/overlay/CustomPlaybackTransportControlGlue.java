@@ -31,6 +31,7 @@ import org.jellyfin.androidtv.ui.playback.overlay.action.ChannelBarChannelAction
 import org.jellyfin.androidtv.ui.playback.overlay.action.ChapterAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.ClosedCaptionsAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.CustomAction;
+import org.jellyfin.androidtv.ui.playback.overlay.action.EpisodesAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.FastForwardAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.GuideAction;
 import org.jellyfin.androidtv.ui.playback.overlay.action.PlayPauseAction;
@@ -49,6 +50,7 @@ import org.koin.java.KoinJavaComponent;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import timber.log.Timber;
 
 public class CustomPlaybackTransportControlGlue extends PlaybackTransportControlGlue<VideoPlayerAdapter> {
 
@@ -65,6 +67,7 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
     private ZoomAction zoomAction;
     private StatsAction statsAction;
     private ChapterAction chapterAction;
+    private EpisodesAction episodesAction;
 
     // TV actions
     private PreviousLiveTvChannelAction previousLiveTvChannelAction;
@@ -144,11 +147,21 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
 
                     LinearLayout view = (LinearLayout) vh.view;
 
-                    PlaybackTransportRowView bar = (PlaybackTransportRowView) view.getChildAt(1);
-                    FrameLayout v = (FrameLayout) bar.getChildAt(0);
-                    mButtonRef = (LinearLayout) v.getChildAt(0);
+                    Object bar = view.getChildAt(1);
+                    FrameLayout v;
+                    try {
+                        java.lang.reflect.Method getChildAtMethod = bar.getClass().getMethod("getChildAt", int.class);
+                        v = (FrameLayout) getChildAtMethod.invoke(bar, 0);
 
-                    bar.removeViewAt(0);
+                        java.lang.reflect.Method getChildAtMethod2 = v.getClass().getMethod("getChildAt", int.class);
+                        mButtonRef = (LinearLayout) getChildAtMethod2.invoke(v, 0);
+
+                        java.lang.reflect.Method removeViewAtMethod = bar.getClass().getMethod("removeViewAt", int.class);
+                        removeViewAtMethod.invoke(bar, 0);
+                    } catch (Exception e) {
+                        Timber.e(e, "Error accessing playback controls via reflection");
+                        return vh;
+                    }
                     RelativeLayout rl = new RelativeLayout(context);
                     RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -161,7 +174,12 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
                     rlp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                     rlp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                     rl.addView(mEndsText, rlp2);
-                    bar.addView(rl, 0, rlp);
+                    try {
+                        java.lang.reflect.Method addViewMethod = bar.getClass().getMethod("addView", View.class, int.class, ViewGroup.LayoutParams.class);
+                        addViewMethod.invoke(bar, rl, 0, rlp);
+                    } catch (Exception e) {
+                        Timber.e(e, "Error adding view via reflection");
+                    }
                 }
 
                 return vh;
@@ -209,6 +227,8 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
         statsAction.setLabels(new String[]{"Stats"});
         chapterAction = new ChapterAction(context, this);
         chapterAction.setLabels(new String[]{context.getString(R.string.lbl_chapters)});
+        episodesAction = new EpisodesAction(context, this);
+        episodesAction.setLabels(new String[]{context.getString(R.string.lbl_episodes)});
 
         previousLiveTvChannelAction = new PreviousLiveTvChannelAction(context, this);
         previousLiveTvChannelAction.setLabels(new String[]{context.getString(R.string.lbl_prev_item)});
@@ -254,6 +274,10 @@ public class CustomPlaybackTransportControlGlue extends PlaybackTransportControl
 
         if (playerAdapter.hasMultiAudio()) {
             primaryActionsAdapter.add(selectAudioAction);
+        }
+
+        if (playerAdapter.isEpisode()) {
+            primaryActionsAdapter.add(episodesAction);
         }
 
         if (playerAdapter.isLiveTv()) {
