@@ -28,7 +28,7 @@ This project uses the same translation system as the original Jellyfin Android T
 
 ### Visual & Interface
 **Modernized UI Framework**
-- Redesigned homescreen with improved content hierarchy
+- Redesigned home screen with improved content hierarchy
 - Enhanced login experience with visual feedback
 - Default avatars for users without profile images
 - Intuitive search interface with voice input
@@ -49,8 +49,8 @@ This project uses the same translation system as the original Jellyfin Android T
 ### Technical Improvements
 - Reduced memory usage
 - Faster app startup
-- Side-by-side installation with official client
-- Built-in auto-update support
+- Side by side installation alongside official client
+- Built in automatic updates
 
 ## Building from Source
 
