@@ -561,7 +561,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
             ClassPresenterSelector ps = new ClassPresenterSelector();
             ps.addClassPresenter(MyDetailsOverviewRow.class, mDorPresenter);
-            mListRowPresenter = new CustomListRowPresenter(Utils.convertDpToPixel(requireContext(), 10));
+            mListRowPresenter = new CustomListRowPresenter(Utils.convertDpToPixel(requireContext(), 16), Utils.convertDpToPixel(requireContext(), -25));
             ps.addClassPresenter(ListRow.class, mListRowPresenter);
             mRowsAdapter = new MutableObjectAdapter<Row>(ps);
             mRowsFragment.setAdapter(mRowsAdapter);
@@ -1353,14 +1353,19 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     }
 
     void play(final BaseItemDto item, final int pos, final boolean shuffle) {
+        if (!isAdded()) {
+            return;
+        }
         playbackHelper.getValue().getItemsToPlay(getContext(), item, pos == 0 && item.getType() == BaseItemKind.MOVIE, shuffle, new Response<List<BaseItemDto>>() {
             @Override
             public void onResponse(List<BaseItemDto> response) {
                 if (response.isEmpty()) {
-                    Timber.e("No items to play - ignoring play request.");
                     return;
                 }
 
+                if (!isAdded()) {
+                    return;
+                }
                 KoinJavaComponent.<PlaybackLauncher>get(PlaybackLauncher.class).launch(getContext(), response, pos, false, 0, shuffle);
             }
         });
@@ -1368,6 +1373,10 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
     void play(final List<BaseItemDto> items, final int pos, final boolean shuffle) {
         if (items.isEmpty()) return;
+
+        if (!isAdded()) {
+            return;
+        }
         if (shuffle) Collections.shuffle(items);
         KoinJavaComponent.<PlaybackLauncher>get(PlaybackLauncher.class).launch(getContext(), items, pos);
     }

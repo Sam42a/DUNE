@@ -1,220 +1,292 @@
 package org.jellyfin.androidtv.ui.presentation
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.leanback.widget.RowPresenter
+import org.jellyfin.androidtv.data.model.InfoItem
 import org.jellyfin.androidtv.ui.DetailRowView
 import org.jellyfin.androidtv.ui.itemdetail.MyDetailsOverviewRow
 import org.jellyfin.androidtv.util.InfoLayoutHelper
 import org.jellyfin.androidtv.util.MarkdownRenderer
-import org.jellyfin.sdk.model.api.BaseItemKind
-import org.jellyfin.sdk.model.api.MediaSourceInfo
-import org.jellyfin.sdk.model.api.MediaStreamType
-import org.jellyfin.sdk.model.api.VideoRangeType
-import timber.log.Timber
-import android.view.View
-
+import org.jellyfin.sdk.model.api.*
+import android.widget.TextView
 
 class MyDetailsOverviewRowPresenter(
 	private val markdownRenderer: MarkdownRenderer,
 ) : RowPresenter() {
-	class ViewHolder(
-		private val detailRowView: DetailRowView,
-		private val markdownRenderer: MarkdownRenderer,
-	) : RowPresenter.ViewHolder(detailRowView) {
-		private val binding get() = detailRowView.binding
-
-		fun setItem(row: MyDetailsOverviewRow) {
-			setTitle(row.item.name)
-
-			InfoLayoutHelper.addInfoRow(view.context, row.item, row.item.mediaSources?.getOrNull(row.selectedMediaSourceIndex), binding.fdMainInfoRow, false)
-			binding.fdGenreRow.text = row.item.genres?.joinToString(" / ")
-
-			binding.infoTitle1.text = row.infoItem1?.label
-			binding.infoValue1.text = row.infoItem1?.value
-
-			binding.infoTitle2.text = row.infoItem2?.label
-			binding.infoValue2.text = row.infoItem2?.value
-
-			binding.infoTitle3.text = row.infoItem3?.label
-			binding.infoValue3.text = row.infoItem3?.value
-
-			binding.mainImage.load(row.imageDrawable, null, null, 1.0, 0)
-
-			setSummary(row.summary)
-
-			if (row.item.type == BaseItemKind.PERSON) {
-				binding.fdSummaryText.maxLines = 9
-				binding.fdGenreRow.isVisible = false
-			}
-
-			val resolution = getResolutionLabel(row.item.mediaSources?.firstOrNull())
-			binding.fdResolution.text = resolution
-			binding.fdResolution.visibility = if (resolution != null) View.VISIBLE else View.GONE
-
-			binding.fdButtonRow.removeAllViews()
-			for (button in row.actions) {
-				val parent = button.parent
-				if (parent is ViewGroup) parent.removeView(button)
-
-				binding.fdButtonRow.addView(button)
-			}
-		}
-
-		fun setTitle(title: String?) {
-			binding.fdTitle.text = title
-		}
-
-		fun setSummary(summary: String?) {
-			binding.fdSummaryText.text = summary?.let { markdownRenderer.toMarkdownSpanned(it) }
-		}
-
-		fun setInfoValue3(text: String?) {
-			binding.infoValue3.text = text
-		}
-
-		private fun getResolutionLabel(mediaSource: MediaSourceInfo?): String? {
-			if (mediaSource == null) return null
-
-			val videoStream = mediaSource.mediaStreams?.firstOrNull { it.type == MediaStreamType.VIDEO } ?: return null
-			val audioStream = mediaSource.mediaStreams?.firstOrNull { it.type == MediaStreamType.AUDIO }
-
-			val width = videoStream.width ?: return null
-			val height = videoStream.height ?: return null
-
-			// Get resolution label using the same logic as BaseItemInfoRow
-			val resolution = when {
-				width >= 7600 || height >= 4300 -> "8K"
-				width >= 3800 || height >= 2000 -> "4K"
-				width >= 2500 || height >= 1400 -> "QHD"
-				width >= 1800 || height >= 1000 -> "FHD"
-				width >= 1280 || height >= 720 -> "HD"
-				width >= 1200 || height >= 700 -> "SD"
-				width >= 600 || height >= 400 -> "SD"
-				else -> "SD"
-			}
-
-			// Get video codec - simplified to match BaseItemInfoRow approach
-			val videoCodec = when (videoStream.codec?.uppercase()) {
-				"H264", "AVC" -> "H.264"
-				"HEVC", "H265" -> "H.265"
-				"VP9" -> "VP9"
-				"AV1" -> "AV1"
-				else -> videoStream.codec?.uppercase() ?: ""
-			}
-
-			// Get video range type - handle Dolby Vision with HDR types
-			val range = when {
-				!videoStream.videoDoViTitle.isNullOrBlank() -> {
-					// For Dolby Vision content, check if it's combined with HDR10 or HDR10+
-					val hdrType = when (videoStream.videoRangeType?.serialName?.uppercase()) {
-						"DOVIWITHHDR10" -> "HDR10"
-						"DOVIWITHHDR10PLUS" -> "HDR10+"
-						"DOVIWITHHLG" -> "HLG"
-						else -> null
-					}
-					if (hdrType != null) "DV $hdrType" else "DV"
-				}
-				videoStream.videoRangeType != null -> when (videoStream.videoRangeType!!.serialName.uppercase()) {
-					"DOLBY_VISION" -> "DV"
-					"HLG" -> "HLG"
-					"HDR10_PLUS" -> "HDR10+"
-					"HDR10" -> "HDR10"
-					"HDR" -> "HDR"
-					"SDR" -> "SDR"
-					else -> null
-				}
-				else -> null
-			}
-
-			// Get audio information if available
-			val audioInfo = audioStream?.let { audio ->
-				val audioCodec = when (audio.codec?.uppercase()) {
-					"AAC" -> "AAC"
-					"AC3" -> "AC3"
-					"EAC3" -> "E-AC3"
-					"DTS" -> "DTS"
-					"DTS-HD" -> "DTS-HD"
-					"DTS-HD MA" -> "DTS-HD MA"
-					"DTS-X" -> "DTS-X"
-					"TRUEHD" -> "Dolby TrueHD"
-					"OPUS" -> "Opus"
-					"VORBIS" -> "Vorbis"
-					"MP3" -> "MP3"
-					else -> audio.codec?.uppercase() ?: ""
-				}
-
-				// Get audio language (first 2 characters of the language code, e.g., "en" from "eng")
-				val language = audio.language?.takeIf { it.length >= 2 }?.take(2)?.uppercase()
-
-				// Format channels with layout names
-				val channels = when (audio.channels) {
-					null -> ""
-					1 -> "Mono"
-					2 -> "Stereo"
-					3 -> "2.1"
-					4 -> "Quad"
-					5 -> "4.1"
-					6 -> "5.1"
-					7 -> "6.1"
-					8 -> "7.1"
-					9 -> "7.2"
-					10 -> "9.1"
-					11 -> "9.2"
-					12 -> "11.1"
-					else -> "${audio.channels}ch"
-				}
-
-				// Add common audio layout names
-				val layout = when (audio.channels) {
-					6 -> when (audio.channelLayout?.uppercase()) {
-						"5.1", "5.1(SIDE)" -> "5.1"
-						"5.1(BACK)" -> "5.1 (Back)"
-						else -> null
-					}
-					8 -> when (audio.channelLayout?.uppercase()) {
-						"7.1", "7.1(WIDE)" -> "7.1"
-						"7.1(TOP)" -> "7.1 (Top)"
-						"7.1(WIDE-SIDE)" -> "7.1 (Wide)"
-						else -> null
-					}
-					else -> null
-				} ?: channels
-
-				listOf(audioCodec, language, layout)
-			} ?: emptyList()
-
-			// Combine all parts with forward slashes, filtering out null or empty strings
-			return (listOf(resolution, videoCodec, range) + audioInfo)
-				.filter { !it.isNullOrEmpty() }
-				.joinToString(" / ")
-		}
-	}
-
-	var viewHolder: ViewHolder? = null
-		private set
 
 	init {
 		syncActivatePolicy = SYNC_ACTIVATED_CUSTOM
 	}
 
 	override fun createRowViewHolder(parent: ViewGroup): ViewHolder {
-		val view = DetailRowView(parent.context)
-		viewHolder = ViewHolder(view, markdownRenderer)
-		return viewHolder!!
+		return ViewHolder(DetailRowView(parent.context), markdownRenderer)
 	}
 
-    // Main implementation that handles binding
-    override fun onBindRowViewHolder(viewHolder: RowPresenter.ViewHolder, item: Any) {
-        super.onBindRowViewHolder(viewHolder, item)
-        if (item !is MyDetailsOverviewRow) return
-        if (viewHolder !is ViewHolder) return
+	override fun onBindRowViewHolder(holder: RowPresenter.ViewHolder, item: Any) {
+		super.onBindRowViewHolder(holder, item)
+		if (holder is ViewHolder && item is MyDetailsOverviewRow) {
+			holder.bind(item)
+		}
+	}
 
-        viewHolder.setItem(item)
-    }
+	@Suppress("UNUSED_PARAMETER")
+	override fun onSelectLevelChanged(holder: RowPresenter.ViewHolder) = Unit
 
-    @Suppress("UNUSED_PARAMETER")
-    override fun onSelectLevelChanged(holder: RowPresenter.ViewHolder) {
-        // No action needed
-    }
+
+	fun getViewHolder(): ViewHolder? {
+
+		return null
+	}
+
+	class ViewHolder(
+		private val detailRowView: DetailRowView,
+		private val markdownRenderer: MarkdownRenderer,
+	) : RowPresenter.ViewHolder(detailRowView) {
+
+		private val binding get() = detailRowView.binding
+
+		private var lastSummary: String? = null
+		private var lastRenderedSummary: CharSequence? = null
+
+		fun bind(row: MyDetailsOverviewRow) {
+			bindTitle(row)
+			bindInfo(row)
+			bindSummary(row)
+			bindImage(row)
+			bindResolution(row)
+			bindButtons(row)
+		}
+
+		fun setSummary(summary: String?) {
+			lastSummary = summary
+			lastRenderedSummary = summary?.let { markdownRenderer.toMarkdownSpanned(it) }
+			binding.fdSummaryText.text = lastRenderedSummary
+		}
+
+		fun setTitle(title: String?) {
+			binding.fdTitle.text = title
+		}
+
+		fun setItem(row: MyDetailsOverviewRow) {
+			bind(row)
+		}
+
+		fun setInfoValue3(value: String?) {
+			// This method is kept for compatibility but the individual info TextViews are now hidden
+			// The info is displayed as a merged line in infoTitle1
+			// If needed, this could be updated to modify the merged info line
+		}
+
+		private fun bindTitle(row: MyDetailsOverviewRow) {
+			binding.fdTitle.text = row.item.name
+		}
+
+		private fun bindInfo(row: MyDetailsOverviewRow) {
+			binding.fdMainInfoRow.removeAllViews()
+			val resolutionText = MediaLabelFormatter.format(
+				row.item.mediaSources?.firstOrNull()
+			)
+
+			if (!resolutionText.isNullOrEmpty()) {
+				val resolutionTextView = android.widget.TextView(view.context).apply {
+					text = resolutionText
+					setTextColor(androidx.core.content.ContextCompat.getColor(view.context, org.jellyfin.androidtv.R.color.basic_button_text))
+					textSize = 12f
+					setTypeface(android.graphics.Typeface.SANS_SERIF)
+					gravity = android.view.Gravity.CENTER_VERTICAL
+				}
+				val params = android.widget.LinearLayout.LayoutParams(
+					android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+					android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+				)
+				params.gravity = android.view.Gravity.CENTER_VERTICAL
+				resolutionTextView.layoutParams = params
+				binding.fdMainInfoRow.addView(resolutionTextView)
+			}
+
+			InfoLayoutHelper.addInfoRow(
+				view.context,
+				row.item,
+				row.item.mediaSources?.getOrNull(row.selectedMediaSourceIndex),
+				binding.fdMainInfoRow,
+				false
+			)
+
+			if (!resolutionText.isNullOrEmpty()) {
+				val bulletTextView = android.widget.TextView(view.context).apply {
+					text = "  •  "
+					setTextColor(androidx.core.content.ContextCompat.getColor(view.context, org.jellyfin.androidtv.R.color.basic_button_text))
+					textSize = 16f
+					setTypeface(android.graphics.Typeface.SANS_SERIF)
+					gravity = android.view.Gravity.CENTER_VERTICAL
+				}
+				val params = android.widget.LinearLayout.LayoutParams(
+					android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+					android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+				)
+				params.gravity = android.view.Gravity.CENTER_VERTICAL
+				bulletTextView.layoutParams = params
+				binding.fdMainInfoRow.addView(bulletTextView, 1)
+			}
+
+			binding.fdGenreRow.apply {
+				text = row.item.genres?.joinToString("  •  ")
+				isVisible = row.item.type != BaseItemKind.PERSON
+			}
+
+			val mergedInfo = buildMergedInfoLine(row.infoItem1, row.infoItem2, row.infoItem3)
+
+			binding.infoTitle1.apply {
+				text = mergedInfo
+				isVisible = mergedInfo.isNotEmpty()
+			}
+
+			if (row.item.type == BaseItemKind.PERSON) {
+				binding.fdSummaryText.maxLines = 12
+			}
+		}
+
+		private fun buildMergedInfoLine(vararg infoItems: InfoItem?): String {
+			return infoItems
+				.filterNotNull()
+				.filter { it.label?.isNotEmpty() == true && it.value?.isNotEmpty() == true }
+				.map { "${it.label} • ${it.value}" }
+				.joinToString("  •  ")
+		}
+
+		private fun bindSummary(row: MyDetailsOverviewRow) {
+			val summary = row.summary
+			if (summary == lastSummary) {
+				binding.fdSummaryText.text = lastRenderedSummary
+				return
+			}
+
+			lastSummary = summary
+			lastRenderedSummary = summary?.let { markdownRenderer.toMarkdownSpanned(it) }
+			binding.fdSummaryText.text = lastRenderedSummary
+		}
+
+		private fun bindImage(row: MyDetailsOverviewRow) {
+			binding.mainImage.load(row.imageDrawable, null, null, 1.0, 0)
+		}
+
+		private fun bindResolution(row: MyDetailsOverviewRow) {
+		}
+
+		private fun bindButtons(row: MyDetailsOverviewRow) {
+			if (binding.fdButtonRow.childCount == row.actions.size) return
+
+			binding.fdButtonRow.removeAllViews()
+			row.actions.forEach { button ->
+				(button.parent as? ViewGroup)?.removeView(button)
+				binding.fdButtonRow.addView(button)
+			}
+		}
+	}
+}
+
+/**
+ * Extracted formatter to keep Presenter UI-only
+ */
+object MediaLabelFormatter {
+
+	fun format(mediaSource: MediaSourceInfo?): String? {
+		if (mediaSource == null) return null
+
+		val video = mediaSource.mediaStreams?.firstOrNull {
+			it.type == MediaStreamType.VIDEO
+		} ?: return null
+
+		val audio = mediaSource.mediaStreams?.firstOrNull {
+			it.type == MediaStreamType.AUDIO
+		}
+
+		val resolution = formatResolution(video.width, video.height)
+		val videoCodec = formatVideoCodec(video.codec)
+		val range = formatVideoRange(video)
+
+		val audioInfo = audio?.let {
+			listOf(
+				formatAudioCodec(it.codec),
+				it.language?.take(2)?.uppercase(),
+				formatAudioLayout(it)
+			)
+		}.orEmpty()
+
+		return (listOf(resolution, videoCodec, range) + audioInfo)
+			.filter { !it.isNullOrEmpty() }
+			.joinToString("  •  ")
+	}
+
+	private fun formatResolution(width: Int?, height: Int?): String {
+		if (width == null || height == null) return "SD"
+		return when {
+			width >= 7600 || height >= 4300 -> "8K"
+			width >= 3800 || height >= 2000 -> "4K"
+			width >= 2500 || height >= 1400 -> "QHD"
+			width >= 1800 || height >= 1000 -> "FHD"
+			width >= 1280 || height >= 720 -> "HD"
+			else -> "SD"
+		}
+	}
+
+	private fun formatVideoCodec(codec: String?): String =
+		when (codec?.uppercase()) {
+			"H264", "AVC" -> "H.264"
+			"HEVC", "H265" -> "H.265"
+			"VP9" -> "VP9"
+			"AV1" -> "AV1"
+			else -> codec?.uppercase().orEmpty()
+		}
+
+	private fun formatVideoRange(video: MediaStream): String? {
+		if (!video.videoDoViTitle.isNullOrBlank()) {
+			return when (video.videoRangeType) {
+				VideoRangeType.DOVI_WITH_HDR10 -> "Dolby Vision Hdr10"
+				VideoRangeType.HDR10_PLUS -> "Dolby Vision Hdr10+"
+				VideoRangeType.DOVI_WITH_HLG -> "Dolby Vision Hlg"
+				else -> "Dolby Vision"
+			}
+		}
+
+		return when (video.videoRangeType) {
+			VideoRangeType.DOVI -> "Dolby Vision"
+			VideoRangeType.HDR10 -> "HDR10"
+			VideoRangeType.HDR10_PLUS -> "HDR10+"
+			VideoRangeType.HLG -> "HLG"
+			VideoRangeType.SDR -> "SDR"
+			else -> null
+		}
+	}
+
+	private fun formatAudioCodec(codec: String?): String =
+		when (codec?.uppercase()) {
+			"AAC" -> "AAC"
+			"AC3" -> "AC3"
+			"EAC3" -> "E-AC3"
+			"DTS" -> "DTS"
+			"DTS-HD" -> "DTS-HD"
+			"DTS-X" -> "DTS-X"
+			"TRUEHD" -> "Dolby TrueHD"
+			"OPUS" -> "Opus"
+			"VORBIS" -> "Vorbis"
+			"MP3" -> "MP3"
+			else -> codec?.uppercase().orEmpty()
+		}
+
+	private fun formatAudioLayout(audio: MediaStream): String {
+		audio.channelLayout?.uppercase()?.let {
+			return it.replace("_", " ")
+		}
+
+		return when (audio.channels) {
+			1 -> "Mono"
+			2 -> "Stereo"
+			6 -> "5.1"
+			8 -> "7.1"
+			else -> "${audio.channels ?: ""}ch"
+		}
+	}
 }
