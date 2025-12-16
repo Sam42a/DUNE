@@ -1169,6 +1169,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
 
     public void showChapterSelector() {
         showChapterPanel();
+        prepareChapterAdapter();
         mHandler.postDelayed(() -> {
             if (!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;
 
@@ -1338,7 +1339,7 @@ public class CustomPlaybackOverlayFragment extends Fragment implements LiveTvGui
 
             if (playbackControllerContainer.getValue().getPlaybackController().isLiveTv()) {
                 prepareChannelAdapter();
-            } else {
+            } else if (!mPopupPanelVisible) {
                 prepareChapterAdapter();
             }
         }
