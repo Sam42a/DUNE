@@ -10,7 +10,9 @@ import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.util.apiclient.JellyfinImage
 import org.jellyfin.androidtv.util.apiclient.albumPrimaryImage
 import org.jellyfin.androidtv.util.apiclient.getUrl
+import org.jellyfin.androidtv.util.apiclient.itemBackdropImages
 import org.jellyfin.androidtv.util.apiclient.itemImages
+import org.jellyfin.androidtv.util.apiclient.parentBackdropImages
 import org.jellyfin.androidtv.util.apiclient.parentImages
 import org.jellyfin.androidtv.util.apiclient.primaryImage
 import org.jellyfin.androidtv.util.apiclient.seriesPrimaryImage
@@ -156,8 +158,9 @@ class ImageHelper(
 		maxWidth: Int? = null,
 		maxHeight: Int? = null
 	): String? {
-		val backdropImage = item.itemImages[ImageType.BACKDROP] ?: item.parentImages[ImageType.BACKDROP]
-		return backdropImage?.getUrl(api, maxWidth = maxWidth, maxHeight = maxHeight)
+		val backdropUrls = (item.itemBackdropImages + item.parentBackdropImages)
+			.map { it.getUrl(api) }
+		return backdropUrls.firstOrNull()
 	}
 
 	/**

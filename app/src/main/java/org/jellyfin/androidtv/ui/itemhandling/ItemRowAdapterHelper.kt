@@ -72,6 +72,9 @@ fun <T : Any> ItemRowAdapter.setItems(
 }
 
 fun ItemRowAdapter.retrieveResumeItems(api: ApiClient, query: GetResumeItemsRequest) {
+	if (this.isScrolling) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {
@@ -98,6 +101,9 @@ fun ItemRowAdapter.retrieveResumeItems(api: ApiClient, query: GetResumeItemsRequ
 }
 
 fun ItemRowAdapter.retrieveNextUpItems(api: ApiClient, query: GetNextUpRequest) {
+	if (this.isScrolling) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {
@@ -157,6 +163,9 @@ fun ItemRowAdapter.retrieveNextUpItems(api: ApiClient, query: GetNextUpRequest) 
 }
 
 fun ItemRowAdapter.retrieveLatestMedia(api: ApiClient, query: GetLatestMediaRequest) {
+	if (this.isScrolling) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {
@@ -185,6 +194,9 @@ fun ItemRowAdapter.retrieveLatestMedia(api: ApiClient, query: GetLatestMediaRequ
 }
 
 fun ItemRowAdapter.retrieveSpecialFeatures(api: ApiClient, query: GetSpecialsRequest) {
+	if (this.isScrolling) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {
@@ -291,6 +303,9 @@ fun ItemRowAdapter.retrieveUpcomingEpisodes(api: ApiClient, query: GetUpcomingEp
 }
 
 fun ItemRowAdapter.retrieveSimilarItems(api: ApiClient, query: GetSimilarItemsRequest) {
+	if (this.isScrolling) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {
@@ -311,6 +326,9 @@ fun ItemRowAdapter.retrieveSimilarItems(api: ApiClient, query: GetSimilarItemsRe
 }
 
 fun ItemRowAdapter.retrieveTrailers(api: ApiClient, query: GetTrailersRequest) {
+	if (this.isScrolling) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {
@@ -565,6 +583,9 @@ fun ItemRowAdapter.retrieveItems(
 	startIndex: Int,
 	batchSize: Int
 ) {
+	if (this.isScrolling && startIndex == 0) {
+		return
+	}
 	ProcessLifecycleOwner.get().lifecycleScope.launch {
 		runCatching {
 			val response = withContext(Dispatchers.IO) {

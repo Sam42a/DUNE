@@ -101,7 +101,7 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
     private int mLastVisiblePosition = Integer.MAX_VALUE;
     private final int VISIBLE_BUFFER_SIZE = 20;
     private long mLastVirtualUpdate = 0;
-    private final long VIRTUAL_UPDATE_THROTTLE_MS = 200; // Throttle virtual updates
+    private final long VIRTUAL_UPDATE_THROTTLE_MS = 200;
     private boolean preferParentThumb = false;
     private String mGenreFilter;
     private boolean staticHeight = false;
@@ -110,7 +110,7 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
     private final Lazy<UserViewsRepository> userViewsRepository = inject(UserViewsRepository.class);
     private Context context;
 
-    private boolean isCurrentlyRetrieving() {
+    public boolean isCurrentlyRetrieving() {
         synchronized (currentlyRetrievingSemaphore) {
             return currentlyRetrieving;
         }
@@ -483,16 +483,52 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
         mParent.remove(mRow);
     }
 
+    @Override
+    public int indexOf(Object item) {
+        int index = super.indexOf(item);
+        if (index < 0) {
+            Timber.w("Item not found in adapter, returning -1 for indexOf: %s", item);
+        }
+        return index;
+    }
+
+    @Override
+    public Object get(int position) {
+        if (position < 0 || position >= size()) {
+            Timber.e("Invalid position %d requested from adapter (size: %d)", position, size());
+            return null;
+        }
+        return super.get(position);
+    }
+
+    @Override
+    public int size() {
+        int size = super.size();
+        if (size < 0) {
+            Timber.e("Adapter size is negative: %d", size);
+            return 0;
+        }
+        return size;
+    }
+
     public void loadMoreItemsIfNeeded(int pos) {
-        if (fullyLoaded) {
-            //context.getLogger().Debug("Row is fully loaded");
+        if (pos < 0) {
+            Timber.w("Invalid position %d in loadMoreItemsIfNeeded, skipping", pos);
             return;
         }
-        if (isCurrentlyRetrieving()) {
-            Timber.d("Not loading more because currently retrieving");
+
+        if (fullyLoaded || isCurrentlyRetrieving()) {
+            Timber.d("Not loading more because fully loaded or currently retrieving");
             return;
         }
-        // This needs tobe based on the actual estimated cards on screen via type of presenter and WindowAlignmentOffsetPercent
+
+        if (mLastVisiblePosition != Integer.MAX_VALUE) {
+            if (pos >= mFirstVisiblePosition - VISIBLE_BUFFER_SIZE && pos <= mLastVisiblePosition + VISIBLE_BUFFER_SIZE) {
+                Timber.d("Virtual loading: pos %d is within range %d-%d", pos, mFirstVisiblePosition, mLastVisiblePosition);
+                retrieveNext();
+            }
+            return;
+        }
         if (chunkSize > 0) {
             // we can use chunkSize as indicator on when to load
             if (pos >= (itemsLoaded - (chunkSize / 1.7))) {
@@ -629,7 +665,7 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
             mLastVisiblePosition = Math.min(totalItems > 0 ? totalItems - 1 : Integer.MAX_VALUE, lastVisible + VISIBLE_BUFFER_SIZE);
 
             Timber.d("Virtual range updated: %d-%d -> %d-%d (total: %d)",
-                    oldFirst, oldLast, mFirstVisiblePosition, mLastVisiblePosition, totalItems);
+                oldFirst, oldLast, mFirstVisiblePosition, mLastVisiblePosition, totalItems);
 
             updateVisibleItemLoading();
         }
@@ -640,7 +676,7 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
             int targetSize = Math.min(mLastVisiblePosition + (VISIBLE_BUFFER_SIZE / 2), totalItems);
             if (targetSize > itemsLoaded + (chunkSize / 2)) { // Load half-chunk at a time
                 Timber.d("Virtual loading: need items %d-%d, currently have %d",
-                        mFirstVisiblePosition, mLastVisiblePosition, itemsLoaded);
+                    mFirstVisiblePosition, mLastVisiblePosition, itemsLoaded);
                 retrieveNext();
             }
         }

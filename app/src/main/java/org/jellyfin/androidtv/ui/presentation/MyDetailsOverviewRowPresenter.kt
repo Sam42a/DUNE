@@ -1,8 +1,16 @@
 package org.jellyfin.androidtv.ui.presentation
 
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import androidx.core.view.marginEnd
 import androidx.leanback.widget.RowPresenter
 import org.jellyfin.androidtv.data.model.InfoItem
 import org.jellyfin.androidtv.ui.DetailRowView
@@ -11,6 +19,8 @@ import org.jellyfin.androidtv.util.InfoLayoutHelper
 import org.jellyfin.androidtv.util.MarkdownRenderer
 import org.jellyfin.sdk.model.api.*
 import android.widget.TextView
+import androidx.compose.ui.unit.dp
+import androidx.core.view.children
 
 class MyDetailsOverviewRowPresenter(
 	private val markdownRenderer: MarkdownRenderer,
@@ -33,7 +43,6 @@ class MyDetailsOverviewRowPresenter(
 
 	@Suppress("UNUSED_PARAMETER")
 	override fun onSelectLevelChanged(holder: RowPresenter.ViewHolder) = Unit
-
 
 	fun getViewHolder(): ViewHolder? {
 
@@ -64,7 +73,6 @@ class MyDetailsOverviewRowPresenter(
 			lastRenderedSummary = summary?.let { markdownRenderer.toMarkdownSpanned(it) }
 			binding.fdSummaryText.text = lastRenderedSummary
 		}
-
 		fun setTitle(title: String?) {
 			binding.fdTitle.text = title
 		}
@@ -94,7 +102,7 @@ class MyDetailsOverviewRowPresenter(
 					text = resolutionText
 					setTextColor(androidx.core.content.ContextCompat.getColor(view.context, org.jellyfin.androidtv.R.color.basic_button_text))
 					textSize = 12f
-					setTypeface(android.graphics.Typeface.SANS_SERIF)
+					setTypeface(android.graphics.Typeface.DEFAULT_BOLD)
 					gravity = android.view.Gravity.CENTER_VERTICAL
 				}
 				val params = android.widget.LinearLayout.LayoutParams(
@@ -153,7 +161,7 @@ class MyDetailsOverviewRowPresenter(
 				.filterNotNull()
 				.filter { it.label?.isNotEmpty() == true && it.value?.isNotEmpty() == true }
 				.map { "${it.label} • ${it.value}" }
-				.joinToString("  •  ")
+				.joinToString("  |  ")
 		}
 
 		private fun bindSummary(row: MyDetailsOverviewRow) {
@@ -176,12 +184,54 @@ class MyDetailsOverviewRowPresenter(
 		}
 
 		private fun bindButtons(row: MyDetailsOverviewRow) {
-			if (binding.fdButtonRow.childCount == row.actions.size) return
-
 			binding.fdButtonRow.removeAllViews()
-			row.actions.forEach { button ->
+			val visibleButtons = row.actions.filter { it.isVisible }
+
+			binding.fdButtonRow.apply {
+				descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+				isFocusable = true
+				isFocusableInTouchMode = true
+
+				setOnFocusChangeListener { _, hasFocus ->
+					if (hasFocus && findFocus() == null) {
+						post {
+							visibleButtons.firstOrNull()?.requestFocus()
+						}
+					}
+				}
+			}
+
+			visibleButtons.forEachIndexed { index, button ->
 				(button.parent as? ViewGroup)?.removeView(button)
+
+				if (button.id == View.NO_ID) {
+					button.id = View.generateViewId()
+				}
+
+				button.isFocusable = true
+				button.isFocusableInTouchMode = true
+
+				if (index > 0) {
+					button.nextFocusLeftId = visibleButtons[index - 1].id
+					visibleButtons[index - 1].nextFocusRightId = button.id
+				}
+
+				val layoutParams = LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT
+				).apply {
+					marginEnd = (12 * button.context.resources.displayMetrics.density).toInt()
+					weight = 0.0f
+				}
+				button.layoutParams = layoutParams
+
 				binding.fdButtonRow.addView(button)
+			}
+
+			if (visibleButtons.isNotEmpty()) {
+				visibleButtons[0].post {
+					visibleButtons[0].requestFocus()
+				}
 			}
 		}
 	}
@@ -217,7 +267,7 @@ object MediaLabelFormatter {
 
 		return (listOf(resolution, videoCodec, range) + audioInfo)
 			.filter { !it.isNullOrEmpty() }
-			.joinToString("  •  ")
+			.joinToString("  |  ")
 	}
 
 	private fun formatResolution(width: Int?, height: Int?): String {

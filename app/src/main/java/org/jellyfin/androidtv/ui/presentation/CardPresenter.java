@@ -1,5 +1,6 @@
 package org.jellyfin.androidtv.ui.presentation;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
@@ -99,9 +100,9 @@ public class CardPresenter extends Presenter {
         this.isListLayout = isListLayout;
     }
 
-    class ViewHolder extends Presenter.ViewHolder {
-        private int cardWidth = 104; // 115 * 0.9
-        private int cardHeight = 126; // 140 * 0.9
+    public class ViewHolder extends Presenter.ViewHolder {
+        private int cardWidth = 115;
+        private int cardHeight = 140;
         private double aspect;
         private int mCardType;
         private ImageType mImageType;
@@ -117,6 +118,7 @@ public class CardPresenter extends Presenter {
         private BaseRowItem mItem;
         private boolean isUserView;
 
+        private boolean mIsScrolling = false;
         public ViewHolder(View view) {
             super(view);
 
@@ -327,8 +329,7 @@ public class CardPresenter extends Presenter {
                         }
                     }
 
-                    // resolution indicator and audio codec indicator for movies if preference is enabled
-                    if (itemDto != null && itemDto.getType() == BaseItemKind.VIDEO && KoinJavaComponent.<org.jellyfin.androidtv.preference.UserPreferences>get(org.jellyfin.androidtv.preference.UserPreferences.class).get(org.jellyfin.androidtv.preference.UserPreferences.Companion.getShowResolutionBadge())) {
+                    if (itemDto != null && itemDto.getType() == BaseItemKind.MOVIE && KoinJavaComponent.<org.jellyfin.androidtv.preference.UserPreferences>get(org.jellyfin.androidtv.preference.UserPreferences.class).get(org.jellyfin.androidtv.preference.UserPreferences.Companion.getShowResolutionBadge())) {
                         String resolution = getResolutionFromMediaSources(itemDto);
                         if (resolution != null) {
                             if (mCardView instanceof LegacyImageCardView) {
@@ -464,6 +465,16 @@ public class CardPresenter extends Presenter {
                     ((InfoUnderSummaryCardView) mCardView).getMainImageView().setImageDrawable(null);
                 }
                 hasPendingImageLoad = false;
+                currentImageUrl = null;
+            }
+
+            if (mIsScrolling && url != null && !shouldLoadDuringScroll()) {
+                if (mCardView instanceof LegacyImageCardView) {
+                    ((LegacyImageCardView) mCardView).getMainImageView().setImageDrawable(mDefaultCardImage);
+                } else if (mCardView instanceof InfoUnderSummaryCardView) {
+                    ((InfoUnderSummaryCardView) mCardView).getMainImageView().setImageDrawable(mDefaultCardImage);
+                }
+                return;
             }
 
             if (url != null && !url.equals(currentImageUrl)) {
@@ -472,9 +483,9 @@ public class CardPresenter extends Presenter {
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     if (mCardView instanceof LegacyImageCardView) {
-                        ((LegacyImageCardView) mCardView).getMainImageView().load(url, blurHash, mDefaultCardImage, aspect, 32);
+                        ((LegacyImageCardView) mCardView).getMainImageView().load(url, null, mDefaultCardImage, aspect, 0);
                     } else if (mCardView instanceof InfoUnderSummaryCardView) {
-                        ((InfoUnderSummaryCardView) mCardView).getMainImageView().load(url, blurHash, mDefaultCardImage, aspect, 32);
+                        ((InfoUnderSummaryCardView) mCardView).getMainImageView().load(url, null, mDefaultCardImage, aspect, 0);
                     }
                 } else {
                     loadImageCompat(url, mDefaultCardImage);
@@ -485,7 +496,7 @@ public class CardPresenter extends Presenter {
                     if (url.equals(currentImageUrl)) {
                         hasPendingImageLoad = false;
                     }
-                }, 25); // Reduced from 50ms to 25ms
+                }, 15);
             } else {
                 if (mCardView instanceof LegacyImageCardView) {
                     ((LegacyImageCardView) mCardView).getMainImageView().setImageDrawable(mDefaultCardImage);
@@ -493,6 +504,14 @@ public class CardPresenter extends Presenter {
                     ((InfoUnderSummaryCardView) mCardView).getMainImageView().setImageDrawable(mDefaultCardImage);
                 }
             }
+        }
+
+        private boolean shouldLoadDuringScroll() {
+            if (!mIsScrolling) return true;
+
+            if (mIsListLayout) return false;
+
+            return true;
         }
 
         /**
@@ -589,6 +608,7 @@ public class CardPresenter extends Presenter {
             }
             cardView = legacyCardView;
         }
+
         cardView.setFocusable(true);
         cardView.setFocusableInTouchMode(true);
 
@@ -599,6 +619,33 @@ public class CardPresenter extends Presenter {
         cardView.setBackgroundColor(color);
 
         return new ViewHolder(cardView);
+    }
+
+    private String getEpisodeCardName(BaseRowItem rowItem, Context context) {
+        BaseItemDto itemDto = rowItem.getBaseItem();
+        if (itemDto != null && itemDto.getType() == BaseItemKind.EPISODE) {
+            StringBuilder cardName = new StringBuilder();
+            if (itemDto.getName() != null && !itemDto.getName().isEmpty()) {
+                cardName.append(itemDto.getName());
+            }
+            if (itemDto.getParentIndexNumber() != null && itemDto.getIndexNumber() != null) {
+                cardName.append(" S").append(itemDto.getParentIndexNumber());
+                cardName.append("E");
+                if (itemDto.getIndexNumber() < 10) {
+                    cardName.append("0"); // Pad with leading zero
+                }
+                cardName.append(itemDto.getIndexNumber());
+            } else if (itemDto.getIndexNumber() != null) {
+                cardName.append(" E");
+                if (itemDto.getIndexNumber() < 10) {
+                    cardName.append("0"); // Pad with leading zero
+                }
+                cardName.append(itemDto.getIndexNumber());
+            }
+
+            return cardName.toString();
+        }
+        return null;
     }
 
     @Override
@@ -629,21 +676,21 @@ public class CardPresenter extends Presenter {
                 // Use InfoUnderSummaryCardView specific methods
                 InfoUnderSummaryCardView infoCardView = (InfoUnderSummaryCardView) holder.mCardView;
                 // Set title, summary, and ratings
-                infoCardView.setTitle(rowItem.getCardName(infoCardView.getContext()));
-                infoCardView.setSummary(rowItem.getSummary(infoCardView.getContext()) != null ? rowItem.getSummary(infoCardView.getContext()) : "");
+                String cardName = getEpisodeCardName(rowItem, infoCardView.getContext());
+                infoCardView.setTitle(cardName != null ? cardName : rowItem.getCardName(infoCardView.getContext()));
+                infoCardView.setSummary(rowItem.getBaseItem() != null ? rowItem.getBaseItem().getOverview() : "");
+
                 BaseItemDto itemDto = rowItem.getBaseItem();
                 if (itemDto != null) {
                     infoCardView.setCommunityRating(itemDto.getCommunityRating());
                     infoCardView.setCriticRating(itemDto.getCriticRating());
                     infoCardView.setYear(itemDto.getProductionYear());
                     infoCardView.setDuration(itemDto.getRunTimeTicks());
-                    // Set watched indicator
                     if (itemDto.getUserData() != null) {
                         boolean watched = itemDto.getUserData().getPlayed();
                         int unwatchedCount = itemDto.getUserData().getUnplayedItemCount() != null ?
                             itemDto.getUserData().getUnplayedItemCount() : 0;
                         infoCardView.setWatchedIndicator(watched, unwatchedCount);
-                        // Set resume progress
                         if (itemDto.getUserData() != null) {
                             Long runTimeTicks = itemDto.getRunTimeTicks();
                             Long playbackPositionTicks = itemDto.getUserData().getPlaybackPositionTicks();
@@ -657,8 +704,9 @@ public class CardPresenter extends Presenter {
             } else if (holder.mCardView instanceof LegacyImageCardView) {
                 // Use LegacyImageCardView methods for other card types
                 LegacyImageCardView legacyCardView = (LegacyImageCardView) holder.mCardView;
-                legacyCardView.setTitleText(rowItem.getCardName(legacyCardView.getContext()));
-                legacyCardView.setContentText(rowItem.getSubText(legacyCardView.getContext()));
+                String cardName = getEpisodeCardName(rowItem, legacyCardView.getContext());
+                legacyCardView.setTitleText(cardName != null ? cardName : rowItem.getCardName(legacyCardView.getContext()));
+                legacyCardView.setContentText(""); // Clear subtext to show only title
                 legacyCardView.showFavIcon(rowItem.isFavorite());
                 if (rowItem instanceof AudioQueueBaseRowItem && ((AudioQueueBaseRowItem) rowItem).getPlaying()) {
                     legacyCardView.setPlayingIndicator(true);
@@ -680,7 +728,6 @@ public class CardPresenter extends Presenter {
             // Set up optimized focus handling only once per view holder
             setupFocusHandling(holder);
 
-            // Lazy load rating and badge information
             loadRatingAndBadgeAsync(holder, rowItem);
 
             // Lazy load image
@@ -692,18 +739,15 @@ public class CardPresenter extends Presenter {
         if (holder.mFocusListenerSet) {
             return;
         }
-        // Set minimal elevation for focus effects
         final float minElevation = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            0.1f,
+            0.05f,
             holder.mCardView.getContext().getResources().getDisplayMetrics()
         );
 
-        // Set up a lightweight focus change listener
         holder.mCardView.setOnFocusChangeListener((v, hasFocus) -> {
             v.setSelected(hasFocus);
 
-            // Apply minimal elevation when focused
             if (hasFocus) {
                 v.setElevation(minElevation);
                 v.setTranslationZ(minElevation);
@@ -712,7 +756,6 @@ public class CardPresenter extends Presenter {
                 v.setTranslationZ(0);
             }
 
-            // Set border drawable with API level check
             View mainImage = v.findViewById(R.id.main_image);
             if (mainImage != null) {
                 if (hasFocus) {
@@ -720,10 +763,12 @@ public class CardPresenter extends Presenter {
                         v.getContext(),
                         R.drawable.card_focused_border
                     );
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        mainImage.setForeground(border);
-                    } else {
-                        mainImage.setBackground(border);
+                    if (border != null) { // Null check for safety
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            mainImage.setForeground(border);
+                        } else {
+                            mainImage.setBackground(border);
+                        }
                     }
                 } else {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -737,27 +782,18 @@ public class CardPresenter extends Presenter {
         holder.mFocusListenerSet = true;
     }
     private void loadRatingAndBadgeAsync(ViewHolder holder, BaseRowItem rowItem) {
-        // Use a lightweight approach for rating and badge loading
-        if (rowItem.getBaseItem() != null && rowItem.getBaseItem().getType() != BaseItemKind.USER_VIEW) {
-            RatingType ratingType = KoinJavaComponent.<UserPreferences>get(UserPreferences.class).get(UserPreferences.Companion.getDefaultRatingType());
-            if (ratingType == RatingType.RATING_TOMATOES) {
-                // Load badge asynchronously
-                holder.mCardView.post(() -> {
-                    Drawable badge = rowItem.getBadgeImage(holder.view.getContext(), imageHelper.getValue());
-                    if (badge != null && holder.mCardView instanceof LegacyImageCardView) {
-                        ((LegacyImageCardView) holder.mCardView).setBadgeImage(badge);
-                    }
-                });
-            } else if (ratingType == RatingType.RATING_STARS &&
-                       rowItem.getBaseItem().getCommunityRating() != null) {
-                // Set star badge and rating
-                holder.mCardView.post(() -> {
-                    if (holder.mCardView instanceof LegacyImageCardView) {
-                        LegacyImageCardView legacyCardView = (LegacyImageCardView) holder.mCardView;
-                        legacyCardView.setBadgeImage(CardPresenter.this.cachedStarDrawable);
-                        legacyCardView.setRating(String.format(Locale.US, "%.1f", rowItem.getBaseItem().getCommunityRating()));
-                    }
-                });
+        if (holder.mCardView instanceof InfoUnderSummaryCardView) {
+            if (rowItem.getBaseItem() != null && rowItem.getBaseItem().getType() != BaseItemKind.USER_VIEW) {
+                RatingType ratingType = KoinJavaComponent.<UserPreferences>get(UserPreferences.class).get(UserPreferences.Companion.getDefaultRatingType());
+                if (ratingType == RatingType.RATING_STARS &&
+                           rowItem.getBaseItem().getCommunityRating() != null) {
+                    holder.mCardView.post(() -> {
+                        if (holder.mCardView instanceof InfoUnderSummaryCardView) {
+                            InfoUnderSummaryCardView infoCardView = (InfoUnderSummaryCardView) holder.mCardView;
+                            infoCardView.setCommunityRating(rowItem.getBaseItem().getCommunityRating());
+                        }
+                    });
+                }
             }
         }
     }
