@@ -18,17 +18,19 @@ class LibraryPreferences(
 	api = api,
 ) {
 	companion object {
-		val posterSize = enumPreference("PosterSize", PosterSize.MED)
+		val posterSize = enumPreference("PosterSize", PosterSize.LARGE)
 		val imageType = enumPreference("ImageType", ImageType.POSTER)
-		val gridDirection = enumPreference("GridDirection", GridDirection.HORIZONTAL)
+		val gridDirection = enumPreference("GridDirection", GridDirection.VERTICAL)
 		val enableSmartScreen = booleanPreference("SmartScreen", false)
+		val showItemTitlesOnFocus = booleanPreference("ShowItemTitlesOnFocus", true)
 
 		// Filters
 		val filterFavoritesOnly = booleanPreference("FilterFavoritesOnly", false)
 		val filterUnwatchedOnly = booleanPreference("FilterUnwatchedOnly", false)
 
 		// Item sorting
-		val sortBy = enumPreference("SortBy", ItemSortBy.SORT_NAME)
-		val sortOrder = enumPreference("SortOrder", SortOrder.ASCENDING)
+		val sortBy = enumPreference("SortBy", ItemSortBy.DATE_CREATED)
+		val sortOrder = enumPreference("SortOrder", SortOrder.DESCENDING)
 	}
+	fun getShowItemTitlesOnFocus(): Boolean = getBool(showItemTitlesOnFocus.key, showItemTitlesOnFocus.defaultValue)
 }

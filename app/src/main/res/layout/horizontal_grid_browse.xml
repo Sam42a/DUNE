@@ -10,18 +10,107 @@
 
     <LinearLayout
         android:id="@+id/toolBar"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="376dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/itemTitleContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="@id/rowsFragment"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="43dp"
+        android:layout_marginEnd="40dp"
+        android:background="@color/backdrop_dim_10"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/itemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Item Title Here" />
+
+        <TextView
+            android:id="@+id/yearRatingSeparator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone"
+            android:text="  •  " />
+
+        <ImageView
+            android:id="@+id/starIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_star"
+            android:contentDescription="Community rating" />
+
+        <TextView
+            android:id="@+id/communityRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone"
+            tools:text="8.7" />
+
+        <TextView
+            android:id="@+id/ratingSeparator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone"
+            android:text=" • " />
+
+        <ImageView
+            android:id="@+id/tomatoIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
+            android:contentDescription="Critic rating" />
+
+        <TextView
+            android:id="@+id/criticRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone"
+            tools:text="75%" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/rowsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="36dp"
         android:layout_above="@id/statusText"
+        android:layout_marginBottom="-2dp"
         android:layout_marginTop="90dp" />
 
     <TextView
@@ -32,7 +121,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="6sp"
         android:textSize="12sp"
-        android:alpha=".6"
+        android:alpha=".8"
         android:fontFamily="sans-serif-light" />
 
     <TextView
@@ -42,7 +131,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="60sp"
-        android:layout_marginBottom="18sp"
+        android:layout_marginBottom="8sp"
         android:textSize="12sp"
         android:textAlignment="viewEnd"
         android:fontFamily="sans-serif-light"
@@ -55,7 +144,7 @@
         android:layout_toStartOf="@id/clock"
         android:layout_alignTop="@id/clock"
         android:layout_marginEnd="15dp"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="12dp" />
 
     <org.jellyfin.androidtv.ui.ClockUserView
         android:layout_width="wrap_content"
@@ -63,7 +152,7 @@
         android:id="@+id/clock"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="46dp" />
 
 </RelativeLayout>

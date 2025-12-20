@@ -96,7 +96,12 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
 
     private final Object currentlyRetrievingSemaphore = new Object();
     private boolean currentlyRetrieving = false;
-
+    private boolean mIsScrolling = false;
+    private int mFirstVisiblePosition = 0;
+    private int mLastVisiblePosition = Integer.MAX_VALUE;
+    private final int VISIBLE_BUFFER_SIZE = 20;
+    private long mLastVirtualUpdate = 0;
+    private final long VIRTUAL_UPDATE_THROTTLE_MS = 200; // Throttle virtual updates
     private boolean preferParentThumb = false;
     private String mGenreFilter;
     private boolean staticHeight = false;
@@ -574,6 +579,76 @@ public class ItemRowAdapter extends MutableObjectAdapter<Object> {
         }
 
         return retrieve;
+    }
+    /**
+     * Sets scroll state for performance optimization
+     * @param isScrolling true if scrolling, false if idle
+     */
+    public void setScrollState(boolean isScrolling) {
+        if (mIsScrolling == isScrolling) return;
+
+        mIsScrolling = isScrolling;
+
+        if (!isScrolling) {
+            updateVisibleItemLoading();
+        }
+    }
+
+    public boolean isScrolling() {
+        return mIsScrolling;
+    }
+
+    /**
+     * @param firstVisible First visible item position
+     * @param lastVisible Last visible item position
+     */
+    public void setVisibleRange(int firstVisible, int lastVisible) {
+        if (firstVisible < 0 || lastVisible < 0) {
+            Timber.w("Invalid visible range: firstVisible=%d, lastVisible=%d, skipping update", firstVisible, lastVisible);
+            return;
+        }
+
+        if (firstVisible > lastVisible) {
+            Timber.w("Invalid visible range: firstVisible (%d) > lastVisible (%d), swapping", firstVisible, lastVisible);
+            int temp = firstVisible;
+            firstVisible = lastVisible;
+            lastVisible = temp;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mLastVirtualUpdate < VIRTUAL_UPDATE_THROTTLE_MS) {
+            return;
+        }
+        mLastVirtualUpdate = currentTime;
+
+        if (Math.abs(firstVisible - mFirstVisiblePosition) > 10 || Math.abs(lastVisible - mLastVisiblePosition) > 10) {
+            int oldFirst = mFirstVisiblePosition;
+            int oldLast = mLastVisiblePosition;
+
+            mFirstVisiblePosition = Math.max(0, firstVisible - VISIBLE_BUFFER_SIZE);
+            mLastVisiblePosition = Math.min(totalItems > 0 ? totalItems - 1 : Integer.MAX_VALUE, lastVisible + VISIBLE_BUFFER_SIZE);
+
+            Timber.d("Virtual range updated: %d-%d -> %d-%d (total: %d)",
+                    oldFirst, oldLast, mFirstVisiblePosition, mLastVisiblePosition, totalItems);
+
+            updateVisibleItemLoading();
+        }
+    }
+
+    private void updateVisibleItemLoading() {
+        if (mFirstVisiblePosition >= itemsLoaded && !fullyLoaded && !isCurrentlyRetrieving()) {
+            int targetSize = Math.min(mLastVisiblePosition + (VISIBLE_BUFFER_SIZE / 2), totalItems);
+            if (targetSize > itemsLoaded + (chunkSize / 2)) { // Load half-chunk at a time
+                Timber.d("Virtual loading: need items %d-%d, currently have %d",
+                        mFirstVisiblePosition, mLastVisiblePosition, itemsLoaded);
+                retrieveNext();
+            }
+        }
+        unbindInvisibleItems();
+    }
+    private void unbindInvisibleItems() {
+        // This would require custom implementation in the presenter
+        // For now, we'll rely on RecyclerView's built-in recycling
     }
 
     public void Retrieve() {

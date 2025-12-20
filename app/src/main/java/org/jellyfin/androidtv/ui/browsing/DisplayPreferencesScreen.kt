@@ -42,6 +42,14 @@ class DisplayPreferencesScreen : OptionsFragment() {
 				bind(libraryPreferences, LibraryPreferences.gridDirection)
 			}
 
+			checkbox {
+				setTitle(R.string.show_item_titles_on_focus)
+				contentOn = requireContext().getString(R.string.show_item_titles_on_focus_description)
+				contentOff = contentOn
+				bind(libraryPreferences, LibraryPreferences.showItemTitlesOnFocus)
+			}
+
+			2121
 			if (allowViewSelection) {
 				checkbox {
 					setTitle(R.string.enable_smart_view)
