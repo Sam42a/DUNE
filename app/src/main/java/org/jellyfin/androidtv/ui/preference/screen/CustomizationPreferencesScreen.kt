@@ -2,9 +2,9 @@ package org.jellyfin.androidtv.ui.preference.screen
 
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
+import org.jellyfin.androidtv.preference.UserSettingPreferences
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.koin.android.ext.android.inject
-
 import org.jellyfin.androidtv.preference.constant.RatingType
 import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
 import org.jellyfin.androidtv.preference.constant.WatchedIndicatorBehavior
@@ -16,12 +16,14 @@ import org.jellyfin.androidtv.ui.preference.dsl.list
 import org.jellyfin.androidtv.ui.preference.dsl.optionsScreen
 import org.jellyfin.androidtv.ui.preference.dsl.shortcut
 import org.jellyfin.androidtv.preference.constant.AppLanguage
+import org.jellyfin.androidtv.preference.constant.ClockBehavior
 import org.jellyfin.androidtv.util.getQuantityString
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class CustomizationPreferencesScreen : OptionsFragment() {
 	private val userPreferences: UserPreferences by inject()
+	private val userSettingPreferences: UserSettingPreferences by inject()
 
 	override val screen by optionsScreen {
 		setTitle(R.string.pref_customization)
@@ -43,33 +45,6 @@ class CustomizationPreferencesScreen : OptionsFragment() {
 		}
 
 		category {
-
-			enum<WatchedIndicatorBehavior> {
-				setTitle(R.string.pref_watched_indicator)
-				bind(userPreferences, UserPreferences.watchedIndicatorBehavior)
-			}
-
-
-
-			enum<RatingType> {
-				setTitle(R.string.pref_default_rating)
-				bind(userPreferences, UserPreferences.defaultRatingType)
-			}
-
-			checkbox {
-				setTitle(R.string.lbl_show_premieres)
-				setContent(R.string.desc_premieres)
-				bind(userPreferences, UserPreferences.premieresEnabled)
-			}
-
-			checkbox {
-				setTitle(R.string.pref_enable_media_management)
-				setContent(R.string.pref_enable_media_management_description)
-				bind(userPreferences, UserPreferences.mediaManagementEnabled)
-			}
-		}
-
-		category {
 			setTitle(R.string.pref_browsing)
 
 			link {
@@ -85,7 +60,69 @@ class CustomizationPreferencesScreen : OptionsFragment() {
 				icon = R.drawable.ic_libraries
 				withFragment<LibrariesPreferencesScreen>()
 			}
-		}
+
+
+				enum<WatchedIndicatorBehavior> {
+					setTitle(R.string.pref_watched_indicator)
+					bind(userPreferences, UserPreferences.watchedIndicatorBehavior)
+				}
+
+				checkbox {
+					setTitle(R.string.pref_show_resolution_badge)
+					bind(userPreferences, UserPreferences.showResolutionBadge)
+				}
+
+				// audio codec badge will be added when i figure out better a look for them
+
+
+				enum<RatingType> {
+					setTitle(R.string.pref_default_rating)
+					bind(userPreferences, UserPreferences.defaultRatingType)
+				}
+
+
+				checkbox {
+					setTitle(R.string.pref_theme_songs_enable)
+					bind(userSettingPreferences, userSettingPreferences.themeSongsEnabled)
+				}
+
+				list {
+					setTitle(R.string.pref_theme_songs_volume)
+					entries = mapOf(
+						"5" to getString(R.string.pref_theme_song_volume_very_low),
+						"15" to getString(R.string.pref_theme_song_volume_low),
+						"30" to getString(R.string.pref_theme_song_volume_normal),
+						"60" to getString(R.string.pref_theme_song_volume_high),
+						"100" to getString(R.string.pref_theme_song_volume_very_high)
+					)
+					bind {
+						get { userSettingPreferences[userSettingPreferences.themesongvolume].toString() }
+						set { value -> userSettingPreferences[userSettingPreferences.themesongvolume] = value.toInt() }
+						default { "40" }
+					}
+					depends { userSettingPreferences.get(userSettingPreferences.themeSongsEnabled) }
+				}
+
+				link {
+					setTitle(R.string.pref_theme_song_media_types)
+					setContent(R.string.pref_theme_song_media_types_summary)
+					withFragment<ThemeSongPreferencesScreen>()
+					depends { userSettingPreferences.get(userSettingPreferences.themeSongsEnabled) }
+				}
+
+
+				checkbox {
+					setTitle(R.string.lbl_show_premieres)
+					setContent(R.string.desc_premieres)
+					bind(userPreferences, UserPreferences.premieresEnabled)
+				}
+
+				checkbox {
+					setTitle(R.string.pref_enable_media_management)
+					setContent(R.string.pref_enable_media_management_description)
+					bind(userPreferences, UserPreferences.mediaManagementEnabled)
+				}
+			}
 
 		category {
 			setTitle(R.string.pref_screensaver)

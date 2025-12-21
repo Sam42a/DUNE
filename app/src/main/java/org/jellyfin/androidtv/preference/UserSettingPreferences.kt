@@ -57,16 +57,24 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     @JvmField
     val skipForwardLength = intPreference("skipForwardLength", 30_000)
 
-    // Media folder display options
+	val themeSongsEnabled = booleanPreference("themesongsEnabled", false)
+	val themesongvolume = intPreference("themesongsVolume", 10)
+	val themeSongsMovies = booleanPreference("themeSongsMovies", true)
+	val themeSongsSeries = booleanPreference("themeSongsSeries", true)
+	val themeSongsEpisodes = booleanPreference("themeSongsEpisodes", false)
+	// Archive.org fallback preference
+	val themeSongsArchiveFallback = booleanPreference("themeSongsArchiveFallback", true)
+
+	// Media folder display options
     val useExtraSmallMediaFolders = booleanPreference("useExtraSmallMediaFolders", true)
     val showLiveTvButton = booleanPreference("show_live_tv_button", false)
     val showRandomButton = booleanPreference("show_masks_button", true)
     val useClassicHomeScreen = booleanPreference("use_classic_home_screen", false)
 
     val homesection0 = enumPreference("homesection0", HomeSectionType.LIBRARY_TILES_SMALL)
-    val homesection1 = enumPreference("homesection1", HomeSectionType.RESUME)
-    val homesection2 = enumPreference("homesection2", HomeSectionType.NEXT_UP)
-    val homesection3 = enumPreference("homesection3", HomeSectionType.LATEST_MEDIA)
+    val homesection1 = enumPreference("homesection1", HomeSectionType.CONTINUE_WATCHING_COMBINED)
+    val homesection2 = enumPreference("homesection2", HomeSectionType.LATEST_MEDIA)
+    val homesection3 = enumPreference("homesection3", HomeSectionType.NONE)
     val homesection4 = enumPreference("homesection4", HomeSectionType.NONE)
     val homesection5 = enumPreference("homesection5", HomeSectionType.NONE)
     val homesection6 = enumPreference("homesection6", HomeSectionType.NONE)

@@ -150,6 +150,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     private final Lazy<BackgroundService> backgroundService = inject(BackgroundService.class);
     final Lazy<MediaManager> mediaManager = inject(MediaManager.class);
     private final Lazy<MarkdownRenderer> markdownRenderer = inject(MarkdownRenderer.class);
+    private final Lazy<org.jellyfin.androidtv.ui.itemdetail.ThemeSongs> themeSongs = inject(org.jellyfin.androidtv.ui.itemdetail.ThemeSongs.class);
     private final Lazy<CustomMessageRepository> customMessageRepository = inject(CustomMessageRepository.class);
     final Lazy<NavigationRepository> navigationRepository = inject(NavigationRepository.class);
     private final Lazy<ItemLauncher> itemLauncher = inject(ItemLauncher.class);
@@ -284,10 +285,12 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     public void onPause() {
         super.onPause();
         stopClock();
+        themeSongs.getValue().fadeOutAndStop();
     }
 
     @Override
     public void onStop() {
+        themeSongs.getValue().fadeOutAndStop();
         super.onStop();
         stopClock();
     }
@@ -600,6 +603,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             }
             preloadVideoVersions();
             new BuildDorTask().execute(item);
+            themeSongs.getValue().playThemeSong(mBaseItem, true);
         }
     }
 
@@ -891,7 +895,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             // Add External Player button
             if (BaseItemExtensionsKt.canPlay(mBaseItem) && mBaseItem.getMediaSources() != null && !mBaseItem.getMediaSources().isEmpty()) {
                 DetailButton externalPlayerButton = DetailButton.create(requireContext(),
-                        R.drawable.ic_play_circle,
+                        R.drawable.ic_playback,
                     getString(R.string.lbl_play_external), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1346,6 +1350,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     }
 
     void play(final BaseItemDto item, final int pos, final boolean shuffle) {
+        themeSongs.getValue().stop();
         if (!isAdded()) {
             return;
         }
@@ -1365,6 +1370,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     }
 
     void play(final List<BaseItemDto> items, final int pos, final boolean shuffle) {
+        themeSongs.getValue().stop();
         if (items.isEmpty()) return;
 
         if (!isAdded()) {
