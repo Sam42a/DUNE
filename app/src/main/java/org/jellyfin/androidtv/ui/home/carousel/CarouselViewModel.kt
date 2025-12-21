@@ -60,7 +60,8 @@ class CarouselViewModel(
                         recursive = true,
                         enableImageTypes = setOf(
                         org.jellyfin.sdk.model.api.ImageType.BACKDROP,
-                        org.jellyfin.sdk.model.api.ImageType.THUMB
+                        org.jellyfin.sdk.model.api.ImageType.THUMB,
+                        org.jellyfin.sdk.model.api.ImageType.LOGO
                     ),
                         fields = setOf(org.jellyfin.sdk.model.api.ItemFields.OVERVIEW), // Request overview field
                         enableTotalRecordCount = false

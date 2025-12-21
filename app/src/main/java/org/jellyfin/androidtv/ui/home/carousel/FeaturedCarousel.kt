@@ -1,6 +1,7 @@
 package org.jellyfin.androidtv.ui.home.carousel
 
 import android.os.Build
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,9 +31,11 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -54,12 +58,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.Canvas
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.withFrameMillis
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import kotlin.math.sin
-import kotlin.random.Random
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.CarouselDefaults
@@ -70,48 +68,66 @@ import androidx.tv.material3.ShapeDefaults
 import androidx.tv.material3.Text
 import kotlinx.coroutines.launch
 import org.jellyfin.androidtv.preference.UserPreferences
-import org.jellyfin.androidtv.preference.constant.RatingType
 import org.jellyfin.androidtv.ui.composable.AsyncImage
 import org.jellyfin.androidtv.ui.composable.modifier.getBackdropFadingColor
+import org.jellyfin.sdk.api.client.ApiClient
 import org.koin.compose.koinInject
+import kotlin.random.Random
 
 @Composable
-private fun SnowfallEffect(modifier: Modifier = Modifier) {
-    val snowflakes = remember {
-        List(30) {
-            SnowflakeState(
-                x = Random.nextFloat(),
-                y = Random.nextFloat() * -0.3f,
-                size = Random.nextFloat() * 6f + 4f,
-                speed = Random.nextFloat() * 0.2f + 0.1f,
-                drift = Random.nextFloat() * 0.2f - 0.1f
-            )
-        }
-    }
+private fun SnowfallEffect(
+	modifier: Modifier = Modifier,
+	snowflakeCount: Int = 30
+) {
+	val snowflakes = remember {
+		List(snowflakeCount) {
+			SnowflakeState(
+				x = Random.nextFloat(),
+				y = Random.nextFloat() * -0.3f,
+				size = Random.nextFloat() * 5f + 3f,
+				speed = Random.nextFloat() * 0.2f + 0.1f,
+				drift = Random.nextFloat() * 0.2f - 0.1f
+			)
+		}
+	}
 
-    var time by remember { mutableFloatStateOf(0f) }
+	var timeNanos by remember { mutableLongStateOf(0L) }
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            withFrameMillis { frameTime ->
-                time = frameTime / 1000f
-            }
-        }
-    }
+	LaunchedEffect(Unit) {
+		while (true) {
+			withFrameNanos { timeNanos = it }
+		}
+	}
 
-    Canvas(modifier = modifier.fillMaxSize()) {
-        snowflakes.forEach { snowflake ->
-            val adjustedTime = time * snowflake.speed
-            val yPos = ((snowflake.y + adjustedTime) % 1.3f) * size.height
-            val xPos = (snowflake.x + sin(adjustedTime * 2) * snowflake.drift) * size.width
+	Canvas(
+		modifier = modifier
+			.fillMaxSize()
+			.drawWithCache {
+				val snowColor = Color.White.copy(alpha = 0.8f)
 
-            drawCircle(
-                color = Color.White.copy(alpha = 0.8f),
-                radius = snowflake.size,
-                center = Offset(xPos, yPos)
-            )
-        }
-    }
+				onDrawBehind {
+					val timeSeconds = timeNanos / 1_000_000_000f
+
+					snowflakes.forEach { snowflake ->
+						val adjustedTime = timeSeconds * snowflake.speed
+
+						val yPos =
+							((snowflake.y + adjustedTime) % 1.3f) * size.height
+
+						val xPos =
+							(snowflake.x +
+								kotlin.math.sin(adjustedTime * 2f) *
+								snowflake.drift) * size.width
+
+						drawCircle(
+							color = snowColor,
+							radius = snowflake.size,
+							center = Offset(xPos, yPos)
+						)
+					}
+				}
+			}
+	) {}
 }
 
 private data class SnowflakeState(
@@ -149,14 +165,12 @@ fun FeaturedCarousel(
 				}
 				.background(MaterialTheme.colorScheme.surface)
 		) {
-			timber.log.Timber.d("FeaturedCarousel: Creating error message Box")
 			Box(
 				modifier = Modifier
 					.align(Alignment.Center)
 					.background(Color.Magenta)
 					.padding(16.dp)
 			) {
-				timber.log.Timber.d("FeaturedCarousel: Creating error message Text")
 				Text(
 					text = "NO FEATURED ITEMS - DEBUG TEST",
 					style = MaterialTheme.typography.bodyLarge.copy(
@@ -187,32 +201,26 @@ fun FeaturedCarousel(
 		if (items.size > 1 && autoScrollEnabled && !isCarouselFocused && !isPaused) {
 			while (true) {
 				kotlinx.coroutines.delay(8000L) // 8 seconds delay
-				timber.log.Timber.d("Auto-scroll check - enabled: $autoScrollEnabled, focused: $isCarouselFocused, paused: $isPaused")
 
 				if (autoScrollEnabled && !isCarouselFocused && !isPaused) {
 					currentIndex = (currentIndex + 1) % items.size
-					timber.log.Timber.d("Carousel auto-scrolled to index: $currentIndex")
 
 					if (isAndroid12OrLower) {
-						timber.log.Timber.d("Android 12 compatibility mode - visual index updated to $currentIndex")
 					}
 				} else {
 					break
 				}
 			}
 		} else {
-			timber.log.Timber.d("Auto-scroll paused - enabled: $autoScrollEnabled, focused: $isCarouselFocused, paused: $isPaused")
 		}
 	}
 
 	val disableAutoScrollTemporarily = {
 		autoScrollEnabled = false
-		timber.log.Timber.d("Auto-scroll disabled temporarily")
 
 		kotlinx.coroutines.GlobalScope.launch {
 			kotlinx.coroutines.delay(5000L) // 5 second delay
 			autoScrollEnabled = true
-			timber.log.Timber.d("Auto-scroll re-enabled after delay")
 		}
 	}
 	// Don't steal focus pls
@@ -222,16 +230,13 @@ fun FeaturedCarousel(
 		onItemSelected = onItemSelected,
 		onNavigate = { newIndex ->
 			currentIndex = newIndex
-			timber.log.Timber.d("Manual navigation updated currentIndex to: $newIndex")
 		},
 		onManualNavigation = { isManual ->
 			isManualNavigation = isManual
 			if (isManual) {
 				lastManualNavigationTime = System.currentTimeMillis()
-				timber.log.Timber.d("Manual navigation flag set to: $isManual, disabling auto-scroll")
 				disableAutoScrollTemporarily()
 			} else {
-				timber.log.Timber.d("Manual navigation flag set to: $isManual")
 			}
 		},
 		isCarouselFocused = isCarouselFocused,
@@ -239,7 +244,6 @@ fun FeaturedCarousel(
 		modifier = modifier
 			.onFocusChanged { focusState ->
 				isCarouselFocused = focusState.isFocused
-				timber.log.Timber.d("Main carousel focus updated from Android12CompatibleCarousel: ${focusState.isFocused}")
 			}
 	)
 }
@@ -257,10 +261,6 @@ private fun Android12CompatibleCarousel(
 ) {
 	val carouselFocusRequester = remember { FocusRequester() }
 	var carouselHasFocus by remember { mutableStateOf(false) }
-
-	LaunchedEffect(Unit) {
-		carouselFocusRequester.requestFocus()
-	}
 
 	Box(
 		modifier = modifier
@@ -372,43 +372,67 @@ private fun CarouselItemForeground(
 	onItemSelected: () -> Unit,
 	modifier: Modifier = Modifier
 ) {
+	val api = koinInject<ApiClient>()
+
 	Box(
 		modifier = modifier,
 		contentAlignment = Alignment.BottomStart
 	) {
+		item.logoUrl?.let { logoUrl ->
+			Box(
+				modifier = Modifier
+					.align(Alignment.TopStart)
+					.padding(start = 24.dp, top = 16.dp)
+			) {
+				AsyncImage(
+					modifier = Modifier
+						.height(98.dp)
+						.width(214.dp),
+					url = logoUrl
+				)
+			}
+		} ?: run {
+			Box(
+				modifier = Modifier
+					.align(Alignment.TopStart)
+					.padding(start = 24.dp, top = 48.dp)
+			) {
+				Text(
+					text = item.title,
+					style = MaterialTheme.typography.headlineLarge.copy(
+						fontSize = 28.sp,
+						fontWeight = FontWeight.Bold,
+						shadow = Shadow(
+							color = Color.Black.copy(alpha = 0.7f),
+							offset = Offset(x = 2f, y = 4f),
+							blurRadius = 4f
+						)
+					),
+					maxLines = 1,
+					overflow = TextOverflow.Ellipsis,
+					color = Color.White,
+					modifier = Modifier.fillMaxWidth(0.465f)
+
+				)
+			}
+		}
+
 		Column(
 			modifier = Modifier
 				.fillMaxSize()
-				.padding(start = 28.dp, top = 28.dp, bottom = 28.dp, end = 0.dp),
-			verticalArrangement = Arrangement.Bottom,
+				.padding(start = 28.dp, top = 110.dp, bottom = 50.dp, end = 0.dp),
+			verticalArrangement = Arrangement.Top,
 			horizontalAlignment = Alignment.Start
 		) {
-			Text(
-				text = item.title,
-				style = MaterialTheme.typography.displayMedium.copy(
-					fontSize = 24.sp,
-					fontWeight = FontWeight.Bold,
-					shadow = Shadow(
-						color = Color.Black.copy(alpha = 0.7f),
-						offset = Offset(x = 2f, y = 4f),
-						blurRadius = 4f
-					)
-				),
-				maxLines = 1,
-				color = Color.White
-			)
 
 			val yearAndRuntime = listOfNotNull(
 				item.getYear().takeIf { it.isNotEmpty() },
 				item.getRuntime().takeIf { it.isNotEmpty() }
 			).joinToString("  •  ")
 
-			val userPreferences = koinInject<UserPreferences>()
-			val ratingType = userPreferences[UserPreferences.defaultRatingType]
-
 			Row(
-				modifier = Modifier.padding(top = 4.dp),
-				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				modifier = Modifier.padding(top = 8.dp),
+				horizontalArrangement = Arrangement.spacedBy(1.dp),
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				if (yearAndRuntime.isNotEmpty()) {
@@ -421,76 +445,97 @@ private fun CarouselItemForeground(
 					)
 				}
 
-				if (ratingType != RatingType.RATING_HIDDEN) {
-					item.communityRating?.let { communityRating ->
-						if (communityRating > 0) {
-							if (yearAndRuntime.isNotEmpty()) {
-								Text(
-									text = "•",
-									style = MaterialTheme.typography.titleMedium.copy(
-										fontSize = 16.sp,
-										color = Color.White.copy(alpha = 0.8f)
-									)
+				// Always show ratings by default, regardless of user preference
+				item.communityRating?.let { communityRating ->
+					if (communityRating > 0) {
+						if (yearAndRuntime.isNotEmpty()) {
+							Text(
+								text = " • ",
+								style = MaterialTheme.typography.titleMedium.copy(
+									fontSize = 16.sp,
+									color = Color.White.copy(alpha = 0.8f)
 								)
-							}
-							Row(
-								horizontalArrangement = Arrangement.spacedBy(4.dp),
-								verticalAlignment = Alignment.CenterVertically
-							) {
-								Icon(
-									painter = painterResource(id = org.jellyfin.androidtv.R.drawable.ic_star),
-									contentDescription = null,
-									tint = Color.Unspecified,
-									modifier = Modifier.size(16.dp)
+							)
+						}
+						Row(
+							horizontalArrangement = Arrangement.spacedBy(4.dp),
+							verticalAlignment = Alignment.CenterVertically
+						) {
+							Icon(
+								painter = painterResource(id = org.jellyfin.androidtv.R.drawable.ic_star),
+								contentDescription = null,
+								tint = Color.Unspecified,
+								modifier = Modifier.size(18.dp)
+							)
+							Spacer(Modifier.size(0.dp))
+							Text(
+								text = String.format("%.1f", communityRating),
+								style = MaterialTheme.typography.titleMedium.copy(
+									fontSize = 16.sp,
+									color = Color.White.copy(alpha = 0.8f)
 								)
-								Spacer(Modifier.size(2.dp))
-								Text(
-									text = String.format("%.1f", communityRating),
-									style = MaterialTheme.typography.titleMedium.copy(
-										fontSize = 16.sp,
-										color = Color.White.copy(alpha = 0.8f)
-									)
-								)
-							}
+							)
 						}
 					}
+				}
 
-					item.criticRating?.let { criticRating ->
-						if (criticRating > 0) {
-							if (yearAndRuntime.isNotEmpty() || (item.communityRating ?: 0f) > 0) {
-								Text(
-									text = "•",
-									style = MaterialTheme.typography.titleMedium.copy(
-										fontSize = 16.sp,
-										color = Color.White.copy(alpha = 0.8f)
-									)
+				item.criticRating?.let { criticRating ->
+					if (criticRating > 0) {
+						if (yearAndRuntime.isNotEmpty() || (item.communityRating ?: 0f) > 0) {
+							Text(
+								text = " • ",
+								style = MaterialTheme.typography.titleMedium.copy(
+									fontSize = 16.sp,
+									color = Color.White.copy(alpha = 0.8f)
 								)
-							}
-							Row(
-								horizontalArrangement = Arrangement.spacedBy(4.dp),
-								verticalAlignment = Alignment.CenterVertically
-							) {
-								val tomatoDrawable = if (criticRating >= 60f) {
-									org.jellyfin.androidtv.R.drawable.ic_rt_fresh
-								} else {
-									org.jellyfin.androidtv.R.drawable.ic_rt_rotten
-								}
-								Icon(
-									painter = painterResource(id = tomatoDrawable),
-									contentDescription = null,
-									tint = Color.Unspecified,
-									modifier = Modifier.size(16.dp)
-								)
-								Spacer(Modifier.size(2.dp))
-								Text(
-									text = "${String.format("%.0f", criticRating)}%",
-									style = MaterialTheme.typography.titleMedium.copy(
-										fontSize = 16.sp,
-										color = Color.White.copy(alpha = 0.8f)
-									)
-								)
-							}
+							)
 						}
+						Row(
+							horizontalArrangement = Arrangement.spacedBy(4.dp),
+							verticalAlignment = Alignment.CenterVertically
+						) {
+							val tomatoDrawable = if (criticRating >= 60f) {
+								org.jellyfin.androidtv.R.drawable.ic_rt_fresh
+							} else {
+								org.jellyfin.androidtv.R.drawable.ic_rt_rotten
+							}
+							Icon(
+								painter = painterResource(id = tomatoDrawable),
+								contentDescription = null,
+								tint = Color.Unspecified,
+								modifier = Modifier.size(16.dp)
+							)
+							Spacer(Modifier.size(0.dp))
+							Text(
+								text = "${String.format("%.0f", criticRating)}%",
+								style = MaterialTheme.typography.titleMedium.copy(
+									fontSize = 16.sp,
+									color = Color.White.copy(alpha = 0.8f)
+								)
+							)
+						}
+					}
+				}
+
+				item.parentalRating?.let { parentalRating ->
+					if (parentalRating.isNotBlank()) {
+						if (yearAndRuntime.isNotEmpty() || (item.communityRating ?: 0f) > 0 || (item.criticRating ?: 0f) > 0) {
+							Text(
+								text = " • ",
+								style = MaterialTheme.typography.titleMedium.copy(
+									fontSize = 16.sp,
+									color = Color.White.copy(alpha = 0.8f)
+								)
+							)
+						}
+						Text(
+							text = parentalRating,
+							style = MaterialTheme.typography.titleMedium.copy(
+								fontSize = 16.sp,
+								color = Color.White.copy(alpha = 0.8f),
+								fontWeight = FontWeight.Normal
+							)
+						)
 					}
 				}
 			}
@@ -499,7 +544,7 @@ private fun CarouselItemForeground(
 				Text(
 					text = item.description,
 					style = MaterialTheme.typography.titleMedium.copy(
-						fontSize = 16.sp,
+						fontSize = 14.sp,
 						color = Color.White.copy(alpha = 0.9f),
 						shadow = Shadow(
 							color = Color.Black.copy(alpha = 0.7f),
@@ -510,14 +555,20 @@ private fun CarouselItemForeground(
 					maxLines = 2,
 					overflow = TextOverflow.Ellipsis,
 					modifier = Modifier
-						.padding(top = 15.dp)
-						.fillMaxWidth(0.595f)
+						.padding(top = 8.dp)
+						.fillMaxWidth(0.465f)
 				)
 			} else {
 				// Debug logging for missing description
 				timber.log.Timber.w("No description available for item: ${item.title}")
 			}
+		}
 
+		Box(
+			modifier = Modifier
+				.align(Alignment.BottomStart)
+				.padding(start = 19.dp, bottom = 12.dp)
+		) {
 			WatchNowButton(onItemSelected = onItemSelected)
 		}
 	}
@@ -550,22 +601,6 @@ private fun CarouselItemBackground(item: CarouselItem, modifier: Modifier = Modi
 			scaleType = android.widget.ImageView.ScaleType.FIT_END
 		)
 
-		// Dimmingg effect
-		if (dimmingIntensity > 0f) {
-			Box(
-				modifier = androidx.compose.ui.Modifier
-					.fillMaxSize()
-					.background(
-						brush = Brush.horizontalGradient(
-							0f to backgroundColor,
-							0.42f to backgroundColor,
-							0.49f to Color.Transparent,
-							1f to Color.Transparent
-						)
-					)
-			)
-		}
-
 		//  This fading effect shit breaks if you change even a bit, keep the sweet spot as is
 		Box(
 			modifier = androidx.compose.ui.Modifier
@@ -586,40 +621,36 @@ private fun CarouselItemBackground(item: CarouselItem, modifier: Modifier = Modi
 private fun WatchNowButton(onItemSelected: () -> Unit) {
 	val buttonFocusRequester = remember { FocusRequester() }
 
-	LaunchedEffect(Unit) {
-		buttonFocusRequester.requestFocus()
-	}
-
 	Button(
 		onClick = onItemSelected,
 		modifier = Modifier
 			.padding(top = 15.dp)
 			.focusRequester(buttonFocusRequester),
 		contentPadding = androidx.compose.foundation.layout.PaddingValues(
-			start = 1.dp,
-			end = 17.dp,
+			start = 0.9.dp,
+			end = 15.3.dp,
 			bottom = 0.dp
 		),
-		shape = ButtonDefaults.shape(shape = RoundedCornerShape(16.dp)),
+		shape = ButtonDefaults.shape(shape = RoundedCornerShape(14.dp)),
 		colors = ButtonDefaults.colors(
-			containerColor = Color(0xFFFFFFFF),
+			containerColor = Color(0xFFFFFFFF).copy(alpha = 0.8f),
 			contentColor = Color.Black,
 			focusedContentColor = Color.White.copy(alpha = 0.7f),
 		),
-		scale = ButtonDefaults.scale(scale = 0.95f),
+		scale = ButtonDefaults.scale(scale = 0.85f),
 		glow = ButtonDefaults.glow()
 	) {
 		Icon(
 			imageVector = Icons.Outlined.PlayArrow,
 			contentDescription = null,
-			modifier = Modifier.size(25.dp)
+			modifier = Modifier.size(22.5.dp)
 
 		)
-		Spacer(Modifier.size(4.dp))
+		Spacer(Modifier.size(3.6.dp))
 		Text(
-			text = "Play",
+			text = "Watch Now",
 			style = MaterialTheme.typography.titleMedium.copy(
-				fontSize = 12.sp,
+				fontSize = 13.8.sp,
 				fontWeight = FontWeight.Medium
 			)
 		)

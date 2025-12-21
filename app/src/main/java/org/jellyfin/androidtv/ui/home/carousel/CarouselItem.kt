@@ -1,6 +1,10 @@
 package org.jellyfin.androidtv.ui.home.carousel
 
+import org.jellyfin.androidtv.util.apiclient.getUrl
+import org.jellyfin.androidtv.util.apiclient.itemImages
+import org.jellyfin.androidtv.util.apiclient.parentImages
 import org.jellyfin.sdk.model.api.BaseItemDto
+import org.jellyfin.sdk.model.api.ImageType
 
 data class CarouselItem(
     val id: String,
@@ -8,10 +12,12 @@ data class CarouselItem(
     val description: String,
     val imageUrl: String,
     val backdropUrl: String? = null,
+    val logoUrl: String? = null,
     val runtimeTicks: Long? = null,
     val productionYear: Int? = null,
     val communityRating: Float? = null,
     val criticRating: Float? = null,
+    val parentalRating: String? = null,
     val playCount: Int? = null,
     val isFolder: Boolean = false,
     val type: String? = null
@@ -25,20 +31,22 @@ data class CarouselItem(
             if (item.id == null) return null
 
             val backdropUrl = imageHelper.getBackdropImageUrl(item, maxWidth = 1920, maxHeight = 1080)
-            val thumbImageUrl = imageHelper.getThumbImageUrl(item, fillWidth = 1920, fillHeight = 720) ?: ""
-
-            timber.log.Timber.d("Item ${item.name} - Backdrop URL: ${backdropUrl ?: "NULL"}, Thumb URL: $thumbImageUrl")
-
+            val thumbImageUrl = imageHelper.getThumbImageUrl(item, fillWidth = 1920, fillHeight = 1080) ?: ""
+            val itemLogo = item.itemImages[ImageType.LOGO]
+            val parentLogo = item.parentImages[ImageType.LOGO]
+            val logoUrl = itemLogo?.getUrl(api) ?: parentLogo?.getUrl(api)
             return CarouselItem(
                 id = item.id.toString(),
                 title = item.name ?: "",
                 description = item.overview ?: "",
                 imageUrl = backdropUrl ?: thumbImageUrl,
                 backdropUrl = backdropUrl ?: thumbImageUrl,
+                logoUrl = logoUrl,
                 runtimeTicks = item.runTimeTicks,
                 productionYear = item.productionYear,
                 communityRating = item.communityRating,
                 criticRating = item.criticRating,
+                parentalRating = item.officialRating,
                 playCount = item.userData?.playCount,
                 isFolder = item.isFolder ?: false,
                 type = item.type?.name
