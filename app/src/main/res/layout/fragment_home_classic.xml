@@ -10,9 +10,9 @@
         android:id="@+id/innerConstraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <org.jellyfin.androidtv.ui.shared.ShadowedClock
             android:id="@+id/textClock3"
@@ -36,28 +36,41 @@
         android:layout_width="0dp"
         android:layout_height="58dp"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="1dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <org.jellyfin.androidtv.ui.AsyncImageView
+        android:id="@+id/logo"
+        android:layout_width="325dp"
+        android:layout_height="85dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        app:layout_constraintBottom_toTopOf="@+id/infoRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.628" />
+
     <TextView
         android:id="@+id/title"
-        android:layout_width="921dp"
+        android:layout_width="521dp"
         android:layout_height="38dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="128dp"
         android:ellipsize="end"
         android:fontFamily="@font/bebas_neue"
         android:letterSpacing="0.02"
-        android:lineSpacingExtra="2dp"
+        android:lineSpacingExtra="1dp"
         android:maxLines="1"
         android:text=""
-        android:textAllCaps="false"
+        android:textAllCaps="true"
         android:textColor="@color/basic_button_text"
-        android:textSize="24sp"
+        android:textSize="31sp"
         android:textStyle="bold"
         android:typeface="monospace"
         android:visibility="visible"
@@ -67,16 +80,16 @@
 
     <org.jellyfin.androidtv.ui.shared.ShadowedTextView
         android:id="@+id/summary"
-        android:layout_width="500dp"
+        android:layout_width="440dp"
         android:layout_height="74dp"
-        android:layout_marginTop="176dp"
-        android:layout_marginEnd="436dp"
+        android:layout_marginTop="207dp"
+        android:layout_marginEnd="504dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:justificationMode="inter_word"
         android:lineSpacingExtra="1dp"
-        android:maxLines="4"
-        android:paddingEnd="16dp"
+        android:maxLines="3"
+        android:paddingEnd="14dp"
         android:text=""
         android:textAlignment="viewStart"
         android:textSize="15sp"
@@ -90,8 +103,8 @@
         android:id="@+id/infoRow"
         android:layout_width="500dp"
         android:layout_height="20dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="179dp"
         android:orientation="horizontal"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +115,7 @@
         android:id="@+id/content_view"
         android:name="org.jellyfin.androidtv.ui.home.HomeRowsFragment"
         android:layout_width="989dp"
-        android:layout_height="259dp"
+        android:layout_height="250dp"
         android:layout_marginTop="223dp"
         android:layout_marginEnd="4dp"
         android:contentDescription="@string/home_content_description"
@@ -118,5 +131,12 @@
 
         <requestFocus />
     </androidx.fragment.app.FragmentContainerView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

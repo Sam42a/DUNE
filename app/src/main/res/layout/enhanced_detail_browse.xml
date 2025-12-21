@@ -1,52 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="match_parent"
+    <!-- Wrapper for logo/title to give them a consistent reference point -->
+    <FrameLayout
+        android:id="@+id/logoTitleContainer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/title"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="37dp"
-        android:layout_marginEnd="120dp"
-        android:textSize="20sp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:minHeight="75dp">
+
+        <org.jellyfin.androidtv.ui.AsyncImageView
+            android:id="@+id/logo"
+            android:layout_width="335dp"
+            android:layout_height="75dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:focusableInTouchMode="false"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="430dp"
+            android:layout_height="55dp"
+            android:id="@+id/title"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/bebas_neue"
+            android:letterSpacing="0.02"
+            android:maxLines="1"
+            android:text=""
+            android:textAllCaps="true"
+            android:textColor="@color/basic_button_text"
+            android:textSize="31sp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            android:visibility="visible"
+            android:focusableInTouchMode="false" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="20sp"
-        android:layout_below="@+id/title"
-        android:layout_alignStart="@+id/title"
-        android:layout_marginTop="3sp"
-        android:id="@+id/infoRow"
-        android:layout_toStartOf="@+id/fdClock"/>
+        android:layout_below="@+id/logoTitleContainer"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/infoRow" />
 
     <org.jellyfin.androidtv.ui.shared.ShadowedTextView
         android:id="@+id/summary"
         android:layout_width="500sp"
         android:layout_height="130sp"
         android:layout_below="@+id/infoRow"
-        android:layout_alignStart="@+id/infoRow"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:textSize="16sp"
         android:layout_marginTop="20sp"
-        android:maxLines="6"
+        android:maxLines="4"
         android:textColor="@android:color/white"
         android:justificationMode="inter_word"
         android:textAlignment="viewStart"
         android:gravity="fill_horizontal"
         android:paddingEnd="16dp"
         tools:ignore="RtlCompat" />
-
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -55,7 +79,7 @@
         android:id="@+id/rowsFragment"
         android:layout_alignParentStart="true"
         android:layout_marginStart="-25sp"
-        android:layout_marginTop="5sp"/>
+        android:layout_marginTop="-18dp"/>
 
     <org.jellyfin.androidtv.ui.ClockUserView
         android:id="@+id/fdClock"

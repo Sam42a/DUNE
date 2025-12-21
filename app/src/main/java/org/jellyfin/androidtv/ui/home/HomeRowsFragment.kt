@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.View
 import androidx.leanback.app.RowsSupportFragment
 import androidx.leanback.widget.ListRow
+import androidx.leanback.widget.ObjectAdapter
 import androidx.leanback.widget.OnItemViewClickedListener
 import androidx.leanback.widget.OnItemViewSelectedListener
 import androidx.leanback.widget.Presenter
@@ -50,6 +51,9 @@ import org.jellyfin.androidtv.ui.presentation.CardPresenter
 import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter
 import org.jellyfin.androidtv.ui.presentation.PositionableListRowPresenter
 import org.jellyfin.androidtv.util.KeyProcessor
+import org.jellyfin.androidtv.util.apiclient.getUrl
+import org.jellyfin.androidtv.util.apiclient.itemImages
+import org.jellyfin.androidtv.util.apiclient.parentImages
 import org.jellyfin.sdk.api.client.ApiClient
 import org.jellyfin.sdk.api.client.extensions.liveTvApi
 import org.jellyfin.sdk.api.sockets.subscribe
@@ -90,13 +94,10 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 		super.onCreate(savedInstanceState)
 
 		// Create a custom row presenter that keeps headers always visible
-		val rowPresenter = PositionableListRowPresenter(requireContext(), false, true).apply {
-			// Enable select effect for rows
-			setSelectEffectEnabled(false)
-		}
+		val rowPresenter = PositionableListRowPresenter(requireContext(), false, true)
 
 		// Set the adapter with our custom row presenter
-		adapter = MutableObjectAdapter<Row>(rowPresenter)
+		adapter = MutableObjectAdapter<Row>(rowPresenter) as ObjectAdapter
 
 		lifecycleScope.launch(Dispatchers.IO) {
 			val startTime = System.currentTimeMillis()
@@ -185,7 +186,8 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
                     setHomeScreen(true)
                 }
 
-				val rowsAdapter = adapter as? MutableObjectAdapter<Row> ?: return@withContext
+				@Suppress("UNCHECKED_CAST")
+				val rowsAdapter = adapter as MutableObjectAdapter<Row>
 				val layoutStartTime = System.currentTimeMillis()
 
 				notificationsRow.addToRowsAdapter(requireContext(), cardPresenter, rowsAdapter)
@@ -290,7 +292,8 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 		ensureViewsInitialized()
 		// Update audio queue
 		Timber.i("Updating audio queue in HomeFragment (onResume)")
-		(adapter as? MutableObjectAdapter<Row>)?.let { mutableAdapter ->
+		@Suppress("UNCHECKED_CAST")
+		(adapter as MutableObjectAdapter<Row>).let { mutableAdapter ->
     nowPlaying.update(requireContext(), mutableAdapter)
 }
 	}
@@ -299,7 +302,8 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 		if (activity == null || requireActivity().isFinishing) return
 
 		Timber.i("Updating audio queue in HomeFragment (onQueueStatusChanged)")
-		(adapter as? MutableObjectAdapter<Row>)?.let { mutableAdapter ->
+		@Suppress("UNCHECKED_CAST")
+		(adapter as MutableObjectAdapter<Row>).let { mutableAdapter ->
     nowPlaying.update(requireContext(), mutableAdapter)
 }
 	}
@@ -369,6 +373,7 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
 	private var titleView: android.widget.TextView? = null
     private var infoRowView: android.widget.LinearLayout? = null
     private var summaryView: android.widget.TextView? = null
+    private var logoView: org.jellyfin.androidtv.ui.AsyncImageView? = null
 
     private fun ensureViewsInitialized() {
         // Always reinitialize the views when this is called
@@ -376,10 +381,11 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
             titleView = activity.findViewById<android.widget.TextView>(R.id.title)
             infoRowView = activity.findViewById<android.widget.LinearLayout>(R.id.infoRow)
             summaryView = activity.findViewById<android.widget.TextView>(R.id.summary)
+            logoView = activity.findViewById<org.jellyfin.androidtv.ui.AsyncImageView>(R.id.logo)
 
             // If we have a current item, update the views with its data
             currentItem?.let { item ->
-                titleView?.setText(item.getName(requireContext()))
+                updateLogoAndTitle(item)
                 summaryView?.setText(item.getSummary(requireContext()) ?: "")
                 infoRowView?.removeAllViews()
                 infoRowView?.let { view ->
@@ -392,9 +398,36 @@ class HomeRowsFragment : RowsSupportFragment(), AudioEventListener, View.OnKeyLi
         }
     }
 
+    private fun updateLogoAndTitle(item: BaseRowItem) {
+        val baseItem = item.baseItem
+        val api: ApiClient by inject()
+        val imageHelper: org.jellyfin.androidtv.util.ImageHelper by inject()
+        val itemLogo = baseItem?.itemImages?.get(org.jellyfin.sdk.model.api.ImageType.LOGO)
+        val parentLogo = baseItem?.parentImages?.get(org.jellyfin.sdk.model.api.ImageType.LOGO)
+        val logoUrl = itemLogo?.getUrl(api) ?: parentLogo?.getUrl(api)
+
+        if (logoUrl != null) {
+            // Show logo, hide title
+            logoView?.visibility = android.view.View.VISIBLE
+            titleView?.visibility = android.view.View.GONE
+
+            logoView?.load(
+                url = logoUrl,
+                aspectRatio = 0.1
+            )
+        } else {
+            // Hide logo, show title
+            logoView?.visibility = android.view.View.GONE
+            titleView?.visibility = android.view.View.VISIBLE
+            titleView?.setText(item.getName(requireContext()))
+        }
+    }
+
 
     private fun clearInfoPanel(forceClear: Boolean = false) {
         titleView?.setText("")
+        logoView?.visibility = android.view.View.GONE
+        titleView?.visibility = android.view.View.VISIBLE
         infoRowView?.removeAllViews()
         summaryView?.setText("")
 
@@ -434,6 +467,8 @@ private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
         if (isMediaFolderItem) {
             // For Media Folders items, clear the info panel but keep the background
             titleView?.setText("")
+            logoView?.visibility = android.view.View.GONE
+            titleView?.visibility = android.view.View.VISIBLE
             infoRowView?.removeAllViews()
             summaryView?.setText("")
 
@@ -460,8 +495,7 @@ private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
                 itemRowAdapter?.loadMoreItemsIfNeeded(itemRowAdapter.indexOf(item))
             }
 
-            // Fill info panel
-            titleView?.setText(item.getName(requireContext()))
+            updateLogoAndTitle(item)
             summaryView?.setText(item.getSummary(requireContext()) ?: "")
             infoRowView?.removeAllViews()
             infoRowView?.let { view ->

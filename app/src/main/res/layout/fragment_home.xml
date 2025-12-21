@@ -21,22 +21,23 @@
             android:id="@+id/toolbar"
             android:layout_width="436dp"
             android:layout_height="44dp"
+            android:layout_marginTop="-10dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.64"
+            app:layout_constraintHorizontal_bias="0.63"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.157" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/content_view"
         android:name="org.jellyfin.androidtv.ui.home.HomeRowsFragment"
-        android:layout_width="965dp"
+        android:layout_width="974dp"
         android:layout_height="213dp"
-        android:layout_marginEnd="17dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="1dp"
         android:contentDescription="@string/home_content_description"
         android:descendantFocusability="afterDescendants"
@@ -53,10 +54,10 @@
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/carousel_container"
-        android:layout_width="910dp"
-        android:layout_height="249dp"
+        android:layout_width="930dp"
+        android:layout_height="259dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="53dp"
         android:layout_marginEnd="24dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"

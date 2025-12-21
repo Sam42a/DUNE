@@ -32,7 +32,6 @@ import androidx.lifecycle.Lifecycle;
 import org.jellyfin.androidtv.R;
 import org.jellyfin.androidtv.constant.CustomMessage;
 import org.jellyfin.androidtv.constant.Extras;
-import org.jellyfin.androidtv.constant.ImageType;
 import org.jellyfin.androidtv.constant.LiveTvOption;
 import org.jellyfin.androidtv.constant.QueryType;
 import org.jellyfin.androidtv.data.model.DataRefreshService;
@@ -53,7 +52,10 @@ import org.jellyfin.androidtv.ui.presentation.GridButtonPresenter;
 import org.jellyfin.androidtv.ui.presentation.MutableObjectAdapter;
 import org.jellyfin.androidtv.ui.presentation.PositionableListRowPresenter;
 import org.jellyfin.androidtv.util.CoroutineUtils;
+import org.jellyfin.androidtv.util.ImageHelper;
 import org.jellyfin.androidtv.util.InfoLayoutHelper;
+import org.jellyfin.androidtv.util.apiclient.JellyfinImage;
+import org.jellyfin.androidtv.util.apiclient.JellyfinImageKt;
 import org.jellyfin.androidtv.util.KeyProcessor;
 import org.jellyfin.androidtv.util.MarkdownRenderer;
 import org.jellyfin.androidtv.util.sdk.compat.JavaCompat;
@@ -71,13 +73,11 @@ import kotlinx.serialization.json.Json;
 
 public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.OnKeyListener {
     protected TextView mTitle;
+    private org.jellyfin.androidtv.ui.AsyncImageView mLogo;
     private LinearLayout mInfoRow;
     private TextView mSummary;
 
-    protected static final int BY_LETTER = 0;
-    protected static final int GENRES = 1;
     protected static final int RANDOM = 2;
-    protected static final int SUGGESTED = 4;
     protected static final int GRID = 6;
     protected static final int ALBUMS = 7;
     protected static final int ARTISTS = 8;
@@ -123,6 +123,7 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
         EnhancedDetailBrowseBinding binding = EnhancedDetailBrowseBinding.inflate(inflater, container, false);
 
         mTitle = binding.title;
+        mLogo = binding.logo;
         mInfoRow = binding.infoRow;
         mSummary = binding.summary;
 
@@ -410,6 +411,42 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
         ItemRowAdapterHelperKt.refreshItem((ItemRowAdapter) mCurrentRow.getAdapter(), api.getValue(), this, mCurrentItem);
     }
 
+    private void updateLogoAndTitle(BaseRowItem item) {
+        BaseItemDto baseItem = item.getBaseItem();
+        org.jellyfin.sdk.model.api.ImageType logoType = org.jellyfin.sdk.model.api.ImageType.LOGO;
+
+        JellyfinImage itemLogo = baseItem != null ?
+            JellyfinImageKt.getItemImages(baseItem).get(logoType) : null;
+        JellyfinImage parentLogo = baseItem != null ?
+            JellyfinImageKt.getParentImages(baseItem).get(logoType) : null;
+
+        String logoUrl = null;
+        ImageHelper imageHelper = KoinJavaComponent.<ImageHelper>get(ImageHelper.class);
+        if (itemLogo != null) {
+            logoUrl = imageHelper.getImageUrl(itemLogo);
+        } else if (parentLogo != null) {
+            logoUrl = imageHelper.getImageUrl(parentLogo);
+        }
+
+        if (logoUrl != null) {
+            if (mLogo != null) {
+                mLogo.setVisibility(View.VISIBLE);
+                mLogo.load(logoUrl, null, null, 0, 0);
+            }
+            if (mTitle != null) {
+                mTitle.setVisibility(View.GONE);
+            }
+        } else {
+            if (mLogo != null) {
+                mLogo.setVisibility(View.GONE);
+            }
+            if (mTitle != null) {
+                mTitle.setVisibility(View.VISIBLE);
+                mTitle.setText(item.getName(requireContext()));
+            }
+        }
+    }
+
     private final class SpecialViewClickedListener implements OnItemViewClickedListener {
         @Override
         public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
@@ -548,7 +585,13 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
 
             try {
                 if (!(item instanceof BaseRowItem rowItem)) {
-                    if (mTitle != null) mTitle.setText(mFolder != null ? mFolder.getName() : "");
+                    if (mTitle != null) {
+                        mTitle.setText(mFolder != null ? mFolder.getName() : "");
+                        mTitle.setVisibility(View.VISIBLE);
+                    }
+                    if (mLogo != null) {
+                        mLogo.setVisibility(View.GONE);
+                    }
                     if (mInfoRow != null) mInfoRow.removeAllViews();
                     if (mSummary != null) mSummary.setText("");
                     mCurrentItem = null;
@@ -565,9 +608,7 @@ public class EnhancedBrowseFragment extends Fragment implements RowLoader, View.
                 mCurrentRow = (ListRow) row;
                 if (mInfoRow != null) mInfoRow.removeAllViews();
 
-                if (mTitle != null) {
-                    mTitle.setText(mCurrentItem.getName(requireContext()));
-                }
+                updateLogoAndTitle(mCurrentItem);
 
                 if (mSummary != null) {
                     String summary = mCurrentItem.getSummary(requireContext());
