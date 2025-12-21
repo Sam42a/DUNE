@@ -353,7 +353,7 @@ fun HomeToolbar(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_livetv),
+                            painter = painterResource(R.drawable.ic_live),
                             contentDescription = stringResource(R.string.lbl_live_tv),
                             tint = if (isLiveTvFocused) Color.Black else Color.White,
                             modifier = Modifier
@@ -475,7 +475,7 @@ fun HomeToolbar(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_masks),
+                            painter = painterResource(R.drawable.ic_dice),
                             contentDescription = stringResource(R.string.show_random_button_summary),
                             tint = if (isMasksFocused) Color.Black else Color.White.copy(alpha = 0.7f),
                             modifier = Modifier
@@ -624,7 +624,7 @@ fun HomeToolbar(
                                 if (isFavoritesFocused) {
                                     modifier.size(16.dp)
                                 } else {
-                                    modifier.size(22.dp) 
+                                    modifier.size(22.dp)
                                 }
                             }
                     )

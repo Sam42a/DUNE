@@ -16,7 +16,6 @@
     <string name="pref_max_bitrate_title">Max streaming bitrate</string>
     <string name="settings_title">Settings</string>
 
-
     <string name="pref_authentication_cat">Authentication</string>
     <string name="chapters">Chapters</string>
     <string name="state_disabled">Disabled</string>
@@ -361,6 +360,24 @@
     <string name="lbl_stars">Stars</string>
     <string name="lbl_tomatoes">Tomatoes</string>
     <string name="pref_default_rating">Default rating type</string>
+    <string name="pref_theme_songs">Theme songs</string>
+    <string name="pref_theme_songs_enable">Enable Theme songs</string>
+    <string name="pref_theme_songs_volume">Theme Songs volume</string>
+    <string name="pref_theme_song_media_types">Theme Song Media Types</string>
+    <string name="pref_theme_song_media_types_summary">Enable Media types,online support</string>
+    <string name="pref_theme_song_movies">Movies</string>
+    <string name="pref_theme_song_movies_summary">Play theme songs for movies</string>
+    <string name="pref_theme_song_series">TV Shows</string>
+    <string name="pref_theme_song_series_summary">Play theme songs for TV series</string>
+    <string name="pref_theme_song_episodes">Episodes</string>
+    <string name="pref_theme_song_episodes_summary">Play theme songs for TV episodes</string>
+    <string name="pref_theme_song_archive_fallback">Stream theme songs Fallback</string>
+    <string name="pref_theme_song_archive_fallback_summary">Limited Media support,can be inaccurate</string>
+    <string name="pref_theme_song_volume_very_low">Very Low</string>
+    <string name="pref_theme_song_volume_low">Low</string>
+    <string name="pref_theme_song_volume_normal">Normal</string>
+    <string name="pref_theme_song_volume_high">High</string>
+    <string name="pref_theme_song_volume_very_high">Very High</string>
     <string name="pref_clock_display">Show clock</string>
     <string name="lbl_always">Always</string>
     <string name="pref_clock_display_browsing">While browsing</string>
