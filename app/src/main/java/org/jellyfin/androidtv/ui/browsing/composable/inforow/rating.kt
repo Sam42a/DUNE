@@ -3,6 +3,8 @@ package org.jellyfin.androidtv.ui.browsing.composable.inforow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.ui.base.Text
 import java.text.NumberFormat
@@ -50,6 +52,9 @@ fun InfoRowParentalRating(parentalRating: String) {
 	InfoRowItem(
 		contentDescription = stringResource(R.string.lbl_rating),
 		colors = InfoRowColors.Default,
+		backgroundCornerRadius = 3.dp,
+		horizontalPadding = 2.dp,
+		textSize = 10.sp,
 	) {
 		Text(parentalRating)
 	}

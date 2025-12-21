@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
@@ -92,6 +93,9 @@ fun InfoRowSeriesStatus(
 			SeriesStatus.CONTINUING -> InfoRowItem(
 				contentDescription = stringResource(R.string.lbl__continuing),
 				colors = InfoRowColors.Green,
+				backgroundCornerRadius = 4.dp,
+				horizontalPadding = 2.dp,
+				textSize = 9.sp,
 			) {
 				Text(stringResource(R.string.lbl__continuing))
 			}
@@ -99,6 +103,9 @@ fun InfoRowSeriesStatus(
 			SeriesStatus.ENDED -> InfoRowItem(
 				contentDescription = stringResource(R.string.lbl_ended),
 				colors = InfoRowColors.Red,
+				backgroundCornerRadius = 4.dp,
+				horizontalPadding = 2.dp,
+				textSize = 9.sp,
 			) {
 				Text(stringResource(R.string.lbl_ended))
 			}
@@ -106,6 +113,9 @@ fun InfoRowSeriesStatus(
 			SeriesStatus.UNRELEASED -> InfoRowItem(
 				contentDescription = stringResource(R.string.unreleased),
 				colors = InfoRowColors.Default,
+				backgroundCornerRadius = 4.dp,
+				horizontalPadding = 2.dp,
+				textSize = 9.sp,
 			) {
 				Text(stringResource(R.string.unreleased))
 			}
@@ -409,7 +419,7 @@ class BaseItemInfoRowView @JvmOverloads constructor(
         set(value) {
             _includeRuntime.value = value
         }
-        
+
     var showMediaDetails: Boolean
         get() = _showMediaDetails.value
         set(value) {

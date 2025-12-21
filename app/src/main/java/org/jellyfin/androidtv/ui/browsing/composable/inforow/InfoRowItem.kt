@@ -30,6 +30,9 @@ fun InfoRowItem(
 	contentDescription: String?,
 	// Styling
 	colors: Pair<Color, Color> = InfoRowColors.Transparent,
+	backgroundCornerRadius: androidx.compose.ui.unit.Dp = 1.dp,
+	horizontalPadding: androidx.compose.ui.unit.Dp = 1.dp,
+	textSize: androidx.compose.ui.unit.TextUnit = 10.sp,
 	// Content
 	content: @Composable RowScope.() -> Unit,
 ) {
@@ -37,8 +40,8 @@ fun InfoRowItem(
 
 	val modifier = when {
 		backgroundColor.alpha > 0f -> Modifier
-			.background(backgroundColor, RoundedCornerShape(3.dp))
-			.padding(horizontal = 5.dp)
+			.background(backgroundColor, RoundedCornerShape(backgroundCornerRadius))
+			.padding(horizontal = horizontalPadding)
 
 		else -> Modifier
 	}
@@ -46,7 +49,7 @@ fun InfoRowItem(
 	ProvideTextStyle(
 		value = TextStyle(
 			color = foregroundColor,
-			fontSize = if (backgroundColor.alpha > 0f) 16.sp else 14.sp,
+			fontSize = if (backgroundColor.alpha > 0f) textSize else 14.sp,
 			fontWeight = FontWeight.SemiBold,
 		)
 	) {
