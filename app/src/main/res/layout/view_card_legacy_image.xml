@@ -1,29 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-     Copyright (C) 2014 The Android Open Source Project
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-          http://www.apache.org/licenses/LICENSE-2.0
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
-     MODIFIED to add Jellyfin specifics
--->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:lb="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="androidx.leanback.widget.BaseCardView">
 
-    <RelativeLayout
+    <!-- Flattened hierarchy: Using ConstraintLayout instead of RelativeLayout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:clipChildren="true">
 
-        <!-- Crossfading is broken with this specific layout, especially when using thumbnails -->
         <org.jellyfin.androidtv.ui.AsyncImageView
             android:id="@+id/main_image"
             android:layout_width="wrap_content"
@@ -34,18 +21,20 @@
             android:clipToOutline="true"
             android:elevation="0dp"
             app:crossfadeDuration="0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             lb:layout_viewType="main" />
 
         <ImageView
             android:id="@+id/favIcon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignEnd="@+id/main_image"
-            android:layout_alignBottom="@+id/resumeProgress"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginBottom="2dp"
             android:alpha="0.8"
             android:src="@drawable/ic_heart_red"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/main_image"
+            app:layout_constraintBottom_toBottomOf="@id/resumeProgress"
             tools:visibility="visible" />
 
         <!-- Resolution Indicator -->
@@ -53,11 +42,11 @@
             android:id="@+id/resolutionIndicator"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_alignStart="@id/main_image"
-            android:layout_alignTop="@id/main_image"
             android:layout_marginStart="1.8dp"
             android:layout_marginTop="-2dp"
             android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/main_image"
+            app:layout_constraintTop_toTopOf="@id/main_image"
             tools:visibility="visible">
 
             <ImageView
@@ -94,11 +83,11 @@
             android:id="@+id/audioCodecIndicator"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_below="@id/resolutionIndicator"
-            android:layout_alignStart="@id/main_image"
             android:layout_marginStart="1.8dp"
             android:layout_marginTop="-8dp"
             android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/main_image"
+            app:layout_constraintTop_toBottomOf="@id/resolutionIndicator"
             tools:visibility="visible">
 
             <ImageView
@@ -133,17 +122,17 @@
         <ProgressBar
             android:id="@+id/resumeProgress"
             style="@style/overlay_progress"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/main_image"
-            android:layout_alignEnd="@id/main_image"
-            android:layout_alignBottom="@+id/main_image"
             android:layout_marginBottom="5dp"
             android:max="100"
             android:maxHeight="5sp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/main_image"
+            app:layout_constraintEnd_toEndOf="@id/main_image"
+            app:layout_constraintBottom_toBottomOf="@id/main_image"
             tools:visibility="visible" />
 
         <FrameLayout
@@ -153,6 +142,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginStart="4dp"
             android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
             <ImageView
@@ -176,10 +167,11 @@
             android:id="@+id/watchedIndicator"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_alignEnd="@id/main_image"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="4dp"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/main_image"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
             <ImageView
@@ -219,158 +211,145 @@
 
         </FrameLayout>
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/name_overlay"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@id/main_image"
-            android:layout_alignEnd="@id/main_image"
-            android:layout_alignBottom="@id/main_image"
             android:background="#1A1A1A"
             android:padding="4dp"
             android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/main_image"
+            app:layout_constraintEnd_toEndOf="@id/main_image"
+            app:layout_constraintBottom_toBottomOf="@id/main_image"
             tools:visibility="visible">
 
             <TextView
                 android:id="@+id/overlay_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_marginStart="3dp"
                 android:layout_marginEnd="2dp"
-                android:layout_toStartOf="@id/overlay_count"
                 android:contentDescription="@string/lbl_name"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-light"
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="1"
-                android:shadowRadius="2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/overlay_count"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 tools:text="overlay text" />
 
             <TextView
                 android:id="@+id/overlay_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/overlay_text"
-                android:layout_alignParentEnd="true"
-                android:layout_gravity="end"
                 android:layout_marginEnd="3dp"
                 android:alpha=".7"
                 android:fontFamily="sans-serif-light"
                 android:maxLines="1"
                 android:textColor="@color/white"
-                android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="1"
-                android:shadowRadius="2"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
+        android:layout_height="@dimen/lb_basic_card_info_height"
+        android:paddingStart="2dp"
+        android:paddingTop="@dimen/lb_basic_card_info_padding_top"
+        android:paddingEnd="2dp"
+        android:paddingBottom="@dimen/lb_basic_card_info_padding_bottom"
         lb:layout_viewType="info">
 
-        <RelativeLayout
-            android:id="@+id/info_field"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/lb_basic_card_info_height"
-            android:layout_centerHorizontal="true"
-            android:paddingStart="2dp"
-            android:paddingTop="@dimen/lb_basic_card_info_padding_top"
-            android:paddingEnd="2dp"
-            android:paddingBottom="@dimen/lb_basic_card_info_padding_bottom">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/lb_basic_card_info_text_margin"
+            android:ellipsize="marquee"
+            android:fontFamily="sans-serif-condensed"
+            android:layerType="hardware"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textColor="@color/lb_basic_card_title_text_color"
+            android:textDirection="locale"
+            android:textSize="@dimen/lb_basic_card_title_text_size"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title text" />
+
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/lb_basic_card_info_text_margin"
+            android:layout_marginBottom="@dimen/lb_basic_card_info_text_margin"
+            android:ellipsize="marquee"
+            android:fontFamily="sans-serif-condensed"
+            android:layerType="hardware"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textColor="@color/lb_basic_card_title_text_color"
+            android:textDirection="locale"
+            android:textSize="@dimen/lb_basic_card_content_text_size"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/badge_layout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Content text" />
+
+        <LinearLayout
+            android:id="@+id/badge_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/extra_badge"
+                android:layout_width="@dimen/lb_basic_card_info_badge_size"
+                android:layout_height="@dimen/lb_basic_card_info_badge_size"
+                android:layout_marginStart="10dp"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"
+                android:visibility="gone" />
 
             <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
+                android:id="@+id/badge_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="@dimen/lb_basic_card_info_text_margin"
-                android:ellipsize="marquee"
-                android:fontFamily="sans-serif-condensed"
-                android:layerType="hardware"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:singleLine="true"
-                android:textColor="@color/lb_basic_card_title_text_color"
-                android:textDirection="locale"
-                android:textSize="@dimen/lb_basic_card_title_text_size"
-                android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="1"
-                android:shadowRadius="2"
-                tools:text="Title text" />
-
-            <TextView
-                android:id="@+id/content_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
                 android:layout_marginStart="@dimen/lb_basic_card_info_text_margin"
                 android:layout_marginBottom="@dimen/lb_basic_card_info_text_margin"
-                android:layout_toStartOf="@+id/badge_layout"
-                android:ellipsize="marquee"
                 android:fontFamily="sans-serif-condensed"
-                android:layerType="hardware"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:textColor="@color/lb_basic_card_title_text_color"
-                android:textDirection="locale"
                 android:textSize="@dimen/lb_basic_card_content_text_size"
                 android:shadowColor="#000000"
                 android:shadowDx="0"
                 android:shadowDy="1"
                 android:shadowRadius="2"
-                tools:text="Content text" />
+                android:visibility="gone" />
 
-            <LinearLayout
-                android:id="@+id/badge_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:orientation="horizontal">
+        </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/extra_badge"
-                    android:layout_width="@dimen/lb_basic_card_info_badge_size"
-                    android:layout_height="@dimen/lb_basic_card_info_badge_size"
-                    android:layout_marginStart="10dp"
-                    android:contentDescription="@null"
-                    android:scaleType="fitCenter"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/badge_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/lb_basic_card_info_text_margin"
-                    android:layout_marginBottom="@dimen/lb_basic_card_info_text_margin"
-                    android:fontFamily="sans-serif-condensed"
-                    android:singleLine="true"
-                    android:textColor="@color/lb_basic_card_title_text_color"
-                    android:textSize="@dimen/lb_basic_card_content_text_size"
-                    android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

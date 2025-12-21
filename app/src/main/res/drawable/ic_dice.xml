@@ -7,7 +7,7 @@
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="#FFFFFF"
-        android:strokeWidth="2"
+        android:strokeWidth="4"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
         android:pathData="M8,18h20a2,2 0 0 1 2,2v20a2,2 0 0 1 -2,2h-20a2,2 0 0 1 -2,-2v-20a2,2 0 0 1 2,-2z"/>
@@ -18,7 +18,7 @@
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="#FFFFFF"
-        android:strokeWidth="2"
+        android:strokeWidth="4"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
         android:pathData="
@@ -31,7 +31,7 @@
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="#FFFFFF"
-        android:strokeWidth="2"
+        android:strokeWidth="4"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
         android:pathData="

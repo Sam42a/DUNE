@@ -2,8 +2,9 @@
 <resources>
     <!-- Basic theme with minimal styling for low-end devices -->
     <style name="Theme.Basic" parent="@style/Theme.Jellyfin">
-        <item name="android:windowBackground">@android:color/black</item>
-        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="backdrop_fading_color">@color/black</item>
+        <item name="defaultBackground">@color/black</item>
         <item name="android:textColor">@android:color/white</item>
 
         <!-- Basic widget styles -->

@@ -15,12 +15,12 @@
     <fraction name="lb_focus_zoom_factor_large">@fraction/card_scale_focus</fraction>
 
     <!-- Card corner radius -->
-    <dimen name="card_corner_radius">2dp</dimen>
+    <dimen name="card_corner_radius">-1dp</dimen>
     <dimen name="card_border_padding">0dp</dimen>
 
     <!-- Custom row spacing -->
-    <dimen name="home_row_spacing">0dp</dimen>
-    <dimen name="home_row_spacing_large">-10dp</dimen>
+    <dimen name="home_row_spacing">-10dp</dimen>
+    <dimen name="home_row_spacing_large">-20dp</dimen>
 
     <!-- Exit dialog dimensions -->
     <dimen name="exit_dialog_min_width">280dp</dimen>

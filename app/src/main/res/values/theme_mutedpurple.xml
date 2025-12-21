@@ -107,7 +107,6 @@
 
         <!-- Other -->
         <item name="overlayDimDimmedLevel">30%</item>
-        <item name="cardBorderDrawable">@drawable/purplehaze_card_border</item>
 
         <!-- Backdrop Dimming -->
         <item name="background_filter">@color/muted_purple_background_filter</item>

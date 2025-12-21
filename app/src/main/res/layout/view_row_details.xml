@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="240dp" />
+            app:layout_constraintGuide_end="254dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guide_right_start"
@@ -50,15 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="50dp" />
-
-        <!-- Top -->
-
-        <!-- Left -->
-
-        <!-- Main -->
-
-        <!-- Right -->
+            app:layout_constraintGuide_end="16dp" />
 
         <TextView
             android:id="@+id/fdTitle"
@@ -73,6 +65,7 @@
             android:textColor="@color/basic_button_text"
             android:textSize="26sp"
             android:textStyle="bold"
+            android:typeface="monospace"
             app:layout_constraintEnd_toStartOf="@+id/guide_main_end"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guide_left_end"
@@ -83,7 +76,7 @@
             android:id="@+id/fdMainInfoRow"
             android:layout_width="0dp"
             android:layout_height="25dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:dividerPadding="4sp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -98,7 +91,7 @@
             android:id="@+id/infoTitle1"
             android:layout_width="700dp"
             android:layout_height="25dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="36dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textAlignment="viewStart"
@@ -122,19 +115,20 @@
 
         <org.jellyfin.androidtv.ui.ExpandableTextView
             android:id="@+id/fdSummaryText"
-            android:layout_width="692dp"
+            android:layout_width="592dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#006A6868"
+            android:layout_marginTop="6dp"
+            android:background="#49504E4E"
             android:ellipsize="end"
             android:fontFamily="sans-serif-light"
             android:gravity="fill_horizontal"
             android:justificationMode="inter_word"
-            android:maxLines="6"
+            android:maxLines="4"
             android:paddingEnd="14dp"
             android:textAlignment="viewStart"
-            android:textColorHighlight="#1B1A1A"
             android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/guide_main_end"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guide_left_end"
             app:layout_constraintTop_toBottomOf="@+id/fdMainInfoRow"
             tools:ignore="RtlCompat"
@@ -142,10 +136,13 @@
 
         <LinearLayout
             android:id="@+id/fdButtonRow"
-            android:layout_width="890dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="56dp"
+            android:layout_width="923dp"
+            android:layout_height="107dp"
+            android:layout_marginTop="36dp"
+            android:descendantFocusability="afterDescendants"
             android:divider="@drawable/blank10x10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="horizontal"
             android:showDividers="none"
             app:layout_constraintEnd_toEndOf="parent"
@@ -157,25 +154,25 @@
 
         <FrameLayout
             android:id="@+id/frameLayout"
-            android:layout_width="171dp"
-            android:layout_height="222dp"
+            android:layout_width="181dp"
+            android:layout_height="wrap_content"
             android:minWidth="320dp"
             android:minHeight="180dp"
-            app:layout_constraintBottom_toBottomOf="@+id/fdSummaryText"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintEnd_toEndOf="@id/guide_right_end"
-            app:layout_constraintHorizontal_bias="0.733"
-            app:layout_constraintStart_toStartOf="@id/guide_right_start"
+            app:layout_constraintHorizontal_bias="0.702"
+            app:layout_constraintStart_toStartOf="@+id/guide_main_end"
             app:layout_constraintTop_toTopOf="@+id/guide_top"
-            app:layout_constraintVertical_bias="0.084">
+            app:layout_constraintVertical_bias="0.0">
 
             <org.jellyfin.androidtv.ui.AsyncImageView
                 android:id="@+id/mainImage"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:background="@drawable/shape_card"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 tools:layout_editor_absoluteX="746dp"
                 tools:layout_editor_absoluteY="186dp"
                 tools:srcCompat="@drawable/app_banner" />

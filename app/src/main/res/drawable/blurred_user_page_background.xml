@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/dark_backgrounds"
-    android:scaleType="centerCrop"
-    android:tileMode="disabled"
-    android:dither="true"
-    android:filter="true"
-    android:antialias="true"
-    android:alpha="0.7" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#121212"
+        android:endColor="#000000"
+        android:angle="135"/>
+    <solid android:color="#80000000" />
+</shape>

@@ -98,8 +98,8 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignStart="@id/main_image"
-                android:layout_alignTop="@id/main_image"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -176,13 +176,25 @@
         </RelativeLayout>
 
         <!-- Right side: Info Area -->
-        <LinearLayout
+        <FrameLayout
             android:layout_width="400dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:orientation="vertical"
-            android:gravity="start"
-            lb:layout_viewType="info">
+            android:layout_marginStart="12dp">
+            
+            <!-- Semi-transparent black background for episode info -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#AA000000"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+            
+            <LinearLayout
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start"
+                lb:layout_viewType="info">
 
             <!-- Title -->
             <TextView
@@ -232,15 +244,15 @@
                         android:layout_width="14dp"
                         android:layout_height="14dp"
                         android:layout_marginEnd="4dp"
-                        android:src="@drawable/ic_star"
-                        android:tint="@color/yellowtown_accent" />
+                        android:src="@drawable/ic_star"/>
+
 
                     <TextView
                         android:id="@+id/community_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-condensed"
-                        android:textColor="@color/logo_gradient_stop"
+                        android:textColor="@color/white"
                         android:textSize="11sp"
                         tools:text="8.5" />
 
@@ -257,15 +269,15 @@
                         android:layout_width="14dp"
                         android:layout_height="14dp"
                         android:layout_marginEnd="4dp"
-                        android:src="@drawable/ic_rt_fresh"
-                        android:tint="@color/transparent" />
+                        android:src="@drawable/ic_rt_fresh"/>
+
 
                     <TextView
                         android:id="@+id/critic_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-condensed"
-                        android:textColor="@color/logo_gradient_stop"
+                        android:textColor="@color/white"
                         android:textSize="11sp"
                         tools:text="92%" />
 
@@ -305,6 +317,7 @@
             </LinearLayout>
 
         </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

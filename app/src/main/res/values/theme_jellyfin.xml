@@ -2,11 +2,11 @@
 <resources>
 
     <style name="Theme.Jellyfin" parent="@style/Theme.AppCompat.Leanback">
-        <item name="defaultBackground">@drawable/dark_backgrounds</item>
+        <item name="defaultBackground">@color/black</item>
         <item name="android:colorPrimary">@color/black</item>
         <item name="android:colorPrimaryDark">@color/black</item>
         <item name="android:colorAccent">@color/black_transparent</item>
-        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowBackground">@color/theme_emerald_black</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -66,7 +66,7 @@
         <!-- Backdrop Filter -->
         <item name="background_filter">@color/default_background_filter</item>
         <!-- Backdrop Fading Color -->
-        <item name="backdrop_fading_color">@color/black</item>
+        <item name="backdrop_fading_color">@color/theme_emerald_black</item>
         <item name="tile_port_video_bg">@color/black_transparent_dark</item>
         <item name="tile_land_folder_bg">@color/black_transparent_dark</item>
         <item name="tile_chapter_bg">@color/black_transparent_dark</item>

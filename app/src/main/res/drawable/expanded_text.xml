@@ -3,7 +3,7 @@
     <item android:state_focused="true">
         <shape android:shape="rectangle">
             <corners android:radius="?attr/cardRounding" />
-            <solid android:color="@color/black_transparent" />
+            <solid android:color="#29FFFFFF" />
         </shape>
     </item>
 </selector>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,13 +12,13 @@
     android:clickable="false"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:padding="16dp">
+    android:padding="1dp">
 
     <!-- Profile Image Container -->
     <FrameLayout
         android:id="@+id/profile_container"
-        android:layout_width="126dp"
-        android:layout_height="126dp"
+        android:layout_width="101dp"
+        android:layout_height="101dp"
         android:background="@drawable/profile_background_selector"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -27,8 +27,8 @@
 
         <org.jellyfin.androidtv.ui.AsyncImageView
             android:id="@+id/profile_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             android:scaleType="centerCrop"
             android:focusable="false"
             android:focusableInTouchMode="false"

@@ -43,14 +43,14 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/card_border">
+                    android:background="@drawable/card_focused_border">
                     <org.jellyfin.androidtv.ui.AsyncImageView
                         android:id="@+id/banner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:background="@drawable/shimmer_placeholder"
-                        tools:src="@drawable/shimmer_placeholder"
+                        android:background="@drawable/card_white_fake"
+                        tools:src="@drawable/card_white_fake"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:duplicateParentState="true"

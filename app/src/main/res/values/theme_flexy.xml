@@ -11,7 +11,7 @@
         <item name="android:colorAccent">@color/flexy_accent</item>
 
         <!-- Background and window -->
-        <item name="android:windowBackground">@color/flexy_background</item>
+        <item name="android:windowBackground">@color/black</item>
         <item name="android:statusBarColor">@color/flexy_status_bar</item>
         <item name="android:navigationBarColor">@color/flexy_nav_bar</item>
         <item name="android:windowLightStatusBar">false</item>

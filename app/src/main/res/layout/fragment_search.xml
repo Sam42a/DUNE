@@ -45,7 +45,7 @@
             android:contentDescription="@string/lbl_voice_search"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:src="@drawable/ic_mic2"
+            android:src="@drawable/ic_mic"
             android:tint="@color/mic_icon_tint"
             tools:layout_editor_absoluteX="5dp"
             tools:layout_editor_absoluteY="16dp" />

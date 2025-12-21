@@ -80,22 +80,20 @@
 
     <androidx.leanback.widget.HorizontalGridView
         android:id="@+id/users"
-        android:layout_width="464dp"
+        android:layout_width="744dp"
         android:layout_height="92dp"
-        android:layout_marginStart="232dp"
         android:layout_marginTop="136dp"
-        android:layout_marginEnd="38dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:gravity="center_horizontal"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:rowHeight="wrap_content"
-        tools:itemCount="4"
+        tools:itemCount="6"
         tools:listitem="@layout/view_circular_user_profile" />
 
     <LinearLayout
