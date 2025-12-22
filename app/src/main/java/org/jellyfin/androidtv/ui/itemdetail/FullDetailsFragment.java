@@ -296,6 +296,12 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
     }
 
     @Override
+    public void onDestroyView() {
+        themeSongs.getValue().fadeOutAndStop();
+        super.onDestroyView();
+    }
+
+    @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() != KeyEvent.ACTION_UP) return false;
 
@@ -880,7 +886,7 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
         if (JavaCompat.getCanResume(mBaseItem) && mBaseItem.getRunTimeTicks() != null && mBaseItem.getRunTimeTicks() > 0) {
             float progressPercentage = (float) (mBaseItem.getUserData().getPlaybackPositionTicks() * 100.0 / mBaseItem.getRunTimeTicks());
-            mResumeButton.setProgress(progressPercentage / 100f); 
+            mResumeButton.setProgress(progressPercentage / 100f);
         }
 
         if (BaseItemExtensionsKt.canPlay(baseItem)) {
