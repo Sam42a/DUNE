@@ -878,6 +878,11 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
             }
         });
 
+        if (JavaCompat.getCanResume(mBaseItem) && mBaseItem.getRunTimeTicks() != null && mBaseItem.getRunTimeTicks() > 0) {
+            float progressPercentage = (float) (mBaseItem.getUserData().getPlaybackPositionTicks() * 100.0 / mBaseItem.getRunTimeTicks());
+            mResumeButton.setProgress(progressPercentage / 100f); 
+        }
+
         if (BaseItemExtensionsKt.canPlay(baseItem)) {
             mDetailsOverviewRow.addAction(mResumeButton);
             boolean resumeButtonVisible = (baseItem.getType() == BaseItemKind.SERIES && !mBaseItem.getUserData().getPlayed()) || (JavaCompat.getCanResume(mBaseItem));
@@ -1257,11 +1262,19 @@ public class FullDetailsFragment extends Fragment implements RecordingIndicatorV
 
         List<FrameLayout> actionsList = new ArrayList<>();
         // added in order of priority (should match res/menu/menu_details_more.xml)
+        // Include all buttons that can be added to the details row
         if (queueButton != null) actionsList.add(queueButton);
         if (trailerButton != null) actionsList.add(trailerButton);
         if (shuffleButton != null) actionsList.add(shuffleButton);
         if (favButton != null) actionsList.add(favButton);
         if (goToSeriesButton != null) actionsList.add(goToSeriesButton);
+        if (mVersionsButton != null) actionsList.add(mVersionsButton);
+        if (mRecordButton != null) actionsList.add(mRecordButton);
+        if (mRecSeriesButton != null) actionsList.add(mRecSeriesButton);
+        if (mSeriesSettingsButton != null) actionsList.add(mSeriesSettingsButton);
+        if (mWatchedToggleButton != null) actionsList.add(mWatchedToggleButton);
+        if (mPrevButton != null) actionsList.add(mPrevButton);
+        if (deleteButton != null) actionsList.add(deleteButton);
 
         // reverse the list so the less important actions are hidden first
         Collections.reverse(actionsList);

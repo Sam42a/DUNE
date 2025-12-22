@@ -1,12 +1,10 @@
 package org.jellyfin.androidtv.ui.shared.buttons
 
 import android.content.Context
-import android.view.View
 import android.widget.FrameLayout
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -46,11 +44,10 @@ class DetailButton @JvmOverloads constructor(
 	private var composeView: ComposeView
 	private var currentText: String? = null
 	private var currentIcon: Int = 0
+	private var currentProgress: Float = 0f
 	private var clickListener: OnClickListener? = null
 	private var _isVisible = true
 	private var _isActivated = false
-
-	private var activationStateCallback: (() -> Unit)? = null
 
 	init {
 		isFocusable = true
@@ -89,9 +86,8 @@ class DetailButton @JvmOverloads constructor(
 		updateComposeContent()
 	}
 
-	override fun setVisibility(visibility: Int) {
-		super.setVisibility(visibility)
-		_isVisible = visibility == View.VISIBLE
+	fun setProgress(progress: Float) {
+		currentProgress = progress
 		updateComposeContent()
 	}
 
@@ -101,14 +97,12 @@ class DetailButton @JvmOverloads constructor(
 		updateComposeContent()
 	}
 
-	fun isVisible(): Boolean = _isVisible
-	override fun isActivated(): Boolean = _isActivated
-
 	private fun updateComposeContent() {
 		composeView.setContent {
 			DetailButtonComposable(
 				text = currentText,
 				icon = currentIcon,
+				progress = currentProgress,
 				isActivated = _isActivated,
 				onClick = { clickListener?.onClick(this@DetailButton) }
 			)
@@ -119,6 +113,7 @@ class DetailButton @JvmOverloads constructor(
 	private fun DetailButtonComposable(
 		text: String?,
 		icon: Int,
+		progress: Float,
 		isActivated: Boolean,
 		onClick: () -> Unit
 	) {
@@ -129,28 +124,34 @@ class DetailButton @JvmOverloads constructor(
 				isFocused = hasFocus
 			}
 			setOnFocusChangeListener(listener)
-			onDispose {
-				setOnFocusChangeListener(null)
-			}
+			onDispose { setOnFocusChangeListener(null) }
 		}
 
 		LaunchedEffect(Unit) {
 			while (true) {
-				delay(100) // Check every 100ms
+				delay(100)
 				if (isFocused != isFocused()) {
 					isFocused = isFocused()
 				}
 			}
 		}
 
+		val isResumeButton = icon == R.drawable.ic_resume
+
 		val backgroundColor = when {
 			isFocused -> Color.White
-			isActivated -> when {
-				// Red for favorite, Green for watched (based on icon resource)
-				icon == R.drawable.ic_heart -> Color(0xFFFF0000).copy(alpha = 0.4f)
-				icon == R.drawable.ic_watch -> Color(0xFF00FF00).copy(alpha = 0.2f)
-				else -> Color.White.copy(alpha = 0.12f)
+
+			isActivated -> when (icon) {
+				R.drawable.ic_heart ->
+					Color(0xFFFF0000).copy(alpha = 0.4f)
+
+				R.drawable.ic_watch ->
+					Color(0xFF00FF00).copy(alpha = 0.2f)
+
+				else ->
+					Color.White.copy(alpha = 0.12f)
 			}
+
 			else -> Color.White.copy(alpha = 0.12f)
 		}
 
@@ -165,6 +166,16 @@ class DetailButton @JvmOverloads constructor(
 				.animateContentSize()
 				.clip(RoundedCornerShape(14.dp))
 				.background(backgroundColor)
+				.drawBehind {
+					if (isResumeButton && progress > 0f) {
+						drawRect(
+							color = Color.White.copy(alpha = 0.3f),
+							size = size.copy(
+								width = size.width * progress.coerceIn(0f, 1f)
+							)
+						)
+					}
+				}
 				.clickable(onClick = onClick)
 				.padding(horizontal = 8.dp, vertical = 9.dp)
 				.height(16.dp),
@@ -206,69 +217,6 @@ class DetailButton @JvmOverloads constructor(
 				setIcon(icon)
 				setLabel(text)
 				setOnClickListener(onClick)
-			}
-		}
-	}
-}
-
-@Composable
-fun DetailButtonCompose(
-	icon: Int,
-	text: String?,
-	modifier: Modifier = Modifier,
-	onClick: () -> Unit,
-	isActivated: Boolean = false
-) {
-	var isFocused by remember { mutableStateOf(false) }
-
-	val backgroundColor = when {
-		isFocused -> Color.White
-		isActivated -> when {
-			// Red for favorite, Green for watched (based on icon resource)
-			icon == R.drawable.ic_heart -> Color(0xFFFF0000).copy(alpha = 0.4f)
-			icon == R.drawable.ic_watch -> Color(0xFF00FF00).copy(alpha = 0.2f)
-			else -> Color.White.copy(alpha = 0.12f)
-		}
-		else -> Color.White.copy(alpha = 0.12f)
-	}
-
-	val foregroundColor = when {
-		isFocused -> Color.Black
-		isActivated -> Color.White
-		else -> Color.White.copy(alpha = 0.85f)
-	}
-
-	Box(
-		modifier = modifier
-			.onFocusChanged { isFocused = it.isFocused }
-			.focusable()
-			.animateContentSize()
-			.clip(RoundedCornerShape(1.dp))
-			.background(backgroundColor)
-			.clickable(onClick = onClick)
-			.padding(horizontal = 14.dp, vertical = 8.dp)
-			.height(34.dp),
-		contentAlignment = Alignment.Center
-	) {
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.Center
-		) {
-			Icon(
-				painter = painterResource(icon),
-				contentDescription = text,
-				tint = foregroundColor,
-				modifier = Modifier.size(14.dp)
-			)
-
-			if (text != null) {
-				Text(
-					text = text,
-					fontSize = 11.sp,
-					fontWeight = FontWeight.Medium,
-					color = foregroundColor,
-					modifier = Modifier.padding(start = 7.dp)
-				)
 			}
 		}
 	}
