@@ -123,7 +123,7 @@ class DeveloperPreferencesScreen : OptionsFragment() {
 							showRestartDialog()
 						}
 					}
-					default { userPreferences.getDefaultValue(UserPreferences.diskCacheSizeMb).toString() }
+					default { userPreferences[UserPreferences.diskCacheSizeMb].toString() }
 				}
 			}
 		}

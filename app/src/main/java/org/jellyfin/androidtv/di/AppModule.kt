@@ -116,13 +116,8 @@ val appModule = module {
 		val memoryCacheSize = 700L * 1024 * 1024
 		val diskCacheSizeMb = userPreferences[UserPreferences.diskCacheSizeMb]
 		val diskCacheDir = File(context.cacheDir, "image_cache")
-		if (diskCacheDir.exists()) {
-			try {
-				diskCacheDir.deleteRecursively()
-				diskCacheDir.mkdirs()
-			} catch (e: Exception) {
-				Timber.e(e, "Failed to clear disk cache directory")
-			}
+		if (!diskCacheDir.exists()) {
+			diskCacheDir.mkdirs()
 		}
 
 		ImageLoader.Builder(context).apply {
