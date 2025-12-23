@@ -25,6 +25,7 @@ import org.jellyfin.androidtv.ui.card.LegacyImageCardView;
 import org.jellyfin.androidtv.ui.itemhandling.AudioQueueBaseRowItem;
 import org.jellyfin.androidtv.ui.itemhandling.BaseItemDtoBaseRowItem;
 import org.jellyfin.androidtv.ui.itemhandling.BaseRowItem;
+import org.jellyfin.androidtv.ui.itemhandling.BaseRowType;
 import org.jellyfin.androidtv.util.ImageHelper;
 import org.jellyfin.androidtv.util.Utils;
 import org.jellyfin.androidtv.util.apiclient.JellyfinImage;
@@ -505,7 +506,6 @@ public class CardPresenter extends Presenter {
                 }
             }
         }
-
         private boolean shouldLoadDuringScroll() {
             if (!mIsScrolling) return true;
 
@@ -706,7 +706,12 @@ public class CardPresenter extends Presenter {
                 LegacyImageCardView legacyCardView = (LegacyImageCardView) holder.mCardView;
                 String cardName = getEpisodeCardName(rowItem, legacyCardView.getContext());
                 legacyCardView.setTitleText(cardName != null ? cardName : rowItem.getCardName(legacyCardView.getContext()));
-                legacyCardView.setContentText(""); // Clear subtext to show only title
+
+                if (rowItem.getBaseRowType() == BaseRowType.Person && rowItem.getSubText(legacyCardView.getContext()) != null) {
+                    legacyCardView.setContentText(rowItem.getSubText(legacyCardView.getContext()));
+                } else {
+                    legacyCardView.setContentText("");
+                }
                 legacyCardView.showFavIcon(rowItem.isFavorite());
                 if (rowItem instanceof AudioQueueBaseRowItem && ((AudioQueueBaseRowItem) rowItem).getPlaying()) {
                     legacyCardView.setPlayingIndicator(true);
