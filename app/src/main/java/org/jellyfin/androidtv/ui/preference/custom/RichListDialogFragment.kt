@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Checkable
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.view.isVisible
@@ -118,7 +119,7 @@ class RichListDialogFragment : LeanbackPreferenceDialogFragmentCompat() {
 			is RichListItem.RichListOption<*> -> {
 				holder as OptionViewHolder
 
-				// Handle navigation to new preference window here
+				holder.radioButton.isChecked = item.key == selectedValue
 				holder.title.text = item.title
 				holder.summary.text = item.summary
 				holder.summary.isVisible = item.summary?.isNotBlank() == true
@@ -154,7 +155,7 @@ class RichListDialogFragment : LeanbackPreferenceDialogFragmentCompat() {
 		view: View,
 		private val clickListener: (viewHolder: OptionViewHolder) -> Unit
 	) : RecyclerView.ViewHolder(view), View.OnClickListener {
-		// Removed CheckBox reference as it is not used for navigation
+		val radioButton = view.findViewById<RadioButton>(R.id.button)
 		val title = view.findViewById<TextView>(R.id.title)
 		val summary = view.findViewById<TextView>(R.id.summary)
 		val container = view.findViewById<ViewGroup>(R.id.container).also {
