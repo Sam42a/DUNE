@@ -608,6 +608,24 @@
     <string name="eac3">DD+</string>
     <string name="clear_image_cache">Clear image cache</string>
     <string name="clear_image_cache_content">Used: %1$s</string>
+
+    <!-- Disk Cache Size Preference -->
+    <string name="pref_disk_cache_size">Image cache size</string>
+    <string name="pref_disk_cache_size_summary">Set the maximum size for the image cache</string>
+    <string name="pref_disk_cache_size_disabled">Disable,No cache</string>
+    <string name="pref_disk_cache_size_100mb">100 MB</string>
+    <string name="pref_disk_cache_size_250mb">250 MB</string>
+    <string name="pref_disk_cache_size_500mb">500 MB</string>
+    <string name="pref_disk_cache_size_800mb">800 MB</string>
+    <string name="pref_disk_cache_size_1gb">1 GB</string>
+    <string name="pref_disk_cache_size_1_5gb">1.5 GB</string>
+    <string name="pref_disk_cache_size_2gb">2 GB</string>
+
+    <!-- Restart dialog strings -->
+    <string name="restart_required">Restart Required</string>
+    <string name="restart_required_message">The app needs to restart for the cache size changes to take effect.</string>
+    <string name="restart_now">Restart Now</string>
+    <string name="restart_later">Later</string>
     <string name="random">Random</string>
     <string name="no_movies_found">No movies found</string>
     <string name="unreleased">Not yet released</string>

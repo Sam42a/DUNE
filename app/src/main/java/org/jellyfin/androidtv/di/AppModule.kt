@@ -3,8 +3,6 @@ package org.jellyfin.androidtv.di
 import android.content.Context
 import android.os.Build
 import coil3.ImageLoader
-import coil3.disk.DiskCache
-import okio.Path.Companion.toOkioPath
 import java.io.File
 import coil3.annotation.ExperimentalCoilApi
 import coil3.gif.AnimatedImageDecoder
@@ -13,6 +11,7 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.serviceLoaderEnabled
 import coil3.svg.SvgDecoder
 import coil3.util.Logger
+import okio.Path.Companion.toOkioPath
 import org.jellyfin.androidtv.BuildConfig
 import org.jellyfin.androidtv.auth.repository.ServerRepository
 import org.jellyfin.androidtv.auth.repository.UserRepository
@@ -29,6 +28,7 @@ import org.jellyfin.androidtv.data.repository.UserViewsRepository
 import org.jellyfin.androidtv.data.repository.UserViewsRepositoryImpl
 import org.jellyfin.androidtv.data.service.BackgroundService
 import org.jellyfin.androidtv.integration.dream.DreamViewModel
+import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.ui.ScreensaverViewModel
 import org.jellyfin.androidtv.ui.itemhandling.ItemLauncher
 import org.jellyfin.androidtv.ui.navigation.Destinations
@@ -62,9 +62,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import timber.log.Timber
 import org.jellyfin.sdk.Jellyfin as JellyfinSdk
 import android.content.SharedPreferences
-// Removed allowHardware import as it's not available in Coil 3.x
 
 val defaultDeviceInfo = named("defaultDeviceInfo")
 
@@ -103,23 +103,27 @@ val appModule = module {
 		get<JellyfinSdk>().createApi(httpClientOptions = get<HttpClientOptions>())
 	}
 
-	single { SocketHandler(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+	single {
+		SocketHandler(get(), get(), get(), get(), get(), get(), get(), get(), get())
+	}
 
 	// Coil (images)
-	single {
+	single<ImageLoader> {
 		val context = androidContext()
+		val userPreferences: UserPreferences = get()
+
 		// Memory cache size (in bytes)
 		val memoryCacheSize = 700L * 1024 * 1024
-		// Set disk cache size to 1GB (1024 * 1024 * 1024 bytes)
-		val diskCacheSize = 1024L * 1024 * 1024
-
-		// Configure disk cache
+		val diskCacheSizeMb = userPreferences[UserPreferences.diskCacheSizeMb]
 		val diskCacheDir = File(context.cacheDir, "image_cache")
-		diskCacheDir.mkdirs()
-		val diskCache = coil3.disk.DiskCache.Builder()
-			.directory(diskCacheDir.toOkioPath())
-			.maxSizeBytes(1024L * 1024 * 1024) // 1GB
-			.build()
+		if (diskCacheDir.exists()) {
+			try {
+				diskCacheDir.deleteRecursively()
+				diskCacheDir.mkdirs()
+			} catch (e: Exception) {
+				Timber.e(e, "Failed to clear disk cache directory")
+			}
+		}
 
 		ImageLoader.Builder(context).apply {
 			serviceLoaderEnabled(false)
@@ -132,8 +136,17 @@ val appModule = module {
 					.build()
 			}
 
-			// Set disk cache
-			diskCache(diskCache)
+			if (diskCacheSizeMb > 0) {
+				val diskCache = coil3.disk.DiskCache.Builder()
+					.directory(diskCacheDir.toOkioPath())
+					.maxSizeBytes(diskCacheSizeMb * 1024L * 1024)
+					.build()
+				diskCache(diskCache)
+				Timber.d("Disk cache enabled with size: ${diskCacheSizeMb}MB")
+			} else {
+				diskCache(null)
+				Timber.d("Disk cache disabled")
+			}
 
 			// Coil 3.x configuration
 			components {
@@ -172,15 +185,15 @@ val appModule = module {
 	viewModel { CarouselViewModel(get(), get(), get()) }
 
 	single {
-        BackgroundService(
-            context = get(),
-            jellyfin = get(),
-            api = get(),
-            userPreferences = get(),
-            imageLoader = get(),
-            imageHelper = get()
-        )
-    }
+		BackgroundService(
+			context = get(),
+			jellyfin = get(),
+			api = get(),
+			userPreferences = get(),
+			imageLoader = get(),
+			imageHelper = get()
+		)
+	}
 
 	single { MarkdownRenderer(get()) }
 	single { ItemLauncher() }

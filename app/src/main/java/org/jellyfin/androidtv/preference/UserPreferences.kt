@@ -377,6 +377,12 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var preloadImages = booleanPreference("preload_images", true)
 
+		/**
+		 * Disk cache size in MB for images
+		 * Default: 250mb
+		 */
+		var diskCacheSizeMb = intPreference("disk_cache_size_mb", 250)
+
 	}
 
 	init {
