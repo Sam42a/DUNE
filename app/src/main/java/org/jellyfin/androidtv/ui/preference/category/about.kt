@@ -15,7 +15,7 @@ import org.jellyfin.androidtv.util.AppUpdater
 import org.jellyfin.androidtv.util.UpdateResult
 import timber.log.Timber
 
-private const val CURRENT_VERSION = "0.0.9"
+private const val CURRENT_VERSION = "0.1.1"
 
 fun OptionsScreen.aboutCategory() = category {
     setTitle(R.string.pref_about_title)
