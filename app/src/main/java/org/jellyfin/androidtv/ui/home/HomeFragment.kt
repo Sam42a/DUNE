@@ -326,7 +326,7 @@ class HomeFragment : Fragment() {
                 navigationRepository.navigate(Destinations.search())
             }
             val settingsAction = {
-                val intent = Intent(requireContext(), org.jellyfin.androidtv.ui.preference.PreferencesActivity::class.java)
+                val intent = Intent(requireContext(), org.jellyfin.androidtv.ui.preference.PreferencesComposeActivity::class.java)
                 startActivity(intent)
             }
             val switchUsersAction = {
@@ -396,6 +396,7 @@ class HomeFragment : Fragment() {
                     }
                 }
                 is CarouselUiState.Success -> {
+                    val activeIndex by carouselViewModel.activeIndex.collectAsState()
                     FeaturedCarousel(
                         items = state.items,
                         onItemSelected = { item ->
@@ -405,7 +406,11 @@ class HomeFragment : Fragment() {
                             } catch (e: Exception) {
                             }
                         },
-                        isPaused = isCarouselPaused
+                        isPaused = isCarouselPaused,
+                        activeIndex = activeIndex,
+                        onActiveIndexChanged = { newIndex ->
+                            carouselViewModel.setActiveIndex(newIndex)
+                        }
                     )
 
                 }
