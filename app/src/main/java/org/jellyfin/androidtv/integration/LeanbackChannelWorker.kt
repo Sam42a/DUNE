@@ -375,7 +375,6 @@ class LeanbackChannelWorker(
 				api.itemsApi.getItems(
 					includeItemTypes = listOf(BaseItemKind.MOVIE),
 					recursive = true,
-					limit = 50,
 					fields = ItemRepository.itemFields
 				).content.items
 			} catch (e: Exception) {
@@ -390,7 +389,6 @@ class LeanbackChannelWorker(
 				api.itemsApi.getItems(
 					includeItemTypes = listOf(BaseItemKind.BOX_SET),
 					recursive = true,
-					limit = 50,
 					fields = ItemRepository.itemFields
 				).content.items
 			} catch (e: Exception) {
