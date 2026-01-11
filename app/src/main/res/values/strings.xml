@@ -46,6 +46,9 @@
     <string name="voice_search_not_available">Voice search not available</string>
     <string name="error_occurred">An error occurred. Please try again.</string>
     <string name="no_results_found">No results found</string>
+    <string name="lbl_search_try">Try searching for something else</string>
+    <string name="start_typing">Start typing to search</string>
+    <string name="use_keyboard_or">Use keyboard or voice search</string>
     <string name="lbl_library">Refresh</string>
     <string name="lbl_voice_search">Voice Search</string>
     <string name="msg_not_implemented">" not implemented"</string>

@@ -195,6 +195,7 @@ dependencies {
 	implementation("androidx.tv:tv-material:1.0.0")
 	implementation("androidx.palette:palette:1.0.0")
 	implementation("androidx.compose.material3:material3:1.2.1")
+	implementation("androidx.compose.material:material-icons-extended")
 
 	// Dependency Injection
 	implementation(libs.bundles.koin)
@@ -217,7 +218,7 @@ dependencies {
 	// Image utility
 	implementation(libs.bundles.coil)
 	implementation("com.github.bumptech.glide:glide:4.16.0")
-	implementation("androidx.viewpager2:viewpager2:1.0.0")
+
 	// GIF support
 	implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
 
