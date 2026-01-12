@@ -53,19 +53,20 @@ class BackgroundService(
 	private var _currentBackground = MutableStateFlow<ImageBitmap?>(null)
 	private var _enabled = MutableStateFlow(true)
 	private var _preventLoginBackgroundOverride = MutableStateFlow(false)
-	private var _blockAllBackgrounds = false
+	private var _blockAllBackgrounds = MutableStateFlow(false)
 	val currentBackground get() = _currentBackground.asStateFlow()
 	val enabled get() = _enabled.asStateFlow()
-	private var _dimmingIntensity = MutableStateFlow(0.5f)
-	val backdropDimmingIntensity get() = _dimmingIntensity.asStateFlow()
+	val blockAllBackgrounds get() = _blockAllBackgrounds.asStateFlow()
 	private var _fadingIntensity = MutableStateFlow(0.7f)
 	val backdropFadingIntensity get() = _fadingIntensity.asStateFlow()
+	private var _dynamicColors = MutableStateFlow(true)
+	val backdropDynamicColors get() = _dynamicColors.asStateFlow()
 
 	/**
 	 * Use splashscreen from [server] as background.
 	 */
 	fun setBackground(server: Server) {
-		if (_blockAllBackgrounds) return
+		if (_blockAllBackgrounds.value) return
 
 		// Check if item is set and backgrounds are enabled
 		if (!userPreferences[UserPreferences.backdropEnabled] || _preventLoginBackgroundOverride.value)
@@ -76,7 +77,6 @@ class BackgroundService(
 			return clearBackgrounds()
 
 		// Reset dimming and fading for login screen
-		_dimmingIntensity.value = 0f
 		_fadingIntensity.value = 0f
 
 		// Manually grab the backdrop URL
@@ -92,14 +92,12 @@ class BackgroundService(
 	 * For Media Folders, use primary image as backdrop if no backdrops are available.
 	 */
 	fun setBackground(baseItem: BaseItemDto?) {
-		if (_blockAllBackgrounds) return
+		if (_blockAllBackgrounds.value) return
 
 		// Check if item is set and backgrounds are enabled
 		if (baseItem == null || !userPreferences[UserPreferences.backdropEnabled])
 			return clearBackgrounds()
 
-		// Set dimming and fading intensity
-		_dimmingIntensity.value = userPreferences[UserPreferences.backdropDimmingIntensity]
 		_fadingIntensity.value = userPreferences[UserPreferences.backdropFadingIntensity]
 
 		// Get all backdrop URLs
@@ -183,11 +181,16 @@ class BackgroundService(
 	}
 
 	fun blockAllBackgrounds() {
-		_blockAllBackgrounds = true
+		_blockAllBackgrounds.value = true
 		clearBackgrounds() // Clear any existing backgrounds
 	}
+
+	fun blockAllBackgroundsSilent() {
+		_blockAllBackgrounds.value = true
+	}
+
 	fun unblockAllBackgrounds() {
-		_blockAllBackgrounds = false
+		_blockAllBackgrounds.value = false
 	}
 
 	internal fun update() {
