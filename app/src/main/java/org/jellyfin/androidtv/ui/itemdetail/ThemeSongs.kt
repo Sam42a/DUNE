@@ -22,6 +22,10 @@ import java.util.UUID
 
 class ThemeSongs(private val context: Context) : KoinComponent {
 
+	init {
+		instance = this
+	}
+
 	private val api by inject<ApiClient>()
 	private val sessionRepository by inject<SessionRepository>()
 	private val userSettingPreferences by inject<UserSettingPreferences>()
@@ -35,12 +39,34 @@ class ThemeSongs(private val context: Context) : KoinComponent {
 		private const val FLEETING_DURATION = 2000L
 		private const val FLEETING_STEP = 50L
 		private const val BITRATE = 128000
+		@Volatile
+		private var isAnyFragmentActive = false
+		private var instance: ThemeSongs? = null
+
+		@JvmStatic
+		fun setAnyFragmentActive(isActive: Boolean) {
+			isAnyFragmentActive = isActive
+			if (isActive) {
+				Timber.d("Fragment became active - AGGRESSIVELY stopping theme songs")
+				instance?.let { themeSongs ->
+					themeSongs.stop()
+					themeSongs.fleeting?.cancel()
+					themeSongs.activeItemId = null
+					themeSongs.player?.release()
+					themeSongs.player = null
+				}
+			}
+		}
 	}
 
 	fun isPlaying(): Boolean = player?.isPlaying == true
 
 	fun playThemeSong(item: BaseItemDto, useArchiveFallback: Boolean = true) {
 		if (activeItemId == item.id && player?.isPlaying == true) {
+			return
+		}
+
+		if (isAnyFragmentActive) {
 			return
 		}
 
