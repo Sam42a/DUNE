@@ -594,14 +594,12 @@ private fun CarouselItemBackground(item: CarouselItem, modifier: Modifier = Modi
 	val imageUrl = item.backdropUrl ?: item.imageUrl
 
 	val backgroundService: org.jellyfin.androidtv.data.service.BackgroundService = koinInject()
-	val dimmingIntensity by backgroundService.backdropDimmingIntensity.collectAsState()
 	val backdropFadingIntensity by backgroundService.backdropFadingIntensity.collectAsState()
 	val localContext = androidx.compose.ui.platform.LocalContext.current
 
 	val typedArray = localContext.theme.obtainStyledAttributes(
 		intArrayOf(org.jellyfin.androidtv.R.attr.backdrop_fading_color)
 	)
-	val backgroundColor = androidx.compose.ui.graphics.Color(typedArray.getColor(0, 0x000000)).copy(alpha = dimmingIntensity * 0.3f)
 	typedArray.recycle()
 
 	val fadingColor = getBackdropFadingColor()
