@@ -1,92 +1,97 @@
 package org.jellyfin.androidtv.ui.preference.screen
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import org.jellyfin.androidtv.R
 import org.jellyfin.androidtv.preference.UserPreferences
 import org.jellyfin.androidtv.preference.UserSettingPreferences
-import org.koin.android.ext.android.inject
-import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
-import org.jellyfin.androidtv.ui.preference.dsl.checkbox
-import org.jellyfin.androidtv.ui.preference.dsl.list
-import org.jellyfin.androidtv.ui.preference.dsl.optionsScreen
 
-class BackdropSettingsPreferencesScreen : OptionsFragment() {
-    private val userPreferences: UserPreferences by inject()
-    private val userSettingPreferences: UserSettingPreferences by inject()
+@Composable
+fun BackdropSettingsPreferencesScreenCompose(
+    userPreferences: UserPreferences,
+    userSettingPreferences: UserSettingPreferences,
+    onBack: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val firstItemFocusRequester = remember { FocusRequester() }
 
-    override val screen by optionsScreen {
-        setTitle(R.string.backdrop_settings)
+    LaunchedEffect(Unit) {
+        try {
+            firstItemFocusRequester.requestFocus()
+        } catch (e: Exception) {
+        }
+    }
 
+    val (backdropEnabled, setBackdropEnabled) = rememberPreferenceState(
+        preference = UserPreferences.backdropEnabled,
+        preferences = userPreferences
+    )
 
-        category {
-            setTitle(R.string.backdrop_settings)
+    val (backdropFadingIntensity, setBackdropFadingIntensity) = rememberPreferenceState(
+        preference = UserPreferences.backdropFadingIntensity,
+        preferences = userPreferences
+    )
 
+    val (backdropDynamicColors, setBackdropDynamicColors) = rememberPreferenceState(
+        preference = UserPreferences.backdropDynamicColors,
+        preferences = userPreferences
+    )
 
-            checkbox {
-                setTitle(R.string.lbl_show_backdrop)
-                setContent(R.string.pref_show_backdrop_description)
-                bind(userPreferences, UserPreferences.backdropEnabled)
-            }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            PreferenceHeader(context.getString(R.string.backdrop_settings))
+        }
 
+        item {
+            SwitchPreference(
+                title = context.getString(R.string.lbl_show_backdrop),
+                description = context.getString(R.string.pref_show_backdrop_description),
+                checked = backdropEnabled,
+                preference = UserPreferences.backdropEnabled,
+                onCheckedChange = setBackdropEnabled,
+                modifier = Modifier.focusRequester(firstItemFocusRequester)
+            )
+        }
 
-            list {
-                setTitle(R.string.lbl_backdrop_fading)
-                entries = mapOf(
-                    "0.0" to "0%",
-                    "0.1" to "10%",
-                    "0.2" to "20%",
-                    "0.3" to "30%",
-                    "0.4" to "40%",
-                    "0.5" to "50%",
-                    "0.6" to "60%",
-                    "0.7" to "70%",
-                    "0.8" to "80%",
-                    "0.9" to "90%",
-                    "1.0" to "100%"
-                )
-                bind {
-                    get { userPreferences[UserPreferences.backdropFadingIntensity].toString() }
-                    set { value -> userPreferences[UserPreferences.backdropFadingIntensity] = value.toFloat() }
-                    default { UserPreferences.backdropFadingIntensity.defaultValue.toString() }
-                }
-            }
+        item {
+            SwitchPreference(
+                title = context.getString(R.string.Dynamic_colors),
+                description = context.getString(R.string.pref_dynamic_colors),
+                checked = backdropDynamicColors,
+                preference = UserPreferences.backdropDynamicColors,
+                onCheckedChange = setBackdropDynamicColors
+            )
+        }
 
-
-list {
-                setTitle(R.string.lbl_backdrop_dimming)
-                entries = mapOf(
-                    "0.0" to "0%",
-                    "0.1" to "10%",
-                    "0.2" to "20%",
-                    "0.3" to "30%",
-                    "0.4" to "40%",
-                    "0.5" to "50%",
-                    "0.6" to "60%",
-                    "0.7" to "70%",
-                    "0.8" to "80%",
-                    "0.9" to "90%",
-                    "1.0" to "100%"
-                )
-                bind {
-                    get { userPreferences[UserPreferences.backdropDimmingIntensity].toString() }
-                    set { value -> userPreferences[UserPreferences.backdropDimmingIntensity] = value.toFloat() }
-                    default { UserPreferences.backdropDimmingIntensity.defaultValue.toString() }
-                }
-            }
-
-
-            list {
-                setTitle(R.string.image_quality)
-                entries = mapOf(
-                    "low" to getString(R.string.image_quality_low),
-                    "normal" to getString(R.string.image_quality_normal),
-                    "high" to getString(R.string.image_quality_high)
-                )
-                bind {
-                    get { userPreferences[UserPreferences.imageQuality] }
-                    set { value -> userPreferences[UserPreferences.imageQuality] = value }
-                    default { UserPreferences.imageQuality.defaultValue }
-                }
-            }
+        item {
+            ListPreference(
+                title = context.getString(R.string.lbl_backdrop_fading),
+                value = backdropFadingIntensity.toString(),
+                onValueChange = { newValue ->
+                    setBackdropFadingIntensity(newValue.toFloat())
+                },
+                options = mapOf(
+                    "0.5" to context.getString(R.string.lbl_fading_effect_low),
+                    "0.6" to context.getString(R.string.lbl_fading_effect_Medium),
+                    "0.7" to context.getString(R.string.lbl_fading_effect_High),
+                ),
+                defaultValue = UserPreferences.backdropFadingIntensity.defaultValue.toString()
+            )
         }
     }
 }

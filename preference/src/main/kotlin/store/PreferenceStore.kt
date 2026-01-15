@@ -65,7 +65,7 @@ abstract class PreferenceStore<ME, MV> {
 	protected abstract fun setString(key: String, value: String)
 
 	// Private Enum handling, all Enum types are serialized to / from String types
-	protected abstract fun <T : Enum<T>> getEnum(preference: Preference<T>): T
+	abstract fun <T : Enum<T>> getEnum(preference: Preference<T>): T
 
 	protected abstract fun <V : Enum<V>> setEnum(preference: Preference<*>, value: Enum<V>)
 

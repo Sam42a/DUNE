@@ -211,7 +211,7 @@
         </activity>
 
         <activity
-            android:name=".ui.preference.PreferencesActivity"
+            android:name=".ui.preference.PreferencesComposeActivity"
             android:screenOrientation="behind"
             android:theme="@style/Theme.Jellyfin.Preferences" />
 

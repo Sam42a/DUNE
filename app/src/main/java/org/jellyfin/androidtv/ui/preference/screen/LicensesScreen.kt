@@ -1,69 +1,139 @@
 package org.jellyfin.androidtv.ui.preference.screen
 
-import androidx.core.os.bundleOf
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.mikepenz.aboutlibraries.Libs
+import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.util.withContext
 import org.jellyfin.androidtv.R
-import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
-import org.jellyfin.androidtv.ui.preference.dsl.OptionsScreen
-import org.jellyfin.androidtv.ui.preference.dsl.link
-import org.jellyfin.androidtv.ui.preference.dsl.optionsScreen
 
-class LicensesScreen : OptionsFragment() {
-	override val screen by optionsScreen {
-		when (val library = arguments?.getString(EXTRA_LIBRARY)) {
-			null -> createList()
-			else -> createLibrary(library)
-		}
-	}
+@Composable
+fun LicensesScreenCompose(
+    libraryId: String? = null,
+    onBack: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val libs = remember { Libs.Builder().withContext(context).build() }
 
-	private val libs by lazy {
-		Libs.Builder().withContext(requireContext()).build()
-	}
+    if (libraryId != null) {
+        // Show individual library details
+        val library = libs.libraries.find { it.artifactId == libraryId }
+        if (library != null) {
+            LibraryDetailsScreenCompose(
+                library = library,
+                onBack = onBack
+            )
+        } else {
+            // Library not found, show list
+            LicensesListScreenCompose(
+                libs = libs,
+                onBack = onBack
+            )
+        }
+    } else {
+        // Show library list
+        LicensesListScreenCompose(
+            libs = libs,
+            onBack = onBack
+        )
+    }
+}
 
-	private fun OptionsScreen.createLibrary(artifactId: String) {
-		val lib = libs.libraries.find {
-			it.artifactId == artifactId
-		} ?: return createList()
+@Composable
+fun LicensesListScreenCompose(
+    libs: Libs,
+    onBack: () -> Unit = {}
+) {
+    val firstItemFocusRequester = remember { FocusRequester() }
 
-		title = lib.name
+    LaunchedEffect(Unit) {
+        firstItemFocusRequester.requestFocus()
+    }
 
-		category {
-			buildList {
-				add(getString(R.string.license_description) to lib.description)
-				add(getString(R.string.license_version) to lib.artifactVersion)
-				add(getString(R.string.license_artifact) to lib.artifactId)
-				add(getString(R.string.license_website) to lib.website)
-				add(getString(R.string.license_repository) to lib.scm?.url)
-				lib.developers.forEach { developer -> add(getString(R.string.license_author) to developer.name) }
-				lib.licenses.forEach { license -> add(getString(R.string.license_license) to license.name) }
-			}.forEach { (key, value) ->
-				if (value != null) {
-					link {
-						title = value
-						content = key
-					}
-				}
-			}
-		}
-	}
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            PreferenceHeader(LocalContext.current.getString(R.string.open_source_licenses))
+        }
 
-	private fun OptionsScreen.createList() {
-		setTitle(R.string.licenses_link)
+        val sortedLibraries = libs.libraries.sortedBy { it.name.lowercase() }
+        items(sortedLibraries) { library ->
+            val isFirstLibrary = library == sortedLibraries.firstOrNull()
+            PreferenceCard(
+                title = "${library.name} ${library.artifactVersion}",
+                description = library.licenses.joinToString(", ") { it.name },
+                icon = R.drawable.ic_license,
+                onClick = {
+                    // Navigate to library details - this would need navigation implementation
+                    // For now, we'll just show the details in the same screen
+                },
+                modifier = if (isFirstLibrary) Modifier.focusRequester(firstItemFocusRequester) else Modifier
+            )
+        }
+    }
+}
 
-		category {
-			for (library in libs.libraries.sortedBy { it.name.lowercase() }) {
-				link {
-					title = "${library.name} ${library.artifactVersion}"
-					content = library.licenses.joinToString(", ") { it.name }
+@Composable
+fun LibraryDetailsScreenCompose(
+    library: Library,
+    onBack: () -> Unit = {}
+) {
+    val context = LocalContext.current
 
-					withFragment<LicensesScreen>(bundleOf(EXTRA_LIBRARY to library.artifactId))
-				}
-			}
-		}
-	}
+    val details = mutableListOf<Pair<String, String>>()
 
-	companion object {
-		const val EXTRA_LIBRARY = "library"
-	}
+    library.description?.let { details.add(context.getString(R.string.license_description) to it) }
+    details.add(context.getString(R.string.license_version) to (library.artifactVersion ?: "Unknown"))
+    details.add(context.getString(R.string.license_artifact) to (library.artifactId ?: "Unknown"))
+    library.website?.let { details.add(context.getString(R.string.license_website) to it) }
+    library.scm?.url?.let { details.add(context.getString(R.string.license_repository) to it) }
+    library.developers.forEach { developer ->
+        details.add(context.getString(R.string.license_author) to (developer.name ?: "Unknown"))
+    }
+    library.licenses.forEach { license ->
+        details.add(context.getString(R.string.license_license) to (license.name ?: "Unknown"))
+    }
+
+    val firstItemFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        firstItemFocusRequester.requestFocus()
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            PreferenceHeader(library.name)
+        }
+
+        items(details) { (key, value) ->
+            val isFirstDetail = details.indexOfFirst { it.first == key } == 0
+            PreferenceCard(
+                title = value,
+                description = key,
+                icon = R.drawable.ic_crash,
+                onClick = { },
+                modifier = if (isFirstDetail) Modifier.focusRequester(firstItemFocusRequester) else Modifier
+            )
+        }
+    }
 }

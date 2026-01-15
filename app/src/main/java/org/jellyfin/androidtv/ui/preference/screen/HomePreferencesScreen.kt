@@ -1,58 +1,97 @@
 package org.jellyfin.androidtv.ui.preference.screen
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import org.jellyfin.androidtv.R
+import androidx.compose.ui.unit.dp
 import org.jellyfin.androidtv.constant.HomeSectionType
 import org.jellyfin.androidtv.preference.UserSettingPreferences
-import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
-import org.jellyfin.androidtv.ui.preference.dsl.optionsScreen
-import org.jellyfin.androidtv.ui.preference.dsl.enum
-import org.jellyfin.androidtv.ui.preference.dsl.checkbox
-import org.jellyfin.androidtv.ui.preference.dsl.checkbox
-import org.jellyfin.preference.store.PreferenceStore
-import org.koin.android.ext.android.inject
 
-class HomePreferencesScreen : OptionsFragment() {
-	private val userSettingPreferences: UserSettingPreferences by inject()
+@Composable
+fun HomePreferencesScreenCompose(
+    userSettingPreferences: UserSettingPreferences,
+    onBack: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    val firstItemFocusRequester = remember { FocusRequester() }
 
-	override val screen by optionsScreen {
-		setTitle(R.string.home_prefs)
+    LaunchedEffect(Unit) {
+        try {
+            firstItemFocusRequester.requestFocus()
+        } catch (e: Exception) {
+            // Focus request failed, but continue with screen initialization
+        }
+    }
 
-		category {
-			setTitle(R.string.customization)
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            PreferenceHeader(context.getString(R.string.home_prefs))
+        }
 
-			checkbox {
-				setTitle(R.string.lbl_my_media_extra_small)
-				setContent(R.string.desc_my_media_extra_small)
-				bind(userSettingPreferences, userSettingPreferences.useExtraSmallMediaFolders)
-			}
-		}
+        item {
+            val (useExtraSmallFolders, setUseExtraSmallFolders) = rememberPreferenceState(
+                preference = userSettingPreferences.useExtraSmallMediaFolders,
+                preferences = userSettingPreferences
+            )
+            SwitchPreference(
+                title = context.getString(R.string.lbl_my_media_extra_small),
+                checked = useExtraSmallFolders,
+                preference = userSettingPreferences.useExtraSmallMediaFolders,
+                onCheckedChange = setUseExtraSmallFolders,
+                modifier = Modifier.focusRequester(firstItemFocusRequester)
+            )
+        }
 
-		category {
-			setTitle(R.string.home_sections)
+        item {
+            PreferenceHeader(context.getString(R.string.home_sections))
+        }
 
-			listOf(
-				userSettingPreferences.homesection0,
-				userSettingPreferences.homesection1,
-				userSettingPreferences.homesection2,
-				userSettingPreferences.homesection3,
-				userSettingPreferences.homesection4,
-				userSettingPreferences.homesection5,
-				userSettingPreferences.homesection6,
-				userSettingPreferences.homesection7,
-				userSettingPreferences.homesection8,
-				userSettingPreferences.homesection9
-			).forEachIndexed { index, sectionPref ->
-				enum<HomeSectionType> {
-					title = getString(R.string.home_section_i, index + 1)
-					bind(userSettingPreferences, sectionPref)
-				}
-			}
-		}
+        // Home sections 0-9
+        val homeSections = listOf(
+            userSettingPreferences.homesection0,
+            userSettingPreferences.homesection1,
+            userSettingPreferences.homesection2,
+            userSettingPreferences.homesection3,
+            userSettingPreferences.homesection4,
+            userSettingPreferences.homesection5,
+            userSettingPreferences.homesection6,
+            userSettingPreferences.homesection7,
+            userSettingPreferences.homesection8,
+            userSettingPreferences.homesection9
+        )
 
-
-
-	}
-
-	override val stores: Array<PreferenceStore<*, *>>
-		get() = arrayOf(userSettingPreferences)
+        homeSections.forEachIndexed { index, sectionPref ->
+            item {
+                val (sectionValue, setSectionValue) = rememberEnumPreferenceState(
+                    preference = sectionPref,
+                    preferences = userSettingPreferences
+                )
+                EnumPreference(
+					title = context.getString(R.string.home_section_i, index + 1),
+					value = sectionValue,
+					onValueChange = { newValue ->
+						setSectionValue(newValue)
+					},
+					options = HomeSectionType.values().toList(),
+					modifier = Modifier,
+					description = context.getString(sectionValue.nameRes),
+					optionLabel = { context.getString(it.nameRes) }
+				)
+            }
+        }
+    }
 }

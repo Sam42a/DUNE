@@ -3,20 +3,19 @@ package org.jellyfin.androidtv.preference
 import android.content.Context
 import android.view.KeyEvent
 import androidx.preference.PreferenceManager
+import org.jellyfin.androidtv.preference.UserPreferences.Companion.screensaverInAppEnabled
 import org.jellyfin.androidtv.preference.constant.AppLanguage
 import org.jellyfin.androidtv.preference.constant.AppTheme
 import org.jellyfin.androidtv.preference.constant.AudioBehavior
+import org.jellyfin.androidtv.preference.constant.AudioLanguage
 import org.jellyfin.androidtv.preference.constant.CarouselSortBy
 import org.jellyfin.androidtv.preference.constant.ClockBehavior
-import org.jellyfin.androidtv.preference.constant.GenreSortBy
-import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
 import org.jellyfin.androidtv.preference.constant.NextUpBehavior
 import org.jellyfin.androidtv.preference.constant.RatingType
 import org.jellyfin.androidtv.preference.constant.RefreshRateSwitchingBehavior
+import org.jellyfin.androidtv.preference.constant.ScreensaverSortBy
 import org.jellyfin.androidtv.preference.constant.SkipDuration
 import org.jellyfin.androidtv.preference.constant.SubtitleLanguage
-import org.jellyfin.androidtv.preference.UserPreferences.Companion.screensaverInAppEnabled
-import org.jellyfin.androidtv.preference.constant.AudioLanguage
 import org.jellyfin.androidtv.preference.constant.WatchedIndicatorBehavior
 import org.jellyfin.androidtv.preference.constant.ZoomMode
 import org.jellyfin.androidtv.ui.playback.segment.MediaSegmentAction
@@ -28,7 +27,6 @@ import org.jellyfin.preference.intPreference
 import org.jellyfin.preference.longPreference
 import org.jellyfin.preference.store.SharedPreferenceStore
 import org.jellyfin.preference.stringPreference
-import org.jellyfin.androidtv.R
 import org.jellyfin.sdk.model.api.MediaSegmentType
 import kotlin.time.Duration.Companion.minutes
 
@@ -64,21 +62,15 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var backdropEnabled = booleanPreference("pref_show_backdrop", true)
 
-/**
-		 * Backdrop dimming intensity from 0 (no dimming) to 1.0 (full black)
-		 */
-		var backdropDimmingIntensity = floatPreference("pref_backdrop_dimming_intensity", 0.0f)
-
 		/**
 		 * Backdrop fading intensity from 0 (no fade) to 1.0 (full fade)
 		 */
 		var backdropFadingIntensity = floatPreference("pref_backdrop_fading_intensity", 0.6f)
 
 		/**
-		 * Card size for home screen and library browsing
-		 * Values: "small", "medium", "large"
+		 * Use dynamic extracted colors for backdrop instead of solid theme color
 		 */
-		var cardSize = stringPreference("card_size", "small")
+		var backdropDynamicColors = booleanPreference("pref_backdrop_dynamic_colors", true)
 
 		/**
 		 * Show premieres on home screen
@@ -153,17 +145,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var hardwareAccelerationEnabled = booleanPreference("hardware_acceleration_enabled", defaultValue = true)
 
-		/**
-		 * Selected media source index for the current media item
-		 * Used to persist version selection when navigating back to details screenn
-		 */
-		var selectedMediaSourceIndex = intPreference("selected_media_source_index", -1)
-
-		/**
-		 * Current media item ID to associate with selected media source index
-		 * Used to persist version selection when navigating back to details
-		 */
-		var currentMediaItemId = stringPreference("current_media_item_id", "")
 
 		/* Playback - Audio related */
 		/**
@@ -213,10 +194,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 */
 		var debuggingEnabled = booleanPreference("pref_enable_debug", false)
 
-		/**
-		 * Use playback rewrite module for video
-		 */
-		var playbackRewriteVideoEnabled = booleanPreference("playback_new", false)
 
 		/**
 		 * When to show the clock.
@@ -257,11 +234,6 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Enable all Android TV launcher channels
 		 */
 		var launcherChannelsEnabled = booleanPreference("pref_enable_launcher_channels", true)
-
-		/**
-		 * Genre sorting method for home screen genre rows
-		 */
-		var genreSortBy = enumPreference("genre_sort_by", GenreSortBy.DEFAULT)
 
 		/**
 		 * Sorting method for carousel items
@@ -337,6 +309,16 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var screensaverAgeRatingRequired = booleanPreference("screensaver_agerating_required", true)
 
 		/**
+		 * Show clock in screensaver
+		 */
+		var screensaverClockEnabled = booleanPreference("screensaver_clock_enabled", true)
+
+		/**
+		 * Show logo in screensaver
+		 */
+		var screensaverLogoEnabled = booleanPreference("screensaver_logo_enabled", true)
+
+		/**
 		 * Sorting method for screensaver content
 		 */
 		var screensaverSortBy = enumPreference("screensaver_sort_by", ScreensaverSortBy.RANDOM)
@@ -347,7 +329,7 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		var videoStartDelay = longPreference("video_start_delay", 0)
 
 		/**
-		 * The actions to take for each media segment type. Managed by the [MediaSegmentRepository].
+		 * The actions to take for each media segment type. Managed by the [org.jellyfin.androidtv.ui.playback.segment.MediaSegmentRepository].
 		 */
 		var mediaSegmentActions = stringPreference(
 			key = "media_segment_actions",
@@ -382,6 +364,12 @@ class UserPreferences(context: Context) : SharedPreferenceStore(
 		 * Default: 250mb
 		 */
 		var diskCacheSizeMb = intPreference("disk_cache_size_mb", 250)
+
+		/**
+		 * Custom Sections item limit for home screen
+		 * Default: 10 items
+		 */
+		var genreItemLimit = intPreference("genre_item_limit", 10)
 
 	}
 

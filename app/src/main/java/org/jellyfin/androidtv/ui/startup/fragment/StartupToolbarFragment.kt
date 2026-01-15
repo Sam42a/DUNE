@@ -12,8 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import org.jellyfin.androidtv.R
-import org.jellyfin.androidtv.ui.preference.PreferencesActivity
-import org.jellyfin.androidtv.ui.preference.screen.AuthPreferencesScreen
 import org.jellyfin.androidtv.ui.shared.toolbar.StartupToolbar
 
 class StartupToolbarFragment : Fragment() {
@@ -33,13 +31,10 @@ class StartupToolbarFragment : Fragment() {
 						}
 					},
 					openSettings = {
-						val intent = Intent(requireContext(), PreferencesActivity::class.java)
-						intent.putExtra(PreferencesActivity.EXTRA_SCREEN, AuthPreferencesScreen::class.qualifiedName)
-						intent.putExtra(
-							PreferencesActivity.EXTRA_SCREEN_ARGS, bundleOf(
-								AuthPreferencesScreen.ARG_SHOW_ABOUT to true
-							)
-						)
+						val intent = Intent(requireContext(), org.jellyfin.androidtv.ui.preference.PreferencesComposeActivity::class.java)
+						intent.putExtra("initialScreen", "auth")
+						intent.putExtra("showAbout", true)
+						intent.putExtra("standalone", true)
 						startActivity(intent)
 					},
 				)

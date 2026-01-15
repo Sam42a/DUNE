@@ -1,61 +1,75 @@
 package org.jellyfin.androidtv.ui.preference
 
-import android.graphics.Color
-import android.os.Build
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import androidx.core.os.bundleOf
-import androidx.fragment.app.FragmentActivity
-import org.jellyfin.androidtv.R
-import org.jellyfin.androidtv.ui.preference.screen.UserPreferencesScreen
-import org.jellyfin.androidtv.util.LocaleUtils
-import android.content.Context
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import org.jellyfin.androidtv.ui.preference.screen.PreferencesRoot
+import org.jellyfin.androidtv.ui.preference.screen.UserPreferencesScreenCompose
+import org.jellyfin.androidtv.preference.UserPreferences
+import org.jellyfin.androidtv.preference.UserSettingPreferences
+import org.jellyfin.androidtv.preference.SystemPreferences
+import org.jellyfin.androidtv.preference.TelemetryPreferences
+import org.jellyfin.androidtv.data.service.BackgroundService
+import org.koin.android.ext.android.inject
+import coil3.ImageLoader
 
-class PreferencesActivity : FragmentActivity(R.layout.fragment_content_view) {
-	override fun attachBaseContext(newBase: Context) {
-		super.attachBaseContext(LocaleUtils.wrapContext(newBase))
-	}
-	override fun onCreate(savedInstanceState: Bundle?) {
-		// Set the theme before super.onCreate
-		setTheme(R.style.Theme_Jellyfin_Preferences)
+class PreferencesComposeActivity : ComponentActivity() {
 
-		// Make the window transparent
-		window.apply {
-			setBackgroundDrawableResource(android.R.color.transparent)
-			setDimAmount(0f)
+    private val userPreferences: UserPreferences by inject()
+    private val userSettingPreferences: UserSettingPreferences by inject()
+    private val systemPreferences: SystemPreferences by inject()
+    private val telemetryPreferences: TelemetryPreferences by inject()
+    private val imageLoader: ImageLoader by inject()
+    private val backgroundService: BackgroundService by inject()
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-				statusBarColor = Color.TRANSPARENT
-				decorView.systemUiVisibility =
-					View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-						View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-			}
-		}
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-		super.onCreate(savedInstanceState)
+        val initialScreen = intent.getStringExtra("initialScreen") ?: "main"
+        val displayPreferencesId = intent.getStringExtra("displayPreferencesId") ?: ""
+        val allowViewSelection = intent.getBooleanExtra("allowViewSelection", true)
+        val isStandalone = intent.getBooleanExtra("standalone", false)
+        val shouldRefresh = intent.getBooleanExtra("shouldRefresh", false)
+        val serverId = intent.getStringExtra("serverId") ?: ""
+        val showAbout = intent.getBooleanExtra("showAbout", false)
 
-		val screen = intent.extras?.getString(EXTRA_SCREEN) ?: UserPreferencesScreen::class.qualifiedName
-		val screenArgs = intent.extras?.getBundle(EXTRA_SCREEN_ARGS) ?: bundleOf()
+        setContent {
+            MaterialTheme {
+                PreferencesRoot {
+                    UserPreferencesScreenCompose(
+                        userPreferences = userPreferences,
+                        userSettingPreferences = userSettingPreferences,
+                        systemPreferences = systemPreferences,
+                        telemetryPreferences = telemetryPreferences,
+                        imageLoader = imageLoader,
+                        backgroundService = backgroundService,
+                        initialScreen = initialScreen,
+                        initialDisplayPreferencesId = displayPreferencesId,
+                        initialAllowViewSelection = allowViewSelection,
+                        isStandalone = isStandalone,
+                        shouldRefresh = shouldRefresh,
+                        initialServerId = serverId,
+                        showAbout = showAbout,
+                        onExit = {
+                            if (isStandalone && shouldRefresh) {
+                                setResult(android.app.Activity.RESULT_OK)
+                                finish()
+                            } else {
+                                finish()
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
 
-		if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAG) == null) {
-			supportFragmentManager
-				.beginTransaction()
-				.replace(R.id.content_view, PreferencesFragment().apply {
-					arguments = bundleOf(
-						PreferencesFragment.EXTRA_SCREEN to screen,
-						PreferencesFragment.EXTRA_SCREEN_ARGS to screenArgs
-					)
-				}, FRAGMENT_TAG)
-				.commit()
-		}
-	}
-
-	companion object {
-		const val EXTRA_SCREEN = "screen"
-		const val EXTRA_SCREEN_ARGS = "screen_args"
-		const val FRAGMENT_TAG = "PreferencesActivity"
-	}
+    @SuppressLint("MissingSuperCall")
+	override fun onBackPressed() {
+        // Let the Compose screen handle all back navigation
+        // The Compose screen will call finish() when appropriate
+    }
 }
 

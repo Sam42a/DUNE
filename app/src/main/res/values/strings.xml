@@ -1,57 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="pref_subtitles_vertical_offset">Subtitle Vertical Offset</string>
-    <string name="pref_subtitles_vertical_offset_summary">Adjust the vertical position of subtitles. Negative moves up, positive moves down.</string>
-    <string name="pref_subtitles_vertical_offset_center">Center</string>
-    <string name="media_image">Media image</string>
-    <string name="profile_picture">Profile picture</string>
+
+    <!-- App Name -->
     <string name="app_name">DUNE</string>
     <string name="app_name_release" translatable="false" tools:ignore="UnusedResources">DUNE</string>
     <string name="app_name_debug" translatable="false" tools:ignore="UnusedResources">DUNE Debug</string>
-    <string name="video_error_unknown_error">Failed to load video</string>
-    <string name="loading">Loading…</string>
-    <string name="btn_cancel">Cancel</string>
-    <string name="byletter_letters" translatable="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
-    <string name="pref_playback">Playback</string>
-    <string name="pref_max_bitrate_title">Max streaming bitrate</string>
-    <string name="settings_title">Settings</string>
 
-    <string name="pref_authentication_cat">Authentication</string>
-    <string name="chapters">Chapters</string>
-    <string name="state_disabled">Disabled</string>
+    <!-- General UI Labels -->
+    <string name="loading">Loading…</string>
+    <string name="lbl_loading_elipses">Loading…</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="lbl_cancel">Cancel</string>
+    <string name="lbl_ok">Ok</string>
+    <string name="lbl_yes">Yes</string>
+    <string name="lbl_no">No</string>
+    <string name="btn_got_it">Got it</string>
+    <string name="lbl_save">Save</string>
+    <string name="lbl_delete">Delete</string>
+    <string name="lbl_remove">Remove</string>
+    <string name="lbl_open">Open</string>
+    <string name="lbl_Reset">Reset</string>
+    <string name="not_set">Not set</string>
+    <string name="lbl_empty">Empty</string>
+    <string name="lbl_none">None</string>
+    <string name="lbl_hidden">Hidden</string>
+    <string name="lbl_bracket_unknown">Unknown</string>
+    <string name="lbl_unknown_key">Unknown (%1s)</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
     <string name="lbl_settings">Settings</string>
-    <string name="lbl_Subtitles">Subtitles</string>
-    <string name="lbl_home">Home</string>
-    <string name="lbl_masks">Masks</string>
+    <string name="pref_customization">Customization</string>
+    <string name="pref_customization_description">Theme, home, remapping</string>
+    <string name="customization">Customization</string>
+    <string name="pref_about_title">About</string>
+    <string name="advanced_settings">Advanced</string>
+    <string name="Advanced_Settings">Advanced Settings</string>
+    <string name="pref_behavior">Behavior</string>
+    <string name="pref_browsing">Browsing</string>
+    <string name="pref_troubleshooting">Troubleshooting</string>
+
+    <!-- Home Screen -->
+    <string name="lbl_home">Home Sections</string>
+    <string name="home_prefs">Home</string>
+    <string name="home_sections">Jellyfin Home Sections</string>
+    <string name="home_custom_sections">Home Custom Sections</string>
+    <string name="enhanced_tweaks">Home Screen Settings</string>
+    <string name="home_content_description">Home screen content</string>
+    <string name="use_classic_home_screen">Home Screen layout</string>
+    <string name="use_classic_home_screen_summary">Switch between classic and modern home screen layout</string>
+    <string name="pref_home_description">Configure shown sections</string>
+
+    <!-- Home Sections -->
+    <string name="home_section_latest_media">Recently added media</string>
+    <string name="home_section_library">My media</string>
+    <string name="home_section_library_small">My media (small)</string>
+    <string name="home_section_resume">Continue watching</string>
+    <string name="home_section_resume_audio">Continue listening</string>
+    <string name="home_section_resume_book">Continue reading</string>
+    <string name="home_section_active_recordings">Active recordings</string>
+    <string name="home_section_next_up">Next up</string>
+    <string name="home_section_continue_watching_combined">Continue watching combined</string>
+    <string name="home_section_continue_nextup">Continue watching</string>
+    <string name="home_section_livetv">Live TV</string>
+    <string name="home_section_none">None</string>
+    <string name="home_section_i">Home section %1$d</string>
+
+    <!-- Home Rows -->
     <string name="lbl_continue_watching">Continue watching</string>
     <string name="continue_listening">Continue listening</string>
     <string name="lbl_next_up">Next up</string>
     <string name="lbl_on_now">On now</string>
-    <string name="lbl_views">Views</string>
-    <string name="lbl_by_letter">By letter</string>
     <string name="lbl_suggested">Suggested</string>
-    <string name="lbl_status">%1$s / %2$s</string>
-    <string name="lbl_genres">Genres</string>
-    <string name="lbl_filtered_by_genre">Filtered by genre: %1$s</string>
-    <string name="genre_row_action_adventure">Action &amp; Adventure</string>
-    <string name="show_action_adventure_row">Show Action &amp; Adventure row</string>
+    <string name="lbl_suggested_tv_shows">Suggested TV Shows</string>
     <string name="genre_row_favorites">Favorites</string>
     <string name="show_favorites_row">Show Favorites row</string>
-    <string name="show_my_collections_row">Show Collections row</string>
-    <string name="show_suggested_for_you_row">Show Suggested Movies row</string>
-    <string name="show_suggested_tv_shows_row">Show Suggested TV Shows row</string>
-<string name="lbl_suggested_tv_shows">Suggested TV Shows</string>
+    <string name="show_my_collections_row">Collections row</string>
+    <string name="show_collections_row">Collections</string>
+    <string name="show_suggested_movies_row">Because you watched</string>
+    <string name="show_discover_movies_row">Discover Movies</string>
+    <string name="show_discover_series_row">Discover Series</string>
+    <string name="show_recently_released_row">Recently Released</string>
+    <string name="show_watch_it_again_row">Watch It Again</string>
+    <string name="show_music_videos_row">Music Videos</string>
+    <string name="show_live_tv_button">Live TV Button</string>
+    <string name="show_live_tv_button_summary">Display the Live TV button </string>
+    <string name="show_random_button">Random Movie Button</string>
+    <string name="show_random_button_summary">Display the Random Movie button </string>
+
+    <!-- Genre Rows -->
+    <string name="lbl_genres">Genres</string>
+    <string name="lbl_filtered_by_genre">Filtered by genre: %1$s</string>
+    <string name="genre_row_i">Genre Row %1$d</string>
+    <string name="genre_item_limit">Item Limit</string>
+    <string name="genre_row_prefs">Configure custom sections</string>
+    <string name="lbl_genre_row_loading">Loading genres…</string>
+    <string name="genre_row_movie">Movie Genres</string>
+    <string name="genre_row_tvshow">TV Show Genres</string>
+    <string name="lbl_all_genres">All Genres</string>
+
+    <!-- Genre Names -->
+    <string-array name="genres">
+        <item>@string/genre_action</item>
+        <item>@string/genre_adventure</item>
+        <item>@string/genre_animation</item>
+        <item>@string/genre_comedy</item>
+        <item>@string/genre_crime</item>
+        <item>@string/genre_documentary</item>
+        <item>@string/genre_drama</item>
+        <item>@string/genre_family</item>
+        <item>@string/genre_fantasy</item>
+        <item>@string/genre_history</item>
+        <item>@string/genre_horror</item>
+        <item>@string/genre_music</item>
+        <item>@string/genre_mystery</item>
+        <item>@string/genre_romance</item>
+        <item>@string/genre_science_fiction</item>
+        <item>@string/genre_thriller</item>
+        <item>@string/genre_war</item>
+        <item>@string/genre_western</item>
+        <item>@string/genre_tv_movie</item>
+    </string-array>
+    <string name="genre_action">Action</string>
+    <string name="genre_adventure">Adventure</string>
+    <string name="genre_animation">Animation</string>
+    <string name="genre_comedy">Comedy</string>
+    <string name="genre_crime">Crime</string>
+    <string name="genre_documentary">Documentary</string>
+    <string name="genre_drama">Drama</string>
+    <string name="genre_family">Family</string>
+    <string name="genre_fantasy">Fantasy</string>
+    <string name="genre_history">History</string>
+    <string name="genre_horror">Horror</string>
+    <string name="genre_music">Music</string>
+    <string name="genre_mystery">Mystery</string>
+    <string name="genre_romance">Romance</string>
+    <string name="genre_science_fiction">Science Fiction</string>
+    <string name="genre_thriller">Thriller</string>
+    <string name="genre_war">War</string>
+    <string name="genre_western">Western</string>
+    <string name="genre_tv_movie">TV Movie</string>
+
+    <!-- Search -->
     <string name="lbl_search">Search</string>
     <string name="lbl_search_hint">Search for movies, shows, and more...</string>
-    <string name="voice_search_not_available">Voice search not available</string>
-    <string name="error_occurred">An error occurred. Please try again.</string>
-    <string name="no_results_found">No results found</string>
     <string name="lbl_search_try">Try searching for something else</string>
+    <string name="lbl_voice_search">Voice Search</string>
+    <string name="voice_search_not_available">Voice search not available</string>
+    <string name="no_results_found">No results found</string>
     <string name="start_typing">Start typing to search</string>
     <string name="use_keyboard_or">Use keyboard or voice search</string>
-    <string name="lbl_library">Refresh</string>
-    <string name="lbl_voice_search">Voice Search</string>
-    <string name="msg_not_implemented">" not implemented"</string>
+    <string name="searchable_hint">Search Dune</string>
+    <string name="searchable_settings_description">Media</string>
+
+    <!-- Library & Collections -->
+    <string name="lbl_library">Collection_Playlist</string>
+    <string name="lbl_my_media">My Media</string>
+    <string name="lbl_my_media_small">My Media (Small)</string>
+    <string name="lbl_my_media_extra_small">Display My media folders as buttons</string>
+    <string name="lbl_collections">Collections</string>
+    <string name="lbl_my_collections">Collections</string>
+    <string name="pref_libraries">Libraries</string>
+    <string name="pref_libraries_description">Change how libraries are displayed</string>
+
+    <!-- Media Types -->
+    <string name="lbl_movies">Movies</string>
+    <string name="lbl_tv_series">TV series</string>
+    <string name="lbl_series">Series</string>
+    <string name="lbl_seasons">Seasons</string>
+    <string name="lbl_episodes">Episodes</string>
+    <string name="lbl_song">Song</string>
+    <string name="lbl_songs">Songs</string>
+    <string name="lbl_album">Album</string>
+    <string name="lbl_albums">Albums</string>
+    <string name="lbl_album_artists">Album artists</string>
+    <string name="lbl_artists">Artists</string>
+    <string name="lbl_playlists">Playlists</string>
+    <string name="lbl_Playlists">Playlists</string>
+    <string name="lbl_music_playlists">Music Playlists</string>
+    <string name="lbl_playlists_and_albums">Playlists &amp; Albums</string>
+    <string name="lbl_videos">Videos</string>
+    <string name="lbl_music_videos">Music Videos</string>
+    <string name="music_videos">Music Videos</string>
+    <string name="lbl_other">Other</string>
+    <string name="lbl_items">Items</string>
+    <string name="lbl_item">Item</string>
+    <string name="lbl_programs">Programs</string>
+    <string name="channels">Channels</string>
+    <string name="photo_albums">Photo albums</string>
+    <string name="photos">Photos</string>
+
+    <!-- Browsing & Filtering -->
+    <string name="lbl_views">Views</string>
+    <string name="lbl_by_letter">By letter</string>
+    <string name="byletter_letters" translatable="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="lbl_latest">Recently added</string>
     <string name="lbl_latest_in">Recently added in %s</string>
     <string name="lbl_by_name">By name</string>
@@ -59,119 +201,23 @@
     <string name="lbl_coming_up">Coming up</string>
     <string name="lbl_favorite_channels">Favorite channels</string>
     <string name="lbl_other_channels">Other channels</string>
-    <string name="lbl_collections">Collections</string>
-    <string name="lbl_my_collections">Collections</string>
-    <string name="lbl_movies">Movies</string>
-    <string name="lbl_tv_series">TV series</string>
-    <string name="lbl_other">Other</string>
-    <string name="because_you_watched">Because you watched %1$s</string>
-    <string name="lbl_play_all">Play all</string>
-    <string name="lbl_shuffle_all">Shuffle all</string>
-    <string name="lbl_Watched_History_Series">Watched Series</string>
-    <string name="lbl_Watched_History_Movies">Watched Movies</string>
-    <string name="lbl_Playlists">Playlists</string>
-
-
-    <string name="lbl_play">Play</string>
-    <string name="lbl_pause">Pause</string>
-    <string name="lbl_cancel">Cancel</string>
-    <string name="lbl_cancel_recording">Cancel recording</string>
-    <string name="lbl_cancel_series">Cancel series</string>
-    <string name="lbl_record_series">Record series</string>
-    <string name="lbl_record">Record</string>
-    <string name="msg_set_to_record">Program set to record</string>
-    <string name="msg_unable_to_create_recording">Unable to create recording</string>
-    <string name="msg_recording_cancelled">Recording cancelled</string>
-    <string name="msg_unable_to_cancel">Unable to cancel recording</string>
-    <string name="lbl_cast_crew">Cast &amp; crew</string>
-    <string name="lbl_additional_parts">Additional parts</string>
-    <string name="lbl_chapters">Chapters</string>
-    <string name="lbl_specials">Specials</string>
-    <string name="lbl_trailers">Trailers</string>
-    <string name="lbl_items">Items</string>
-    <string name="lbl_item">Item</string>
-    <string name="lbl_series">Series</string>
-    <string name="lbl_seasons">Seasons</string>
     <string name="lbl_upcoming">Upcoming</string>
-    <string name="lbl_favorite">Favorite</string>
-    <string name="lbl_watched">Watched</string>
-    <string name="lbl_sd">SD</string>
-    <string name="lbl_runs">"Runs"</string>
-    <string name="runtime_hours_minutes">%1$dh %2$dm</string>
-    <string name="runtime_minutes">%1$dm</string>
-    <string name="lbl_ends">"Ends"</string>
-    <string name="lbl_directed_by">"Directed by"</string>
-    <string name="lbl_last_played">"Last played "</string>
-    <string name="lbl_runtime">Runtime</string>
-    <string name="lbl_other_options">Other options</string>
-    <string name="lbl_people">People</string>
-    <string name="lbl_videos">Videos</string>
-    <string name="lbl_recordings">Recordings</string>
-    <string name="lbl_music_playlists">Music Playlists</string>
-    <string name="lbl_none">None</string>
-    <string name="msg_video_playback_error">"Video playback error - "</string>
-    <string name="lbl_bracket_unknown">Unknown</string>
-    <string name="lbl_trailer">"Trailer "</string>
-    <string name="lbl_play_trailers">Play trailer(s)</string>
-    <string name="lbl_play_external">Play in External Player</string>
-    <string name="lbl_no">No</string>
-    <string name="lbl_yes">Yes</string>
-    <string name="lbl_enter_server_address">Enter server address</string>
-    <string name="lbl_valid_server_address">Please enter the server address (IP or domain/machine name)</string>
-    <string name="lbl_ok">Ok</string>
-    <string name="lbl_born">"Born "</string>
-    <string name="lbl_loading_elipses">Loading…</string>
-    <string name="msg_playback_not_allowed">Playback not allowed at this time</string>
-    <string name="msg_playback_restricted">The administrator has restricted playback of this item at this time</string>
-    <string name="msg_playback_incompatible">Cannot play this video format</string>
-    <string name="lbl_never">Never</string>
-    <string name="msg_cannot_play_time">Cannot play this item at this time</string>
-    <string name="msg_cannot_play">This item cannot be played</string>
-    <string name="lbl_no_items">No items</string>
-    <string name="lbl_empty">Empty</string>
-    <string name="lbl_tv_queuing">Play next episode automatically</string>
-    <string name="lbl_playing">Playing</string>
-    <string name="lbl_play_first_unwatched">Play first unwatched</string>
-    <string name="lbl_mark_unplayed">Mark unplayed</string>
-    <string name="lbl_mark_played">Mark played</string>
-    <string name="lbl_remove_favorite">Remove favorite</string>
-    <string name="lbl_add_favorite">Add favorite</string>
-    <string name="lbl_now_playing_track">%1$s of %2$s</string>
-    <string name="lbl_now_playing_album">from %1$s</string>
-    <string name="msg_no_playable_items">No playable items</string>
-    <string name="msg_external_player_error">Could not launch external player. Make sure you have a video player app installed.</string>
     <string name="lbl_unwatched">Unwatched</string>
-    <string name="lbl_load_channels">"Load channels "</string>
-    <string name="lbl_today">Today</string>
-    <string name="lbl_tomorrow">Tomorrow</string>
-    <string name="lbl_on">On </string>
-    <string name="lbl_tune_to_channel">Tune to channel</string>
-    <string name="msg_recording_now">Recording now</string>
-    <string name="msg_will_record">Will record</string>
-    <string name="lbl_begin_padding">Begin padding</string>
-    <string name="lbl_program_ended">Program ended</string>
-    <string name="lbl_end_padding">End padding</string>
-    <string name="lbl_similar_items_library">Similar items in your library</string>
-    <string name="lbl_record_any_channel">Record on any channel</string>
-    <string name="lbl_record_any_time">Record at any time</string>
-    <string name="lbl_only_new_episodes">Only new episodes</string>
-    <string name="lbl_repeat_options">Repeat options</string>
-    <string name="msg_cancel_entire_series">Are you sure you want to cancel this ENTIRE SERIES?</string>
-    <string name="pref_audio_direct">Direct</string>
-    <string name="pref_audio_compat">Downmix to stereo</string>
-    <string name="pref_audio_night_mode">Audio night mode (experimental)</string>
-    <string name="lbl_audio_output">Audio output</string>
-    <string name="lbl_goto_series">Go to series</string>
-    <string name="lbl_enable_debug">Debug options</string>
-    <string name="desc_debug">Provide extra information for debugging</string>
-    <string name="lbl_showing">Showing</string>
-    <string name="genre_rows">Home Screen Genre Rows</string>
-    <string name="android_channels">Android TV Channels</string>
-    <string name="genre_rows_description">Enable 5 or less for better performance</string>
+    <string name="lbl_new_premieres">New premieres</string>
+    <string name="lbl_recent_recordings">Recent recordings</string>
+    <string name="lbl_sports">Sports</string>
+    <string name="lbl_kids">Kids</string>
+    <string name="lbl_news">News</string>
+    <string name="all_channels">All channels</string>
+    <string name="past_week">Past week</string>
+    <string name="past_24_hours">Past 24 hours</string>
+    <string name="scheduled_in_next_24_hours">Scheduled in next 24 hours</string>
 
+    <!-- Sorting & Display Options -->
     <string name="lbl_all_items">All items</string>
     <string name="lbl_sorted_by">sorted by</string>
     <string name="lbl_from">from</string>
+    <string name="lbl_sort_by">Sort by</string>
     <string name="lbl_name">Name</string>
     <string name="lbl_date_added">Date added</string>
     <string name="lbl_premier_date">Premier date</string>
@@ -180,189 +226,503 @@
     <string name="lbl_community_rating">Community rating</string>
     <string name="lbl_rating">Rating</string>
     <string name="lbl_random">Random</string>
+    <string name="random">Random</string>
     <string name="lbl_starting_with">beginning with those whose name starts with</string>
     <string name="lbl_display_preferences">Display preferences</string>
+    <string name="sort_default">Default</string>
+    <string name="sort_random">Random</string>
+    <string name="sort_name">Name (A-Z)</string>
+    <string name="sort_date_released">Release Date</string>
+    <string name="sort_date_added">Date Added</string>
+    <string name="sort_rating">Community Rating</string>
+    <string name="sort_critic_rating">Critic Rating</string>
+    <string name="sort_play_count">Most Played</string>
+    <string name="sort_runtime">Runtime</string>
+    <string name="sort_official_rating">Official Rating</string>
+    <string name="sort_date_created">Date Created</string>
+    <string name="sort_parent_rating">Parent Rating</string>
+    <string name="pref_genre_sort_by">Sort Options</string>
+    <string name="pref_carousel_sort_by">Carousel Sort Options</string>
+    <string name="pref_carousel_sort_by_description">Choose how items are sorted in the carousel</string>
+    <string name="pref_screensaver_sort_by">Screensaver Sort Options</string>
+    <string name="pref_screensaver_sort_by_description">Choose how items are sorted in the screensaver</string>
+
+    <!-- Item Display -->
     <string name="show_item_titles_on_focus">Show item info on top</string>
     <string name="show_item_titles_on_focus_description">Display item Info at the top of the screen when navigating through items</string>
-    <string name="lbl__continuing"> CONTINUING </string>
-    <string name="lbl_ended"> ENDED </string>
-    <string name="lbl_filters">Live TV filters</string>
-    <string name="msg_subtitles_loading">Subtitles loading…</string>
-    <string name="pref_enable_libass">Enable Advanced SubStation Alpha subtitle client rendering</string>
-    <string name="preference_enable_pgs">Direct play PGS subtitles</string>
-    <string name="preference_enable_assDirectPlay">Direct play ASS/SSA subtitles</string>
-    <string name="preference_enable_assDirectPlay_description">This feature is experimental. Disable it if you experience video playback issues</string>
+    <string name="lbl_status">%1$s / %2$s</string>
+    <string name="lbl_showing">Showing</string>
+    <string name="lbl_no_items">No items</string>
+    <string name="no_movies_found">No movies found</string>
+    <string name="unreleased">Not yet released</string>
 
+    <!-- Watched/Favorite Status -->
+    <string name="lbl_favorite">Favorite</string>
+    <string name="lbl_watched">Watched</string>
+    <string name="lbl_add_favorite">Add favorite</string>
+    <string name="lbl_remove_favorite">Remove favorite</string>
+    <string name="lbl_mark_played">Mark played</string>
+    <string name="lbl_mark_unplayed">Mark unplayed</string>
+    <string name="mark_watched">Mark watched</string>
+    <string name="mark_watched_message">The item didn\'t appear to play as long as its duration. Mark watched?</string>
+    <string name="lbl_Watched_History_Series">Watched Series</string>
+    <string name="lbl_Watched_History_Movies">Watched Movies</string>
+    <string name="watch_count_overflow">99+</string>
+    <string name="pref_watched_indicator">Show watched indicators</string>
+    <string name="pref_watched_indicator_description">Configure watched status display</string>
+    <string name="lbl_hide_unwatched_count">When the item is watched</string>
+    <string name="lbl_hide_watched_checkmark">When there are episodes remaining</string>
 
+    <!-- Playback Controls -->
+    <string name="lbl_play">Play</string>
+    <string name="lbl_pause">Pause</string>
+    <string name="lbl_play_all">Play all</string>
+    <string name="lbl_shuffle_all">Shuffle all</string>
+    <string name="lbl_play_first_unwatched">Play first unwatched</string>
+    <string name="lbl_play_from_here">Play from here</string>
+    <string name="watch_now">Watch now</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="fast_forward">Fast forward</string>
+    <string name="rewind">Rewind</string>
 
-    <string name="msg_burn_sub_warning">Burning in subtitles. This may take a few seconds…</string>
-    <string name="lbl_no_recordings">No recordings available</string>
-    <string name="lbl_live_tv_guide">Live TV Guide</string>
-    <string name="lbl_live_tv">Live TV</string>
-    <string name="lbl_recorded_tv">Recorded TV</string>
-    <string name="pref_live_tv_cat">Live TV</string>
-    <string name="msg_error_live_stream">Error streaming live TV. Will re-try…</string>
-    <string name="lbl_direct_stream_live">Direct stream live TV</string>
-    <string name="lbl_playlists_and_albums">Playlists &amp; Albums</string>
-    <string name="lbl_albums">Albums</string>
-    <string name="lbl_artists">Artists</string>
-    <string name="lbl_song">Song</string>
-    <string name="lbl_songs">Songs</string>
-    <string name="lbl_album">Album</string>
-    <string name="lbl_episodes">Episodes</string>
+    <!-- Playback Settings -->
+    <string name="pref_playback">Playback</string>
+    <string name="pref_playback_description">Video, subtitles, live tv, next up</string>
+    <string name="pref_playback_advanced">Advanced playback preferences</string>
+    <string name="pref_playback_advanced_Description">Configure advanced playback options</string>
+    <string name="pref_max_bitrate_title">Max streaming bitrate</string>
+    <string name="bitrate_mbit">%1$,.0f Mbit/s</string>
+    <string name="bitrate_kbit">%1$,.0f Kbit/s</string>
+    <string name="lbl_tv_queuing">Play next episode automatically</string>
     <string name="lbl_enable_cinema_mode">Cinema mode</string>
     <string name="sum_enable_cinema_mode">Play available intros and previews before starting a movie</string>
-    <string name="lbl_playlists">Playlists</string>
-    <string name="lbl_programs">Programs</string>
-    <string name="msg_items_added">" items added"</string>
-    <string name="lbl_add_to_queue">Add to queue</string>
-    <string name="lbl_open_artist">Open artist</string>
-    <string name="lbl_open_album">Open album</string>
-    <string name="lbl_shuffle_queue">Toggle shuffle</string>
-    <string name="lbl_next_item">Next item</string>
-    <string name="lbl_prev_item">Previous item</string>
-    <string name="lbl_now_playing">Now playing</string>
-    <string name="lbl_play_from_here">Play from here</string>
-    <string name="lbl_remove_from_queue">Remove from queue</string>
-    <string name="lbl_goto_now_playing">Go to now playing</string>
-    <string name="lbl_instant_mix">Instant mix</string>
-    <string name="lbl_delete">Delete</string>
-    <string name="msg_item_added">" item added"</string>
-    <string name="desc_automatic_fav_songs">Automatic playlist of favorite songs</string>
-    <string name="lbl_new_premieres">New premieres</string>
-    <string name="lbl_bitstream_ac3">Bitstream Dolby Digital audio</string>
-    <string name="desc_bitstream_ac3">Requires capable hardware</string>
-    <string name="desc_audio_night_mode">Levels out audio volume automatically</string>
+    <string name="lbl_resume_preroll">Resume pre-roll</string>
+    <string name="lbl_resume_from">Resume from %1$s</string>
+
+    <!-- Video Settings -->
+    <string name="pref_video">Video</string>
     <string name="lbl_zoom">Zoom</string>
     <string name="lbl_auto_crop">Auto crop</string>
     <string name="lbl_stretch">Stretch</string>
     <string name="lbl_fit">Normal</string>
+    <string name="default_video_zoom">Default zoom mode</string>
+    <string name="video_start_delay">Video start delay</string>
+    <string name="lbl_refresh_switching">Refresh rate switching</string>
+    <string name="pref_refresh_rate_scale_on_tv">Scale on TV</string>
+    <string name="pref_refresh_rate_scale_on_device">Scale on device</string>
+    <string name="hardware_acceleration_enabled">Enable hardware acceleration</string>
+    <string name="hardware_acceleration_enabled_content">Use hardware acceleration for video decoding. Disable if you experience playback issues.</string>
+    <string name="preference_enable_trickplay">Enable trickplay in video player</string>
+
+    <!-- Audio Settings -->
+    <string name="pref_audio">Audio</string>
+    <string name="lbl_audio_output">Audio output</string>
+    <string name="pref_audio_direct">Direct</string>
+    <string name="pref_audio_compat">Downmix to stereo</string>
+    <string name="lbl_bitstream_ac3">Bitstream Dolby Digital audio</string>
+    <string name="desc_bitstream_ac3">Requires capable hardware</string>
+    <string name="pref_audio_night_mode">Audio night mode (experimental)</string>
+    <string name="desc_audio_night_mode">Levels out audio volume automatically</string>
     <string name="lbl_audio_track">Select audio track</string>
+    <string name="pref_audio_track_button">Audio track button</string>
+    <string name="audio">Audio</string>
+    <string name="prefer_exoplayer_ffmpeg">Prefer FFmpeg for audio playback</string>
+    <string name="prefer_exoplayer_ffmpeg_content">Use FFmpeg to decode audio, even if platform codecs are available.</string>
+    <string name="pref_audio_default_language">Default audio language</string>
+    <string name="pref_audio_default_language_summary">Set the default language for audio tracks</string>
+    <string name="pref_audio_language_none">(Default)</string>
+    <string name="pref_skip_commentary_tracks">Skip commentary tracks</string>
+    <string name="pref_skip_commentary_tracks_description">Automatically skip audio tracks with commentary</string>
+
+    <!-- Subtitle Settings -->
+    <string name="lbl_Subtitles">Subtitles</string>
+    <string name="pref_subtitles">Subtitles</string>
+    <string name="pref_Subtitle_Codecs">Subtitles</string>
+    <string name="lbl_subtitle_track">Select subtitle track</string>
+    <string name="pref_subtitle_track_button">Subtitle Track</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="msg_subtitles_loading">Subtitles loading…</string>
+    <string name="msg_burn_sub_warning">Burning in subtitles. This may take a few seconds…</string>
+    <string name="pref_enable_libass">Enable Advanced SubStation Alpha subtitle client rendering</string>
+    <string name="preference_enable_pgs">Direct play PGS subtitles</string>
+    <string name="preference_enable_assDirectPlay">Direct play ASS/SSA subtitles</string>
+    <string name="preference_enable_assDirectPlay_description">This feature is experimental. Disable it if you experience video playback issues</string>
+    <string name="pref_subtitles_size">Subtitle size</string>
+    <string name="pref_subtitles_bold">Make subtitle text bold</string>
+    <string name="pref_subtitles_bold_description">Bold Subtitle</string>
+    <string name="pref_subtitle_weight">Subtitle Weight</string>
+    <string name="pref_subtitle_weight_description">Choose the font weight for subtitles</string>
+    <string name="lbl_subtitle_text_color">Subtitle color</string>
+    <string name="lbl_subtitle_background_color">Subtitle background color</string>
+    <string name="lbl_subtitle_text_stroke_color">Subtitle stroke color</string>
+    <string name="pref_subtitles_background_title">Enable background</string>
+    <string name="pref_subtitles_background_summary">Show a black background behind the subtitles</string>
+    <string name="pref_subtitles_background_opacity">Subtitle background opacity</string>
+    <string name="lbl_subtitle_delay">Subtitle delay</string>
+    <string name="pref_subtitles_vertical_offset">Subtitle Vertical Offset</string>
+    <string name="pref_subtitles_vertical_offset_summary">Adjust the vertical position of subtitles. Negative moves up, positive moves down.</string>
+    <string name="pref_subtitles_vertical_offset_center">Center</string>
+    <string name="pref_subtitle_default_language">Default Subtitle Language</string>
+    <string name="pref_subtitle_default_language_summary">Set the default language for subtitles</string>
+    <string name="pref_subtitle_language_none">None (Disabled)</string>
+    <string name="pref_subtitle_language_ara">العربية (Arabic)</string>
+    <string name="pref_subtitle_language_zho">中文 (Chinese)</string>
+    <string name="pref_subtitle_language_ces">Čeština (Czech)</string>
+    <string name="pref_subtitle_language_dan">Dansk (Danish)</string>
+    <string name="pref_subtitle_language_nld">Nederlands (Dutch)</string>
+    <string name="pref_subtitle_language_eng">English</string>
+    <string name="pref_subtitle_language_fin">Suomi (Finnish)</string>
+    <string name="pref_subtitle_language_fra">Français (French)</string>
+    <string name="pref_subtitle_language_deu">Deutsch (German)</string>
+    <string name="pref_subtitle_language_ell">Ελληνικά (Greek)</string>
+    <string name="pref_subtitle_language_heb">עברית (Hebrew)</string>
+    <string name="pref_subtitle_language_hin">हिन्दी (Hindi)</string>
+    <string name="pref_subtitle_language_hun">Magyar (Hungarian)</string>
+    <string name="pref_subtitle_language_ind">Bahasa Indonesia (Indonesian)</string>
+    <string name="pref_subtitle_language_ita">Italiano (Italian)</string>
+    <string name="pref_subtitle_language_jpn">日本語 (Japanese)</string>
+    <string name="pref_subtitle_language_kor">한국어 (Korean)</string>
+    <string name="pref_subtitle_language_msa">Bahasa Melayu (Malay)</string>
+    <string name="pref_subtitle_language_nor">Norsk (Norwegian)</string>
+    <string name="pref_subtitle_language_pol">Polski (Polish)</string>
+    <string name="pref_subtitle_language_por">Português (Portuguese)</string>
+    <string name="pref_subtitle_language_ron">Română (Romanian)</string>
+    <string name="pref_subtitle_language_rus">Русский (Russian)</string>
+    <string name="pref_subtitle_language_slk">Slovenčina (Slovak)</string>
+    <string name="pref_subtitle_language_spa">Español (Spanish)</string>
+    <string name="pref_subtitle_language_swe">Svenska (Swedish)</string>
+    <string name="pref_subtitle_language_tha">ไทย (Thai)</string>
+    <string name="pref_subtitle_language_tur">Türkçe (Turkish)</string>
+    <string name="pref_subtitle_language_ukr">Українська (Ukrainian)</string>
+    <string name="pref_subtitle_language_vie">Tiếng Việt (Vietnamese)</string>
+
+    <!-- Media Segments & Skipping -->
+    <string name="pref_mediasegment_actions">Media segment actions</string>
+    <string name="segment_action_ask_to_skip">Ask to skip</string>
+    <string name="segment_action_nothing">Do nothing</string>
+    <string name="segment_action_skip">Skip</string>
+    <string name="segment_type_commercial">Commercials</string>
+    <string name="segment_type_intro">Intros</string>
+    <string name="segment_type_outro">Outros</string>
+    <string name="segment_type_preview">Previews</string>
+    <string name="segment_type_recap">Recaps</string>
+    <string name="segment_type_unknown">Unknown segments</string>
+    <string name="pref_skip_duration">Skip Overlay Duration</string>
+    <string name="pref_skip_duration_summary">Choose how long the skip button remains visible</string>
+    <string name="skip_duration_default">Default</string>
+    <string name="skip_duration_10_seconds">10 Seconds</string>
+    <string name="skip_duration_15_seconds">15 Seconds</string>
+    <string name="skip_duration_20_seconds">20 Seconds</string>
+    <string name="skip_forward_length">Skip forward length</string>
+
+    <!-- Next Up -->
+    <string name="pref_next_up_timeout_summary">How long to wait before playing the next item</string>
+    <string name="pref_next_up_timeout_title">Next up timer duration</string>
+    <string name="pref_next_up_timeout_disabled">∞</string>
+    <string name="pref_next_up_behavior_title">Show next video info</string>
+    <string name="lbl_next_up_extended">With thumbnail</string>
+    <string name="lbl_next_up_minimal">Without thumbnail</string>
+    <string name="lbl_play_next_up">Play next up</string>
+
+    <!-- Queue Management -->
+    <string name="lbl_add_to_queue">Add to queue</string>
+    <string name="lbl_remove_from_queue">Remove from queue</string>
+    <string name="lbl_clear_queue">Clear queue</string>
+    <string name="lbl_shuffle_queue">Toggle shuffle</string>
+    <string name="lbl_goto_now_playing">Go to now playing</string>
+    <string name="current_queue">Current queue</string>
+
+    <!-- Now Playing -->
+    <string name="lbl_playing">Playing</string>
+    <string name="lbl_now_playing">Now playing</string>
+    <string name="lbl_now_playing_track">%1$s of %2$s</string>
+    <string name="lbl_now_playing_album">from %1$s</string>
+    <string name="lbl_next_item">Next item</string>
+    <string name="lbl_prev_item">Previous item</string>
+    <string name="lbl_instant_mix">Instant mix</string>
+    <string name="desc_automatic_fav_songs">Automatic playlist of favorite songs</string>
     <string name="lbl_playback_speed">Playback speed</string>
     <string name="lbl_quality_profile">Quality profile</string>
 
-    <!-- Clock Preferences -->
-    <string name="pref_clock_settings">Clock Settings</string>
-    <string name="pref_clock_settings_description">Customize clock and profile image display</string>
+    <!-- Player UI -->
+    <string name="player_controls_hide_duration">Hide Player UI Controls Duration</string>
+    <string name="player_controls_hide_duration_summary">Time in seconds before player controls automatically hide</string>
 
+    <!-- Playback Stats -->
+    <string name="stats_title">Playback Information</string>
+    <string name="video_title">Video</string>
+    <string name="audio_title">Audio</string>
+    <string name="playback_info_title">Playback</string>
+    <string name="video_info">Video: %1$s • %2$s • %3$s\nProfile: %4$s</string>
+    <string name="audio_info">Audio: %1$s • %2$s • %3$s\nLanguage: %4$s</string>
+    <string name="playback_method">Playback: %1$s</string>
+    <string name="container">Container: %1$s</string>
+    <string name="transcoding_details">Transcoding Details:</string>
+    <string name="transcoding_protocol">Protocol: %1$s</string>
+    <string name="reason_for_transcoding">Reason for transcoding:</string>
+    <string name="direct_play">Direct Play</string>
+    <string name="transcoding">Transcoding</string>
+    <string name="resolution_na">N/A</string>
 
-    <string name="lbl_subtitle_track">Select subtitle track</string>
-    <string name="btn_got_it">Got it</string>
-    <string name="lbl_clear_queue">Clear queue</string>
-    <string name="lbl_play_next_up">Play next up</string>
-    <string name="lbl_open">Open</string>
+    <!-- Media Details -->
+    <string name="lbl_cast_crew">Cast &amp; crew</string>
+    <string name="lbl_additional_parts">Additional parts</string>
+    <string name="lbl_chapters">Chapters</string>
+    <string name="chapters">Chapters</string>
+    <string name="lbl_specials">Specials</string>
+    <string name="lbl_trailers">Trailers</string>
+    <string name="lbl_trailer">"Trailer "</string>
+    <string name="lbl_play_trailers">Play trailer(s)</string>
+    <string name="lbl_people">People</string>
+    <string name="lbl_guest_stars">Guest stars</string>
+    <string name="lbl_directed_by">"Directed by"</string>
+    <string name="lbl_stars">Stars</string>
+    <string name="lbl_tomatoes">Tomatoes</string>
+    <string name="pref_default_rating">Default rating type</string>
+    <string name="lbl_more_like_this">More like this</string>
+    <string name="lbl_similar_items_library">Similar items in your library</string>
+    <string name="because_you_watched">Because you watched %1$s</string>
+
+    <!-- Episode & Season Info -->
+    <string name="lbl_special">Special</string>
+    <string name="lbl_season_number">S%1$d</string>
+    <string name="lbl_episode_number">E%1$d</string>
+    <string name="lbl_episode_range">E%1$d–%2$d</string>
+    <string name="lbl_previous_episode">Previous episode</string>
+    <string name="lbl_next_episode">Next episode</string>
+    <string name="lbl_new_episodes">New episodes</string>
+    <string name="lbl_premieres">Premieres</string>
+    <string name="lbl_premiere">Premiere</string>
+    <string name="lbl_repeat_episodes">Repeat episodes</string>
+    <string name="episode_name_special">special</string>
+    <string name="episode_missing">Episode missing</string>
+    <string name="episode_missing_message">This episode is missing from your library.  Would you like to skip it and continue to the next one?</string>
+    <string name="episode_missing_message_2">This episode is missing from your library.  Playback will stop.</string>
+
+    <!-- Item Metadata -->
+    <string name="lbl_sd">SD</string>
+    <string name="lbl_runs">"Runs"</string>
+    <string name="runtime_hours_minutes">%1$dh %2$dm</string>
+    <string name="runtime_minutes">%1$dm</string>
+    <string name="lbl_runtime">Runtime</string>
+    <string name="lbl_ends">"Ends"</string>
+    <string name="lbl_last_played">"Last played "</string>
+    <string name="lbl_born">"Born "</string>
+    <string name="person_birthday_and_age">Born %1$s (%2$d)</string>
+    <string name="lbl__continuing"> CONTINUING </string>
+    <string name="lbl_ended"> ENDED </string>
+    <string name="lbl_other_options">Other options</string>
+    <string name="lbl_recordings">Recordings</string>
+    <string name="lbl_album_name">Album name</string>
+    <string name="lbl_song_title">Song title</string>
+    <string name="lbl_name_date">%1$s (%2$s)</string>
+    <string name="lbl_time_range">%1$s–%2$s</string>
+
+    <!-- Live TV -->
+    <string name="lbl_live_tv">Live TV</string>
+    <string name="lbl_live_tv_guide">Live TV Guide</string>
+    <string name="lbl_recorded_tv">Recorded TV</string>
+    <string name="pref_live_tv_cat">Live TV</string>
+    <string name="live_tv_preferences">Live TV options</string>
+    <string name="lbl_direct_stream_live">Direct stream live TV</string>
+    <string name="pref_direct_stream_live_off">Transcoding is used when necessary</string>
+    <string name="pref_direct_stream_live_on">Transcoding is disabled</string>
+    <string name="msg_error_live_stream">Error streaming live TV. Will re-try…</string>
+    <string name="lbl_load_channels">"Load channels "</string>
+    <string name="lbl_tune_to_channel">Tune to channel</string>
+    <string name="lbl_tv_channel_status">%1$d of %2$d channels</string>
+    <string name="lbl_tv_filter_status"> for next %1$d hours</string>
+    <string name="lbl_filters">Live TV filters</string>
+    <string name="lbl_new_only">New only</string>
+    <string name="lbl_live_broadcasts">Live broadcasts</string>
+    <string name="lbl_hd_programs">HD Programs</string>
+    <string name="lbl_colored_backgrounds">Color coded backgrounds</string>
+    <string name="lbl_start_favorites">Place favorites at beginning</string>
+    <string name="lbl_show_indicators">Show indicators for</string>
+    <string name="lbl_guide_option_played">Last played</string>
+    <string name="lbl_guide_option_number">Channel number</string>
     <string name="lbl_show_backdrop">Show backdrops</string>
     <string name="lbl_show_premieres">Show season premieres</string>
     <string name="desc_premieres">Show a row of new episode pilots for any series you watch</string>
+    <string name="lbl_load_guide_data">Load guide data</string>
+    <string name="msg_live_tv_next">Load next %1$d hours?"</string>
+    <string name="msg_live_tv_prev">Load prev %1$d hours?"</string>
+    <string name="no_program_data">No program data available</string>
+    <string name="lbl_today">Today</string>
+    <string name="lbl_tomorrow">Tomorrow</string>
+    <string name="lbl_on">On </string>
     <string name="lbl_in_x_days">In %d days</string>
     <string name="lbl_select_date">Select date</string>
+
+    <!-- Recording -->
+    <string name="lbl_record">Record</string>
+    <string name="lbl_record_series">Record series</string>
+    <string name="lbl_cancel_recording">Cancel recording</string>
+    <string name="lbl_cancel_series">Cancel series</string>
+    <string name="msg_set_to_record">Program set to record</string>
+    <string name="msg_unable_to_create_recording">Unable to create recording</string>
+    <string name="msg_recording_cancelled">Recording cancelled</string>
+    <string name="msg_unable_to_cancel">Unable to cancel recording</string>
+    <string name="msg_recording_now">Recording now</string>
+    <string name="msg_will_record">Will record</string>
+    <string name="lbl_no_recordings">No recordings available</string>
+    <string name="lbl_series_recordings">Series recordings</string>
     <string name="lbl_just_this_once">Just this once</string>
     <string name="msg_record_entire_series">Record entire series?</string>
-    <string name="no_program_data">No program data available</string>
-    <string name="lbl_sports">Sports</string>
-    <string name="lbl_kids">Kids</string>
-    <string name="lbl_recent_recordings">Recent recordings</string>
+    <string name="msg_cancel_entire_series">Are you sure you want to cancel this ENTIRE SERIES?</string>
+    <string name="lbl_record_any_channel">Record on any channel</string>
+    <string name="lbl_record_any_time">Record at any time</string>
+    <string name="lbl_only_new_episodes">Only new episodes</string>
+    <string name="lbl_at_any_time">At any time</string>
+    <string name="lbl_on_schedule">On schedule</string>
+    <string name="lbl_on_any_channel">On any channel</string>
+    <string name="lbl_on_channel">On %1$s</string>
     <string name="lbl_repeat">Repeat</string>
+    <string name="lbl_repeat_options">Repeat options</string>
     <string name="lbl_new">New</string>
     <string name="lbl_live">Live</string>
     <string name="lbl_schedule">Schedule</string>
     <string name="lbl_episode_not_record">This showing will NOT record</string>
     <string name="lbl_series_settings">Series preferences</string>
     <string name="msg_settings_updated">Preferences updated</string>
-    <string name="lbl_save">Save</string>
-    <string name="lbl_series_recordings">Series recordings</string>
-    <string name="lbl_at_any_time">At any time</string>
-    <string name="lbl_on_schedule">On schedule</string>
-    <string name="lbl_guest_stars">Guest stars</string>
-    <string name="lbl_premiere">Premiere</string>
-    <string name="lbl_sort_by">Sort by</string>
-    <string name="lbl_show_indicators">Show indicators for</string>
-    <string name="lbl_guide_option_played">Last played</string>
-    <string name="lbl_guide_option_number">Channel number</string>
-    <string name="lbl_resume_preroll">Resume pre-roll</string>
-    <string name="lbl_subtitle_text_color">Subtitle color</string>
-    <string name="lbl_subtitle_background_color">Subtitle background color</string>
-    <string name="lbl_subtitle_text_stroke_color">Subtitle stroke color</string>
-    <string name="lbl_resume_from">Resume from %1$s</string>
-    <string name="lbl_more_like_this">More like this</string>
-    <string name="lbl_previous_episode">Previous episode</string>
-    <string name="lbl_next_episode">Next episode</string>
-    <string name="lbl_album_name">Album name</string>
-    <string name="lbl_song_title">Song title</string>
-    <string name="lbl_tv_channel_status">%1$d of %2$d channels</string>
-    <string name="lbl_tv_filter_status"> for next %1$d hours</string>
-    <string name="lbl_news">News</string>
-    <string name="lbl_new_only">New only</string>
-    <string name="lbl_subtitle_delay">Subtitle delay</string>
-    <string name="lbl_new_episodes">New episodes</string>
-    <string name="lbl_premieres">Premieres</string>
-    <string name="lbl_repeat_episodes">Repeat episodes</string>
-    <string name="lbl_live_broadcasts">Live broadcasts</string>
-    <string name="lbl_hd_programs">HD Programs</string>
-    <string name="lbl_colored_backgrounds">Color coded backgrounds</string>
-    <string name="lbl_start_favorites">Place favorites at beginning</string>
-    <string name="lbl_image_type">Image type</string>
-    <string name="lbl_image_size">Image size</string>
-    <string name="lbl_my_media">My Media</string>
-    <string name="lbl_my_media_small">My Media (Small)</string>
-    <string name="lbl_my_media_extra_small">Media Folders</string>
-    <string name="desc_my_media_extra_small">Display My media folders as buttons </string>
+    <string name="lbl_begin_padding">Begin padding</string>
+    <string name="lbl_program_ended">Program ended</string>
+    <string name="lbl_end_padding">End padding</string>
+    <string name="lbl_starting_early_ending_after">Starting %1$s early and ending %2$s after schedule</string>
+    <string name="lbl_starting_early_ending_on_schedule">Starting %1$s early and ending on Schedule</string>
+    <string name="lbl_starting_on_schedule_ending_after">Starting on schedule and ending %1$s after schedule</string>
+    <string name="lbl_start_end_on_schedule">Starting on schedule and ending on schedule</string>
+    <string name="lbl_record_only_new">Will record only new episodes</string>
+    <string name="lbl_record_all">Will record all episodes</string>
+
+    <!-- Theme & Appearance -->
+    <string name="pref_theme">Theme</string>
+    <string name="pref_app_theme">App theme</string>
     <string name="pref_theme_purple_haze">Lavender Haze</string>
     <string name="pref_theme_dark_purple">Dark Purple</string>
-    <string name="pref_theme_dark">Dark Matter (Restart required)</string>
+    <string name="pref_theme_dark">Dark Matter</string>
     <string name="pref_theme_emerald">Green forest</string>
     <string name="pref_theme_muted_purple">Light Breeze</string>
-    <string name="pref_theme_basic">Basic (Dark Low-End)</string>
+    <string name="pref_theme_basic">Basic Dark Low-End</string>
     <string name="pref_theme_flexy">Flexy </string>
     <string name="pref_theme_yellow_town">Yellow Town </string>
-    <string name="pref_about_title">About</string>
-    <string name="pref_external_player">Use external player</string>
-    <string name="pref_next_up_timeout_summary">How long to wait before playing the next item</string>
-    <string name="pref_next_up_timeout_title">Next up timer duration</string>
-    <string name="pref_next_up_timeout_disabled">∞</string>
-    <string name="watch_now">Watch now</string>
-    <string name="pref_next_up_behavior_title">Show next video info</string>
-    <string name="pref_app_theme">App theme</string>
-    <string name="pref_device_model">Device model</string>
+    <string name="Dynamic_colors">Dynamic Colors</string>
+    <string name="pref_dynamic_colors">Use colors extracted from backdrop image instead of theme colors</string>
+
+    <!-- Backdrop Settings -->
+    <string name="backdrop_settings">Backdrop Settings</string>
+    <string name="backdrop_settings_description">Configure background image display settings</string>
+    <string name="pref_show_backdrop_description">Show backdrop images in the background</string>
+    <string name="lbl_backdrop_fading">fading Effect</string>
+    <string name="lbl_backdrop_dimming">Dimming Effect</string>
+    <string name="lbl_fading_effect_low">Low</string>
+    <string name="lbl_fading_effect_Medium">Medium</string>
+    <string name="lbl_fading_effect_High">High</string>
+
+    <!-- Image Display -->
+    <string name="lbl_image_type">Image type</string>
+    <string name="lbl_image_size">Image size</string>
+    <string name="image_type_poster">Poster</string>
+    <string name="image_type_thumbnail">Thumbnail</string>
+    <string name="image_type_banner">Banner</string>
+    <string name="image_size_smallest">Smallest</string>
+    <string name="image_size_small">Small</string>
+    <string name="image_size_medium">Medium</string>
+    <string name="image_size_large">Large</string>
+    <string name="image_size_xlarge">Extra-Large</string>
+    <string name="cards_size">Cards Size</string>
+    <string name="card_size_small">Small</string>
+    <string name="card_size_medium">Normal (Default)</string>
+    <string name="card_size_large">Large</string>
+    <string name="show_white_borders">Show white borders around cards</string>
+    <string name="show_white_borders_summary">Display a white border around each card in the UI</string>
+    <string name="image_quality">Image Quality</string>
+    <string name="image_quality_summary">Choose the quality of images displayed in the app.</string>
+    <string name="image_quality_low">Low</string>
+    <string name="image_quality_normal">Normal</string>
+    <string name="image_quality_high">High</string>
+    <string name="lbl_use_launcher_thumbnails">Prefer thumbnails in launcher</string>
+    <string name="lbl_use_launcher_thumbnails_description">Use thumbnails over Posters for all content recommendations</string>
+    <string name="lbl_use_series_thumbnails">Prefer series thumbnails</string>
+    <string name="lbl_use_series_thumbnails_description">Use series thumbnails instead of individual episode thumbnails AKA no spoilers</string>
+
+    <!-- Image Cache -->
+    <string name="clear_image_cache">Clear image cache</string>
+    <string name="clear_image_cache_content">Used: %1$s</string>
+    <string name="pref_disk_cache_size">Image cache size</string>
+    <string name="pref_disk_cache_size_summary">Set the maximum size for the image cache</string>
+    <string name="pref_disk_cache_size_disabled">Disable,No cache</string>
+    <string name="pref_disk_cache_size_100mb">100 MB</string>
+    <string name="pref_disk_cache_size_250mb">250 MB</string>
+    <string name="pref_disk_cache_size_500mb">500 MB</string>
+    <string name="pref_disk_cache_size_800mb">800 MB</string>
+    <string name="pref_disk_cache_size_1gb">1 GB</string>
+    <string name="pref_disk_cache_size_1_5gb">1.5 GB</string>
+    <string name="pref_disk_cache_size_2gb">2 GB</string>
+    <string name="restart_required">Restart Required</string>
+    <string name="restart_required_message">The app needs to restart for the cache size changes to take effect.</string>
+    <string name="restart_now">Restart Now</string>
+    <string name="restart_later">Later</string>
+
+    <!-- Clock & UI Display -->
+    <string name="pref_clock_settings">Clock Settings</string>
+    <string name="pref_clock_settings_description">Customize clock and profile image display</string>
+    <string name="pref_clock_display">Show clock</string>
+    <string name="lbl_always">Always</string>
+    <string name="pref_clock_display_browsing">While browsing</string>
+    <string name="pref_clock_display_playback">During playback</string>
+
+    <!-- Grid & Layout -->
     <string name="grid_direction">Grid direction</string>
-    <string name="grid_direction_horizontal">Horizontal</string>
     <string name="grid_direction_vertical">Vertical</string>
     <string name="grid_direction_list">List</string>
-    <string name="lbl_unknown_key">Unknown (%1s)</string>
-    <string name="pref_audio_track_button">Audio track button</string>
-    <string name="pref_subtitle_track_button">Subtitle Track</string>
+    <string name="enable_smart_view">Enable smart screen</string>
+    <string name="enable_smart_view_description">Smart screen shows relevant items instead of a grid</string>
 
-    <!-- Subtitle Weight Preference -->
-    <string name="pref_subtitle_weight">Subtitle Weight</string>
-    <string name="pref_subtitle_weight_description">Choose the font weight for subtitles</string>
-    <string name="pref_button_remapping_description">Press any button on the TV remote to assign it</string>
-    <string name="lbl_Reset">Reset</string>
-    <string name="bitrate_mbit">%1$,.0f Mbit/s</string>
-    <string name="bitrate_kbit">%1$,.0f Kbit/s</string>
-    <string name="mark_watched">Mark watched</string>
-    <string name="mark_watched_message">The item didn\'t appear to play as long as its duration. Mark watched?</string>
-    <string name="no_player">No player</string>
-    <string name="no_player_message">It doesn\'t appear you have a video capable app installed.  This option requires you install a 3rd party application for playing video content.</string>
-    <string name="episode_missing">Episode missing</string>
-    <string name="episode_missing_message">This episode is missing from your library.  Would you like to skip it and continue to the next one?</string>
-    <string name="episode_missing_message_2">This episode is missing from your library.  Playback will stop.</string>
-    <string name="lbl_load_guide_data">Load guide data</string>
-    <string name="msg_live_tv_next">Load next %1$d hours?"</string>
-    <string name="msg_live_tv_prev">Load prev %1$d hours?"</string>
-    <string name="seek_error">Unable to seek</string>
-    <string name="player_error">Player error encountered. Will re-try…</string>
-    <string name="too_many_errors">Too many errors. Giving up</string>
-    <string name="subtitle_error">Unable to select subtitle</string>
-    <string name="msg_no_items">No items to play</string>
-    <string name="audio_error">Unable to play audio %1$s</string>
-    <string name="turn_off">Turn this option off</string>
-    <string name="just_one">Just this one</string>
-    <string name="lbl_sign_in">Please sign in</string>
-    <string name="lbl_playback_control_ends">Ends at %1$s</string>
-    <string name="watch_count_overflow">99+</string>
-    <string name="lbl_stars">Stars</string>
-    <string name="lbl_tomatoes">Tomatoes</string>
-    <string name="pref_default_rating">Default rating type</string>
+    <!-- Badges & Indicators -->
+    <string name="pref_show_resolution_badge">Show resolution badge</string>
+    <string name="lbl_show_resolution_badge">Show Resolution Badge</string>
+    <string name="pref_show_audio_codec_badge">Show Audio Codec badge</string>
+    <string name="indicator_subtitles">CC</string>
+    <string name="indicator_subtitles_hearing_impaired">SDH</string>
+    <string name="dolby_vision">Dolby Vision</string>
+    <string name="dolby_atmos">Dolby Atmos</string>
+    <string name="dts_x">DTS:X</string>
+    <string name="dts_hd">DTS:HD</string>
+    <string name="dca">DTS</string>
+    <string name="ac3">DD</string>
+    <string name="eac3">DD+</string>
+
+    <!-- Carousel Settings -->
+    <string name="pref_snowfall_enabled">Christmas Snowfall Effect</string>
+    <string name="pref_snowfall_enabled_description">Enable animated snowfall effect on the carousel for a festive Christmas atmosphere</string>
+    <string name="pref_carousel_include_series">Include Series in Carousel</string>
+    <string name="pref_carousel_include_series_description">Add TV Series alongside Movies in the featured carousel</string>
+
+    <!-- Screensaver -->
+    <string name="pref_screensaver">Screensaver</string>
+    <string name="pref_screensaver_inapp_enabled">Use in-app screensaver</string>
+    <string name="pref_screensaver_inapp_enabled_description">Show The screensaver while the app is open</string>
+    <string name="pref_screensaver_inapp_timeout">Start screensaver after</string>
+    <string name="pref_screensaver_clock_enabled">Show clock in screensaver</string>
+    <string name="pref_screensaver_logo_enabled">Show logos and titles in screensaver</string>
+    <string name="pref_screensaver_ageratingmax">Maximum age rating</string>
+    <string name="pref_screensaver_ageratingmax_zero">All ages</string>
+    <string name="pref_screensaver_ageratingmax_entry">Up to age %1$d</string>
+    <string name="pref_screensaver_ageratingmax_unlimited">Disable maximum</string>
+    <string name="pref_screensaver_ageratingrequired_title">Require age rating</string>
+    <string name="pref_screensaver_ageratingrequired_enabled">Only showing items with an age rating set</string>
+    <string name="pref_screensaver_ageratingrequired_disabled">Showing all items</string>
+
+    <!-- Android TV Channels -->
+    <string name="android_channels">Android TV Channels</string>
+    <string name="lbl_enable_launcher_channels">Enable launcher channels</string>
+    <string name="lbl_enable_launcher_channels_description">Show all app channels recommendations</string>
+
+    <!-- Theme Songs -->
     <string name="pref_theme_songs">Theme songs</string>
     <string name="pref_theme_songs_enable">Enable Theme songs</string>
     <string name="pref_theme_songs_volume">Theme Songs volume</string>
@@ -381,152 +741,40 @@
     <string name="pref_theme_song_volume_normal">Normal</string>
     <string name="pref_theme_song_volume_high">High</string>
     <string name="pref_theme_song_volume_very_high">Very High</string>
-    <string name="pref_clock_display">Show clock</string>
-    <string name="lbl_always">Always</string>
-    <string name="pref_clock_display_browsing">While browsing</string>
-    <string name="pref_clock_display_playback">During playback</string>
+
+    <!-- Age Ratings -->
+    <string name="lbl_age_rating_required">Age Rating Required</string>
+    <string name="lbl_maximum_age_rating">Maximum Age Rating</string>
+    <string name="lbl_unlimited">Unlimited</string>
+
+    <!-- Media Management -->
+    <string name="lbl_enable_media_management">Enable Media Management</string>
+    <string name="pref_enable_media_management">Enable media management</string>
+    <string name="pref_enable_media_management_description">Show option to manage media while browsing</string>
+    <string name="item_delete_confirm_title">Delete item</string>
+    <string name="item_delete_confirm_message">Are you sure you want to delete this item from the server? This action cannot be undone.</string>
+    <string name="item_deleted">%1$s deleted</string>
+    <string name="item_deletion_failed">Unable to delete %1$s</string>
+
+    <!-- Server Connection -->
+    <string name="lbl_enter_server_address">Enter server address</string>
+    <string name="lbl_valid_server_address">Please enter the server address (IP or domain/machine name)</string>
     <string name="server_connecting">Connecting to %1$s</string>
     <string name="server_connection_failed">Unable to connect to server</string>
     <string name="server_connection_failed_candidates">Unable to connect to server, tried the following addresses: %1$s</string>
     <string name="server_field_empty">The address cannot be empty</string>
-    <string name="login_authenticating">Authenticating…</string>
-    <string name="login_invalid_credentials">Invalid username and/or password</string>
-    <string name="login_server_unavailable">Unable to connect to server</string>
-    <string name="login_username_field_empty">Username cannot be empty</string>
-    <string name="lbl_manage_servers">Manage servers</string>
-    <string name="lbl_remove_users">This will also remove all associated accounts</string>
-    <string name="backdrop_settings">Backdrop Settings</string>
-    <string name="backdrop_settings_description">Configure background image display settings</string>
-    <string name="lbl_backdrop_fading">Backdrop fading</string>
-    <string name="lbl_backdrop_dimming">Backdrop Dimming</string>
-    <string name="pref_show_backdrop_description">Show backdrop images in the background of the app</string>
-
-    <string name="lbl_remove_user_content">Remove account</string>
-    <string name="lbl_sign_out_content">Requires login on next use</string>
-    <string name="lbl_remove_server">Remove server</string>
-    <string name="lbl_user_last_used">Last used on %1$s at %2$s</string>
-    <string name="lbl_user_server">%1$s on %2$s</string>
-    <string name="lbl_server">Server</string>
-    <string name="lbl_remove">Remove</string>
-    <string name="lbl_sign_out">Sign out</string>
-    <string name="enable_smart_view">Enable smart screen</string>
-    <string name="enable_smart_view_description">Smart screen shows relevant items instead of a grid</string>
-    <string name="image_type_poster">Poster</string>
-    <string name="image_type_thumbnail">Thumbnail</string>
-    <string name="image_type_banner">Banner</string>
-    <string name="image_size_smallest">Smallest</string>
-    <string name="image_size_small">Small</string>
-    <string name="image_size_medium">Medium</string>
-    <string name="image_size_large">Large</string>
-    <string name="image_size_xlarge">Extra-Large</string>
-    <string name="cards_size">Cards Size</string>
-    <string name="show_white_borders">Show white borders around cards</string>
-    <string name="show_white_borders_summary">Display a white border around each card in the UI</string>
-    <string name="image_quality">Image Quality</string>
-    <string name="image_quality_summary">Choose the quality of images displayed in the app.</string>
-    <string name="image_quality_low">Low</string>
-    <string name="image_quality_normal">Normal</string>
-    <string name="image_quality_high">High</string>
-    <string name="card_size_small">Small</string>
-    <string name="card_size_medium">Normal (Default)</string>
-    <string name="card_size_large">Large</string>
-    <string name="pref_developer_link">Developer options</string>
-    <string name="pref_developer_link_description">Advanced and experimental features</string>
-    <string name="lbl_hidden">Hidden</string>
     <string name="discovered_servers_title">Discovered servers</string>
     <string name="discovered_servers_empty">No servers found on local network.</string>
     <string name="connect_manually_by_address">Enter server address</string>
-    <string name="login_help_title">Need help?</string>
-    <string name="login_help_description">Dune requires a server to connect with. Visit the documentation at docs.jellyfin.org or scan the QR code to get started.</string>
-    <string name="pref_watched_indicator">Show watched indicators</string>
-    <string name="pref_show_resolution_badge">Show resolution badge</string>
-    <string name="pref_show_audio_codec_badge">Show Audio Codec badge</string>
-    <string name="lbl_hide_unwatched_count">When the item is watched</string>
-    <string name="lbl_hide_watched_checkmark">When there are episodes remaining</string>
-    <string name="lbl_use_launcher_thumbnails">Prefer thumbnails in launcher</string>
-    <string name="lbl_use_launcher_thumbnails_description">Use thumbnails over Posters for all content recommendations</string>
-    <string name="lbl_enable_launcher_channels">Enable launcher channels</string>
-    <string name="lbl_enable_launcher_channels_description">Show all app channels recommendations</string>
-    <string name="lbl_use_series_thumbnails">Prefer series thumbnails</string>
-    <string name="lbl_use_series_thumbnails_description">Use series thumbnails instead of individual episode thumbnails AKA no spoilers</string>
-    <string name="auto_sign_in">Automatic sign in</string>
-    <string name="user_picker_disable_title">Disable</string>
-    <string name="user_picker_disable_summary">Always show the sign in screen</string>
-    <string name="user_picker_last_user_title">Most recently used</string>
-    <string name="user_picker_last_user_summary">Use the last active account</string>
-    <string name="lbl_switch_user">Users</string>
-    <string name="no_network_permissions">Dune requires network permissions to function</string>
-    <string name="press_to_close">Press to close</string>
     <string name="saved_servers">Saved servers</string>
-    <string name="welcome_title">Welcome to Dune!</string>
-    <string name="welcome_content">Connect to your server to get started.</string>
-    <string name="no_user_warning">We couldn\'t find any accounts!\nAdd a new account by pressing the \"Add account\" button.</string>
-    <string name="who_is_watching">Who\'s watching?</string>
-    <string name="add_user">Add account</string>
-    <string name="help">Help</string>
-    <string name="lbl_special">Special</string>
-    <string name="lbl_season_number">S%1$d</string>
-    <string name="lbl_episode_number">E%1$d</string>
-    <string name="lbl_episode_range">E%1$d–%2$d</string>
-    <string name="lbl_next_up_extended">With thumbnail</string>
-    <string name="lbl_next_up_minimal">Without thumbnail</string>
-    <string name="lbl_starting_early_ending_after">Starting %1$s early and ending %2$s after schedule</string>
-    <string name="lbl_starting_early_ending_on_schedule">Starting %1$s early and ending on Schedule</string>
-    <string name="lbl_starting_on_schedule_ending_after">Starting on schedule and ending %1$s after schedule</string>
-    <string name="lbl_start_end_on_schedule">Starting on schedule and ending on schedule</string>
-    <string name="lbl_record_only_new">Will record only new episodes</string>
-    <string name="lbl_record_all">Will record all episodes</string>
-    <string name="lbl_on_any_channel">On any channel</string>
-    <string name="lbl_on_channel">On %1$s</string>
-    <string name="lbl_name_date">%1$s (%2$s)</string>
-    <string name="lbl_time_range">%1$s–%2$s</string>
-    <string name="enable_playback_module_description">This is an experimental feature. No support is provided.</string>
-    <string name="last_use">Most recently used</string>
-    <string name="alphabetical">Alphabetical</string>
-    <string name="always_authenticate">Always ask for credentials</string>
-    <string name="always_authenticate_description">Enabling this function disables auto sign in</string>
-    <string name="advanced_settings">Advanced</string>
-    <string name="select_version">Version</string>
-    <string name="licenses_link">Licenses</string>
-    <string name="licenses_link_description"></string>
-    <string name="license_description">Description</string>
-    <string name="license_version">Version</string>
-    <string name="license_artifact">Artifact</string>
-    <string name="license_website">Website</string>
-    <string name="license_repository">Repository</string>
-    <string name="license_author">Author</string>
-    <string name="license_license">License</string>
-    <string name="home_prefs">Home</string>
-    <string name="home_sections">Home sections</string>
-    <string name="customization">Customization</string>
-    <string name="home_section_latest_media">Recently added media</string>
-    <string name="home_section_library">My media</string>
-    <string name="home_section_library_small">My media (small)</string>
-    <string name="home_section_resume">Continue watching</string>
-    <string name="home_section_resume_audio">Continue listening</string>
-    <string name="home_section_active_recordings">Active recordings</string>
-    <string name="home_section_next_up">Next up</string>
-    <string name="home_section_continue_watching_combined">Continue watching combined</string>
-    <string name="home_section_continue_nextup">Continue watching</string>
-    <string name="home_section_livetv">Live TV</string>
-    <string name="home_section_none">None</string>
-    <string name="home_section_i">Home section %1$d</string>
-    <string name="searchable_hint">Search Dune</string>
-    <string name="searchable_settings_description">Media</string>
-    <string name="pref_subtitles_background_title">Enable background</string>
-    <string name="pref_subtitles_background_summary">Show a black background behind the subtitles</string>
-    <string name="pref_Subtitle_Codecs">Subtitles</string>
-    <string name="color_white">White</string>
-    <string name="color_black">Black</string>
-    <string name="color_darkgrey">Dark grey</string>
-    <string name="color_red">Red</string>
-    <string name="color_green">Green</string>
-    <string name="color_blue">Blue</string>
-    <string name="color_yellow">Yellow</string>
-    <string name="color_pink">Pink</string>
-    <string name="color_cyan">Cyan</string>
-    <string name="pref_subtitles_size">Subtitle size</string>
-    <string name="pref_subtitles_bold">Bold Subtitle</string>
+    <string name="lbl_server">Server</string>
+    <string name="lbl_manage_servers">Manage servers</string>
+    <string name="lbl_remove_server">Remove server</string>
+    <string name="lbl_remove_users">This will also remove all associated accounts</string>
+    <string name="msg_remove_server_confirm">Are you sure you want to remove this server and all its users? This action cannot be undone.</string>
+    <string name="action_connect">Connect</string>
+
+    <!-- Server Issues -->
     <string name="server_issue_unable_to_connect">Unable to connect</string>
     <string name="server_issue_invalid_product">Server software is incompatible</string>
     <string name="server_issue_missing_version">Could not determine server version</string>
@@ -534,42 +782,117 @@
     <string name="server_issue_outdated_version">Server uses unsupported version %1$s. Please update to %2$s or newer</string>
     <string name="server_issue_timeout">Connection timed out</string>
     <string name="server_issue_ssl_handshake">SSL handshake failed</string>
-    <string name="pref_customization">Customization</string>
-    <string name="sort_accounts_by">Sort accounts by</string>
-    <string name="pref_accounts">Accounts</string>
-    <string name="pref_behavior">Behavior</string>
-    <string name="pref_browsing">Browsing</string>
-    <string name="pref_theme">Theme</string>
-    <string name="pref_home_description">Configure shown sections</string>
-    <string name="pref_libraries">Libraries</string>
-    <string name="pref_libraries_description">Change how libraries are displayed</string>
+    <string name="server_unsupported_notification">This server uses Jellyfin version %1$s which is unsupported. Please update to Jellyfin %2$s or newer to continue using the app.</string>
+    <string name="server_setup_incomplete">The setup of this server has not been completed. Open Jellyfin in a web browser to finish setup before signing in.</string>
+    <string name="app_notification_update_soon">Update your server from %1$s to at least %2$s to continue using the app after the next update.</string>
+
+    <!-- Login & Authentication -->
+    <string name="pref_authentication_cat">Authentication</string>
     <string name="pref_login">Login</string>
     <string name="pref_login_description">Servers, accounts, automatic sign in</string>
-    <string name="pref_customization_description">Theme, home, remapping</string>
-    <string name="pref_playback_description">Video, subtitles, live tv, next up</string>
-    <string name="pref_video">Video</string>
-    <string name="pref_subtitles">Subtitles</string>
-    <string name="pref_audio">Audio</string>
-    <string name="pref_direct_stream_live_off">Transcoding is used when necessary</string>
-    <string name="pref_direct_stream_live_on">Transcoding is disabled</string>
-    <string name="home_section_resume_book">Continue reading</string>
+    <string name="lbl_sign_in">Please sign in</string>
     <string name="action_login">Sign in</string>
     <string name="action_use_password">Use a password</string>
     <string name="action_use_quickconnect">Use Quick Connect</string>
     <string name="input_username">Username</string>
     <string name="input_password">Password</string>
     <string name="login_connect_to">Connecting to %1$s</string>
+    <string name="login_authenticating">Authenticating…</string>
+    <string name="login_invalid_credentials">Invalid username and/or password</string>
+    <string name="login_server_unavailable">Unable to connect to server</string>
+    <string name="login_username_field_empty">Username cannot be empty</string>
     <string name="login_other_options">Other options:</string>
     <string name="login_quickconnect_step_1">1.Open the Jellyfin app on your phone or webbrowser</string>
     <string name="login_quickconnect_step_2">2.Open the user menu and go to the Quick Connect page</string>
     <string name="login_quickconnect_step_3">3.Enter the following code:</string>
-    <string name="lbl_refresh_switching">Refresh rate switching</string>
-    <string name="pref_refresh_rate_scale_on_tv">Scale on TV</string>
-    <string name="pref_refresh_rate_scale_on_device">Scale on device</string>
-    <string name="action_connect">Connect</string>
-    <string name="live_tv_preferences">Live TV options</string>
+    <string name="login_help_title">Need help?</string>
+    <string name="login_help_description">Dune requires a server to connect with. Visit the documentation at docs.jellyfin.org or scan the QR code to get started.</string>
+    <string name="help">Help</string>
+
+    <!-- User Management -->
+    <string name="pref_accounts">Accounts</string>
+    <string name="lbl_switch_user">Users</string>
+    <string name="who_is_watching">Who\'s watching?</string>
+    <string name="add_user">Add account</string>
+    <string name="no_user_warning">We couldn\'t find any accounts!\nAdd a new account by pressing the \"Add account\" button.</string>
+    <string name="msg_no_users_found">No users found for this server</string>
+    <string name="lbl_user_actions">User Actions</string>
+    <string name="lbl_user_not_found">User not found</string>
+    <string name="lbl_user_last_used">Last used on %1$s at %2$s</string>
+    <string name="lbl_user_server">%1$s on %2$s</string>
+    <string name="lbl_sign_out">Sign out</string>
+    <string name="lbl_sign_out_content">Requires login on next use</string>
+    <string name="msg_sign_out_confirm">Are you sure you want to sign out this user?</string>
+    <string name="lbl_remove_user_content">Remove account</string>
+    <string name="msg_remove_user_confirm">Are you sure you want to remove this user? This action cannot be undone.</string>
+    <string name="sort_accounts_by">Sort accounts by</string>
+    <string name="last_use">Most recently used</string>
+    <string name="alphabetical">Alphabetical</string>
+    <string name="auto_sign_in">Automatic sign in</string>
+    <string name="user_picker_disable_title">Disable</string>
+    <string name="user_picker_disable_summary">Always show the sign in screen</string>
+    <string name="user_picker_last_user_title">Most recently used</string>
+    <string name="user_picker_last_user_summary">Use the last active account</string>
+    <string name="always_authenticate">Always ask for credentials</string>
+    <string name="always_authenticate_description">Enabling this function disables auto sign in</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">Welcome to Dune!</string>
+    <string name="welcome_content">Connect to your server to get started.</string>
+
+    <!-- Button Remapping -->
+    <string name="pref_button_remapping_title">Button remap</string>
+    <string name="pref_button_remapping_description">Press any button on the TV remote to assign it</string>
+
+    <!-- External Player -->
+    <string name="pref_external_player">Use external player</string>
+    <string name="lbl_play_external">Play in External Player</string>
+    <string name="msg_external_player_error">Could not launch external player. Make sure you have a video player app installed.</string>
+    <string name="no_player">No player</string>
+    <string name="no_player_message">It doesn\'t appear you have a video capable app installed.  This option requires you install a 3rd party application for playing video content.</string>
+
+    <!-- Music Player -->
+    <string name="lbl_open_artist">Open artist</string>
+    <string name="lbl_open_album">Open album</string>
+    <string name="lbl_goto_series">Go to series</string>
+
+    <!-- Errors & Messages -->
+    <string name="video_error_unknown_error">Failed to load video</string>
+    <string name="msg_video_playback_error">"Video playback error - "</string>
+    <string name="error_occurred">An error occurred. Please try again.</string>
+    <string name="msg_playback_not_allowed">Playback not allowed at this time</string>
+    <string name="msg_playback_restricted">The administrator has restricted playback of this item at this time</string>
+    <string name="msg_playback_incompatible">Cannot play this video format</string>
+    <string name="msg_cannot_play_time">Cannot play this item at this time</string>
+    <string name="msg_cannot_play">This item cannot be played</string>
+    <string name="msg_no_playable_items">No playable items</string>
+    <string name="msg_no_items">No items to play</string>
+    <string name="msg_not_implemented">" not implemented"</string>
+    <string name="msg_item_added">" item added"</string>
+    <string name="msg_items_added">" items added"</string>
+    <string name="seek_error">Unable to seek</string>
+    <string name="player_error">Player error encountered. Will re-try…</string>
+    <string name="too_many_errors">Too many errors. Giving up</string>
+    <string name="subtitle_error">Unable to select subtitle</string>
+    <string name="audio_error">Unable to play audio %1$s</string>
+    <string name="turn_off">Turn this option off</string>
+    <string name="just_one">Just this one</string>
+
+    <!-- Playback Control Messages -->
+    <string name="lbl_playback_control_ends">Ends at %1$s</string>
+
+    <!-- Device & Debug -->
+    <string name="pref_device_model">Device model</string>
+    <string name="lbl_enable_debug">Debug options</string>
+    <string name="desc_debug">Provide extra information for debugging</string>
+    <string name="enable_playback_module_description">This is an experimental feature. No support is provided.</string>
+    <string name="pref_developer_link">Experimental Features</string>
+    <string name="pref_developer_link_description">Advanced and experimental features</string>
+    <string name="no_network_permissions">Dune requires network permissions to function</string>
+    <string name="disable_ui_mode_warning">Disable device type warning</string>
     <string name="app_notification_uimode_invalid">This app is optimized for televisions. We recommend using the mobile app.</string>
-    <string name="server_unsupported_notification">This server uses Jellyfin version %1$s which is unsupported. Please update to Jellyfin %2$s or newer to continue using the app.</string>
+
+    <!-- Crash Reporting -->
     <string name="pref_telemetry_category">Crash reporting</string>
     <string name="pref_telemetry_description">Send crash reports, include logs</string>
     <string name="pref_crash_reports">Send crash reports to server</string>
@@ -579,107 +902,87 @@
     <string name="pref_crash_report_logs_enabled">Logs will be included in crash reports</string>
     <string name="pref_crash_report_logs_disabled">Logs will not be included in crash reports</string>
     <string name="crash_report_toast">Oops! Something went wrong, a crash report was sent to your Jellyfin server.</string>
-    <string name="server_setup_incomplete">The setup of this server has not been completed. Open Jellyfin in a web browser to finish setup before signing in.</string>
-    <string name="episode_name_special">special</string>
-    <string name="app_notification_beta">App updated to %1$s\nThank you for participating in the Jellyfin beta program.</string>
-    <string name="item_deleted">%1$s deleted</string>
-    <string name="item_deletion_failed">Unable to delete %1$s</string>
-    <string name="pref_enable_media_management">Enable media management</string>
-    <string name="pref_enable_media_management_description">Show option to manage media while browsing</string>
-    <string name="item_delete_confirm_title">Delete item</string>
-    <string name="item_delete_confirm_message">Are you sure you want to delete this item from the server? This action cannot be undone.</string>
-    <string name="pref_screensaver">Screensaver</string>
-    <string name="pref_screensaver_inapp_enabled">Use in-app screensaver</string>
-    <string name="pref_screensaver_inapp_enabled_description">Show The screensaver while the app is open</string>
-    <string name="pref_screensaver_inapp_timeout">Start screensaver after</string>
-    <string name="enable_reactive_homepage">Enable reactive homepage</string>
-    <string name="not_set">Not set</string>
-    <string name="lbl_album_artists">Album artists</string>
-    <string name="disable_ui_mode_warning">Disable device type warning</string>
-    <string name="channels">Channels</string>
-    <string name="photo_albums">Photo albums</string>
-    <string name="photos">Photos</string>
-    <string name="person_birthday_and_age">Born %1$s (%2$d)</string>
-    <string name="dolby_vision">Dolby Vision</string>
-    <string name="indicator_subtitles">CC</string>
-    <string name="indicator_subtitles_hearing_impaired">SDH</string>
-    <string name="dolby_atmos">Dolby Atmos</string>
-    <string name="dts_x">DTS:X</string>
-    <string name="dts_hd">DTS:HD</string>
-    <string name="dca">DTS</string>
-    <string name="ac3">DD</string>
-    <string name="eac3">DD+</string>
-    <string name="clear_image_cache">Clear image cache</string>
-    <string name="clear_image_cache_content">Used: %1$s</string>
 
-    <!-- Disk Cache Size Preference -->
-    <string name="pref_disk_cache_size">Image cache size</string>
-    <string name="pref_disk_cache_size_summary">Set the maximum size for the image cache</string>
-    <string name="pref_disk_cache_size_disabled">Disable,No cache</string>
-    <string name="pref_disk_cache_size_100mb">100 MB</string>
-    <string name="pref_disk_cache_size_250mb">250 MB</string>
-    <string name="pref_disk_cache_size_500mb">500 MB</string>
-    <string name="pref_disk_cache_size_800mb">800 MB</string>
-    <string name="pref_disk_cache_size_1gb">1 GB</string>
-    <string name="pref_disk_cache_size_1_5gb">1.5 GB</string>
-    <string name="pref_disk_cache_size_2gb">2 GB</string>
-
-    <!-- Restart dialog strings -->
-    <string name="restart_required">Restart Required</string>
-    <string name="restart_required_message">The app needs to restart for the cache size changes to take effect.</string>
-    <string name="restart_now">Restart Now</string>
-    <string name="restart_later">Later</string>
-    <string name="random">Random</string>
-    <string name="no_movies_found">No movies found</string>
-    <string name="unreleased">Not yet released</string>
-    <string name="pref_playback_advanced">Advanced playback preferences</string>
-    <string name="pref_screensaver_ageratingmax">Maximum age rating</string>
-    <string name="pref_screensaver_ageratingmax_zero">All ages</string>
-    <string name="pref_screensaver_ageratingmax_entry">Up to age %1$d</string>
-    <string name="pref_screensaver_ageratingmax_unlimited">Disable maximum</string>
-    <string name="pref_screensaver_ageratingrequired_title">Require age rating</string>
-    <string name="pref_screensaver_ageratingrequired_enabled">Only showing items with an age rating set</string>
-    <string name="pref_screensaver_ageratingrequired_disabled">Showing all items</string>
-    <string name="all_channels">All channels</string>
-    <string name="app_notification_update_soon">Update your server from %1$s to at least %2$s to continue using the app after the next update.</string>
-    <string name="current_queue">Current queue</string>
-    <string name="past_week">Past week</string>
-    <string name="scheduled_in_next_24_hours">Scheduled in next 24 hours</string>
-    <string name="past_24_hours">Past 24 hours</string>
-    <string name="prefer_exoplayer_ffmpeg">Prefer FFmpeg for audio playback</string>
-    <string name="prefer_exoplayer_ffmpeg_content">Use FFmpeg to decode audio, even if platform codecs are available.</string>
-    <string name="hardware_acceleration_enabled">Enable hardware acceleration</string>
-    <string name="hardware_acceleration_enabled_content">Use hardware acceleration for video decoding. Disable if you experience playback issues.</string>
-    <string name="default_video_zoom">Default zoom mode</string>
-    <string name="video_start_delay">Video start delay</string>
-    <string name="pref_mediasegment_actions">Media segment actions</string>
-    <string name="segment_action_ask_to_skip">Ask to skip</string>
-    <string name="segment_action_nothing">Do nothing</string>
-    <string name="segment_action_skip">Skip</string>
-    <string name="segment_type_commercial">Commercials</string>
-    <string name="segment_type_intro">Intros</string>
-    <string name="segment_type_outro">Outros</string>
-    <string name="segment_type_preview">Previews</string>
-    <string name="segment_type_recap">Recaps</string>
-    <string name="pref_skip_duration">Skip Overlay Duration</string>
-    <string name="pref_skip_duration_summary">Choose how long the skip button remains visible</string>
-    <string name="skip_duration_default">Default</string>
-    <string name="skip_duration_10_seconds">10 Seconds</string>
-    <string name="skip_duration_15_seconds">15 Seconds</string>
-    <string name="skip_duration_20_seconds">20 Seconds</string>
-    <string name="segment_type_unknown">Unknown segments</string>
-    <string name="skip_forward_length">Skip forward length</string>
-    <string name="player_controls_hide_duration">Hide Player UI Controls Duration</string>
-    <string name="player_controls_hide_duration_summary">Time in seconds before player controls automatically hide</string>
-    <string name="preference_enable_trickplay">Enable trickplay in video player</string>
-    <string name="pref_subtitles_background_opacity">Subtitle background opacity</string>
-    <string name="pref_troubleshooting">Troubleshooting</string>
+    <!-- Device Profile Reporting -->
     <string name="pref_report_device_profile_title">Report playback capabilities to server</string>
     <string name="pref_report_device_profile_summary">Upload a troubleshooting document to the Jellyfin server with information about playback capabilities</string>
     <string name="pref_report_device_profile_success">Document submitted as %1$s</string>
     <string name="pref_report_device_profile_failure">Failed to submit document. Your Jellyfin server may prohibit client logs.</string>
-    <string name="fast_forward">Fast forward</string>
-    <string name="rewind">Rewind</string>
+
+    <!-- Language -->
+    <string name="pref_language">App Language</string>
+    <string name="pref_language_header">Language Settings</string>
+    <string name="pref_language_summary">Change the language used in the app</string>
+
+    <!-- App Version & Updates -->
+    <string name="lbl_version">lbl_version</string>
+    <string name="app_version">App version</string>
+    <string name="app_version_description">Download and install updates</string>
+    <string name="select_version">Version</string>
+    <string name="Check_for_updates">Check for updates</string>
+    <string name="check_updates_description">Download and install updates</string>
+    <string name="update_checking">Checking for updates…</string>
+    <string name="update_download_starting">Starting download...</string>
+    <string name="update_available_title">Update Available</string>
+    <string name="update_available_message">New version %s is available</string>
+    <string name="install_update">Install Update</string>
+    <string name="update_install">Install Update</string>
+    <string name="install_error">Error installing update: %s</string>
+    <string name="update_downloading_title">Downloading Update</string>
+    <string name="update_downloading_message">Downloading version %s…</string>
+    <string name="update_download_failed">Download failed: %s</string>
+    <string name="update_no_updates">No updates available!</string>
+    <string name="update_download_complete">Download complete. Installing…</string>
+    <string name="update_error_title">Update Error</string>
+    <string name="update_later">Later</string>
+    <string name="app_updater_channel_name">App Updates</string>
+    <string name="app_updater_channel_description">Notifications for app updates</string>
+    <string name="app_notification_beta">App updated to %1$s\nThank you for participating in the Jellyfin beta program.</string>
+
+    <!-- Licenses -->
+    <string name="licenses_link">Licenses</string>
+    <string name="licenses_link_description"></string>
+    <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="license_description">Description</string>
+    <string name="license_version">Version</string>
+    <string name="license_artifact">Artifact</string>
+    <string name="license_website">Website</string>
+    <string name="license_repository">Repository</string>
+    <string name="license_author">Author</string>
+    <string name="license_license">License</string>
+
+    <!-- Exit Confirmation -->
+    <string name="exit_app_title">Exit DUNE</string>
+    <string name="exit_app_message">Are you sure you want to exit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="press_to_close">Press to close</string>
+
+    <!-- Move Up/Down -->
+    <string name="move_up">Move Up</string>
+    <string name="move_down">Move Down</string>
+
+    <!-- Time Formatting -->
+    <string name="lbl_never">Never</string>
+    <string name="state_disabled">Disabled</string>
+
+    <!-- Colors -->
+    <string name="color_white">White</string>
+    <string name="color_black">Black</string>
+    <string name="color_darkgrey">Dark grey</string>
+    <string name="color_red">Red</string>
+    <string name="color_green">Green</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_cyan">Cyan</string>
+
+    <!-- Images & Media -->
+    <string name="media_image">Media image</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="lbl_masks">Masks</string>
+
+    <!-- Plurals -->
     <plurals name="seconds">
         <item quantity="one">%1$s second</item>
         <item quantity="other">%1$s seconds</item>
@@ -720,209 +1023,5 @@
         <item quantity="one">%1$s album</item>
         <item quantity="other">%1$s albums</item>
     </plurals>
-    <!-- Playback Controls -->
-    <string name="previous">Previous</string>
-    <string name="next">Next</string>
-    <string name="play_pause">Play/Pause</string>
-    <string name="subtitles">Subtitles</string>
-    <string name="audio">Audio</string>
-    <string name="fullscreen">Fullscreen</string>
-    <string name="genre_row_prefs">Genre Row Preferences</string>
-    <!-- Update related strings -->
-    <string name="app_updater_channel_name">App Updates</string>
-    <string name="app_updater_channel_description">Notifications for app updates</string>
 
-    <!-- Stats Overlay -->
-    <string name="stats_title">Playback Information</string>
-    <string name="video_title">Video</string>
-    <string name="audio_title">Audio</string>
-    <string name="playback_info_title">Playback</string>
-    <string name="video_info">Video: %1$s • %2$s • %3$s\nProfile: %4$s</string>
-    <string name="audio_info">Audio: %1$s • %2$s • %3$s\nLanguage: %4$s</string>
-    <string name="playback_method">Playback: %1$s</string>
-    <string name="container">Container: %1$s</string>
-    <string name="transcoding_details">Transcoding Details:</string>
-    <string name="transcoding_protocol">Protocol: %1$s</string>
-    <string name="reason_for_transcoding">Reason for transcoding:</string>
-    <string name="direct_play">Direct Play</string>
-    <string name="transcoding">Transcoding</string>
-    <string name="resolution_na">N/A</string>
-
-    <!-- app updates -->
-    <string name="update_checking">Checking for updates…</string>
-    <string name="update_available_title">Update Available</string>
-    <string name="update_available_message">New version %s is available</string>
-    <string name="install_update">Install Update</string>
-    <string name="install_error">Error installing update: %s</string>
-    <string name="update_downloading_title">Downloading Update</string>
-    <string name="update_downloading_message">Downloading version %s…</string>
-    <string name="update_download_failed">Download failed: %s</string>
-    <string name="update_no_updates">No updates available!</string>
-    <string name="update_download_complete">Download complete. Installing…</string>
-    <string name="update_error_title">Update Error</string>
-    <string name="update_install">Install Update</string>
-    <string name="update_later">Later</string>
-
-    <string name="lbl_genre_row_loading">Loading genres…</string>
-    <string name="genre_row_movie">Movie Genres</string>
-    <string name="genre_row_tvshow">TV Show Genres</string>
-    <string name="show_comedy_row">Show Comedy Row</string>
-    <string name="show_romance_row">Show Romance Row</string>
-    <string name="show_animation_row">Show Animation Row</string>
-    <string name="show_action_row">Show Action Row</string>
-    <string name="show_sci_fi_row">Show Sci-Fi Fantasy Row</string>
-    <string name="show_documentary_row">Show Documentary Row</string>
-    <string name="show_drama_row">Show Drama Row</string>
-    <string name="show_reality_tv_row">Show Reality-TV Row</string>
-    <string name="show_family_row">Show Family Row</string>
-    <string name="show_horror_row">Show Horror Row</string>
-    <string name="show_fantasy_row">Show Fantasy Row</string>
-
-    <!-- Exit confirmation dialog -->
-    <string name="exit_app_title">Exit DUNE</string>
-    <string name="exit_app_message">Are you sure you want to exit?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="show_history_row">Show History Row</string>
-    <string name="show_music_row">Show Music Row</string>
-    <string name="show_mystery_row">Show Mystery Row</string>
-    <string name="show_reality_row">Show Reality Row</string>
-    <string name="show_thriller_row">Show Thriller Row</string>
-    <string name="show_war_row">Show War Row</string>
-    <string name="show_collections_row">Show Collections Row</string>
-    <string name="show_suggested_movies_row">Because you watched rows</string>
-    <string name="show_music_videos_row">Show Music Videos Row</string>
-    <string name="music_videos">Music Videos</string>
-
-
-    <!-- Live TV Button -->
-    <string name="show_live_tv_button">Live TV Button</string>
-    <string name="show_live_tv_button_summary">Display the Live TV button </string>
-    <string name="show_random_button">Random Movie Button</string>
-    <string name="show_random_button_summary">Display the Random Movie button </string>
-    <string name="use_classic_home_screen">Classic Home Screen</string>
-    <string name="use_classic_home_screen_summary">Switch between classic and modern home screen layout</string>
-    <string name="move_up">Move Up</string>
-    <string name="move_down">Move Down</string>
-
-    <!-- Genre names -->
-    <string-array name="genres">
-        <item>@string/genre_action</item>
-        <item>@string/genre_adventure</item>
-        <item>@string/genre_animation</item>
-        <item>@string/genre_comedy</item>
-        <item>@string/genre_crime</item>
-        <item>@string/genre_documentary</item>
-        <item>@string/genre_drama</item>
-        <item>@string/genre_family</item>
-        <item>@string/genre_fantasy</item>
-        <item>@string/genre_history</item>
-        <item>@string/genre_horror</item>
-        <item>@string/genre_music</item>
-        <item>@string/genre_mystery</item>
-        <item>@string/genre_romance</item>
-        <item>@string/genre_science_fiction</item>
-        <item>@string/genre_thriller</item>
-        <item>@string/genre_war</item>
-        <item>@string/genre_western</item>
-        <item>@string/genre_tv_movie</item>
-    </string-array>
-
-    <!-- Individual genre strings -->
-    <string name="genre_action">Action</string>
-    <string name="genre_adventure">Adventure</string>
-    <string name="genre_animation">Animation</string>
-    <string name="genre_comedy">Comedy</string>
-    <string name="genre_crime">Crime</string>
-    <string name="genre_documentary">Documentary</string>
-    <string name="genre_drama">Drama</string>
-    <string name="genre_family">Family</string>
-    <string name="genre_fantasy">Fantasy</string>
-    <string name="genre_history">History</string>
-    <string name="genre_horror">Horror</string>
-    <string name="genre_music">Music</string>
-    <string name="genre_mystery">Mystery</string>
-    <string name="genre_romance">Romance</string>
-    <string name="genre_science_fiction">Science Fiction</string>
-    <string name="genre_thriller">Thriller</string>
-    <string name="genre_war">War</string>
-    <string name="genre_western">Western</string>
-    <string name="genre_tv_movie">TV Movie</string>
-
-    <!-- Genre filter -->
-    <string name="lbl_all_genres">All Genres</string>
-    <string name="enhanced_tweaks">Enhanced Tweaks</string>
-    <string name="enhanced_tweaks_description">Backdrop Settings,Genre Rows,App Themes,And more...</string>
-
-    <!-- Language preference strings -->
-    <string name="pref_language">App Language</string>
-    <string name="pref_language_header">Language Settings</string>
-    <string name="pref_language_summary">Change the language used in the app</string>
-    <string name="home_content_description">Home screen content</string>
-    <string name="lbl_music_videos">Music Videos</string>
-
-    <!-- Audio Language preference -->
-    <string name="pref_audio_default_language">Default audio language</string>
-    <string name="pref_skip_commentary_tracks">Skip commentary tracks</string>
-    <string name="pref_audio_default_language_summary">Set the default language for audio tracks</string>
-    <string name="pref_audio_language_none">(Default)</string>
-<string name="pref_subtitle_default_language">Default Subtitle Language</string>
-    <string name="pref_subtitle_default_language_summary">Set the default language for subtitles</string>
-    <string name="pref_subtitle_language_none">None (Disabled)</string>
-    <string name="pref_subtitle_language_ara">العربية (Arabic)</string>
-    <string name="pref_subtitle_language_zho">中文 (Chinese)</string>
-<string name="pref_subtitle_language_ces">Čeština (Czech)</string>
-    <string name="pref_subtitle_language_dan">Dansk (Danish)</string>
-<string name="pref_subtitle_language_nld">Nederlands (Dutch)</string>
-    <string name="pref_subtitle_language_eng">English</string>
-<string name="pref_subtitle_language_fin">Suomi (Finnish)</string>
-    <string name="pref_subtitle_language_fra">Français (French)</string>
-<string name="pref_subtitle_language_deu">Deutsch (German)</string>
-    <string name="pref_subtitle_language_ell">Ελληνικά (Greek)</string>
-<string name="pref_subtitle_language_heb">עברית (Hebrew)</string>
-    <string name="pref_subtitle_language_hin">हिन्दी (Hindi)</string>
-<string name="pref_subtitle_language_hun">Magyar (Hungarian)</string>
-    <string name="pref_subtitle_language_ind">Bahasa Indonesia (Indonesian)</string>
-<string name="pref_subtitle_language_ita">Italiano (Italian)</string>
-    <string name="pref_subtitle_language_jpn">日本語 (Japanese)</string>
-<string name="pref_subtitle_language_kor">한국어 (Korean)</string>
-    <string name="pref_subtitle_language_msa">Bahasa Melayu (Malay)</string>
-<string name="pref_subtitle_language_nor">Norsk (Norwegian)</string>
-    <string name="pref_subtitle_language_pol">Polski (Polish)</string>
-<string name="pref_subtitle_language_por">Português (Portuguese)</string>
-    <string name="pref_subtitle_language_ron">Română (Romanian)</string>
-<string name="pref_subtitle_language_rus">Русский (Russian)</string>
-    <string name="pref_subtitle_language_slk">Slovenčina (Slovak)</string>
-<string name="pref_subtitle_language_spa">Español (Spanish)</string>
-    <string name="pref_subtitle_language_swe">Svenska (Swedish)</string>
-<string name="pref_subtitle_language_tha">ไทย (Thai)</string>
-    <string name="pref_subtitle_language_tur">Türkçe (Turkish)</string>
-<string name="pref_subtitle_language_ukr">Українська (Ukrainian)</string>
-    <string name="pref_subtitle_language_vie">Tiếng Việt (Vietnamese)</string>
-
-    <!-- Genre sorting options -->
-    <string name="sort_default">Default</string>
-    <string name="sort_random">Random</string>
-    <string name="sort_name">Name (A-Z)</string>
-    <string name="sort_date_released">Release Date</string>
-    <string name="sort_date_added">Date Added</string>
-    <string name="sort_rating">Community Rating</string>
-    <string name="sort_critic_rating">Critic Rating</string>
-    <string name="sort_play_count">Most Played</string>
-    <string name="sort_runtime">Runtime</string>
-    <string name="sort_official_rating">Official Rating</string>
-    <string name="sort_date_created">Date Created</string>
-    <string name="sort_parent_rating">Parent Rating</string>
-    <string name="pref_genre_sort_by">Sort Genre</string>
-    <string name="pref_carousel_sort_by">Carousel sort options</string>
-    <string name="pref_carousel_sort_by_description">Choose how items are sorted in the carousel</string>
-    <string name="pref_snowfall_enabled">Christmas Snowfall Effect</string>
-    <string name="pref_snowfall_enabled_description">Enable animated snowfall effect on the carousel for a festive Christmas atmosphere</string>
-    <string name="pref_carousel_include_series">Include Series in Carousel</string>
-    <string name="pref_carousel_include_series_description">Add TV Series alongside Movies in the featured carousel</string>
-
-    <!-- Screensaver sorting -->
-    <string name="pref_screensaver_sort_by">Screensaver Sort Order</string>
-    <string name="pref_screensaver_sort_by_description">Choose how items are sorted in the screensaver</string>
-    <string name="lbl_version">lbl_version</string>
 </resources>

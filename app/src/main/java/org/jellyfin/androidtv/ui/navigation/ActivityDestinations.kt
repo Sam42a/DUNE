@@ -3,38 +3,32 @@ package org.jellyfin.androidtv.ui.navigation
 import android.content.Context
 import android.content.Intent
 import androidx.core.os.bundleOf
-import org.jellyfin.androidtv.ui.browsing.DisplayPreferencesScreen
-import org.jellyfin.androidtv.ui.livetv.GuideFiltersScreen
-import org.jellyfin.androidtv.ui.livetv.GuideOptionsScreen
 import org.jellyfin.androidtv.ui.playback.ExternalPlayerActivity
-import org.jellyfin.androidtv.ui.preference.PreferencesActivity
-import org.jellyfin.androidtv.ui.preference.dsl.OptionsFragment
-import org.jellyfin.androidtv.ui.preference.screen.UserPreferencesScreen
+import org.jellyfin.androidtv.ui.preference.PreferencesComposeActivity
 import kotlin.time.Duration
 
 object ActivityDestinations {
-	private inline fun <reified T : OptionsFragment> preferenceIntent(
-		context: Context,
-		vararg screenArguments: Pair<String, Any?>
-	) = Intent(context, PreferencesActivity::class.java).apply {
-		putExtras(
-			bundleOf(
-				PreferencesActivity.EXTRA_SCREEN to T::class.qualifiedName,
-				PreferencesActivity.EXTRA_SCREEN_ARGS to bundleOf(*screenArguments),
-			)
-		)
+
+	fun userPreferences(context: Context) = Intent(context, PreferencesComposeActivity::class.java)
+
+	fun displayPreferencesCompose(context: Context, displayPreferencesId: String, allowViewSelection: Boolean) =
+		Intent(context, PreferencesComposeActivity::class.java).apply {
+			putExtra("displayPreferencesId", displayPreferencesId)
+			putExtra("allowViewSelection", allowViewSelection)
+			putExtra("initialScreen", "display_preferences")
+			putExtra("standalone", true)
+			putExtra("shouldRefresh", true)
+		}
+
+	fun liveTvGuideFilterPreferences(context: Context) = Intent(context, PreferencesComposeActivity::class.java).apply {
+		putExtra("initialScreen", "live_tv_guide_filters")
+		putExtra("standalone", true)
 	}
 
-	fun userPreferences(context: Context) = preferenceIntent<UserPreferencesScreen>(context)
-	fun displayPreferences(context: Context, displayPreferencesId: String, allowViewSelection: Boolean) =
-		preferenceIntent<DisplayPreferencesScreen>(
-			context,
-			DisplayPreferencesScreen.ARG_PREFERENCES_ID to displayPreferencesId,
-			DisplayPreferencesScreen.ARG_ALLOW_VIEW_SELECTION to allowViewSelection,
-		)
-
-	fun liveTvGuideFilterPreferences(context: Context) = preferenceIntent<GuideFiltersScreen>(context)
-	fun liveTvGuideOptionPreferences(context: Context) = preferenceIntent<GuideOptionsScreen>(context)
+	fun liveTvGuideOptionPreferences(context: Context) = Intent(context, PreferencesComposeActivity::class.java).apply {
+		putExtra("initialScreen", "live_tv_guide_options")
+		putExtra("standalone", true)
+	}
 
 	fun externalPlayer(context: Context, position: Duration = Duration.ZERO) = Intent(context, ExternalPlayerActivity::class.java).apply {
 		putExtras(

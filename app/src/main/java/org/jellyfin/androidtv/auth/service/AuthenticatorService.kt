@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
 import androidx.core.os.bundleOf
-import org.jellyfin.androidtv.ui.preference.PreferencesActivity
+import org.jellyfin.androidtv.ui.preference.PreferencesComposeActivity
 
 class AuthenticatorService : Service() {
 	private val authenticator by lazy {
@@ -44,7 +44,7 @@ class AuthenticatorService : Service() {
 			response: AccountAuthenticatorResponse,
 			accountType: String,
 		): Bundle = bundleOf(
-			AccountManager.KEY_INTENT to Intent(service, PreferencesActivity::class.java)
+			AccountManager.KEY_INTENT to Intent(service, PreferencesComposeActivity::class.java)
 		)
 
 		override fun getAccountRemovalAllowed(

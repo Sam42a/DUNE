@@ -2,6 +2,7 @@ package org.jellyfin.androidtv.preference
 
 import android.content.Context
 import androidx.preference.PreferenceManager
+import org.jellyfin.androidtv.constant.GenreRowType
 import org.jellyfin.androidtv.constant.HomeSectionType
 import org.jellyfin.preference.enumPreference
 import org.jellyfin.preference.intPreference
@@ -11,46 +12,18 @@ import org.jellyfin.preference.store.SharedPreferenceStore
 class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 ) {
-	val showComedyRow = booleanPreference("showComedyRow", false)
-    val showRomanceRow = booleanPreference("showRomanceRow", false)
-    val showAnimationRow = booleanPreference("showAnimationRow", false)
-    val showActionRow = booleanPreference("showActionRow", false)
-    val showActionAdventureRow = booleanPreference("showActionAdventureRow", false)
-    val showSciFiRow = booleanPreference("showSciFiRow", false)
-    val showDocumentaryRow = booleanPreference("showDocumentaryRow", false)
-    val showFamilyRow = booleanPreference("showFamilyRow", false)
-    val showHorrorRow = booleanPreference("showHorrorRow", false)
-    val showFantasyRow = booleanPreference("showFantasyRow", false)
-    val showHistoryRow = booleanPreference("showHistoryRow", false)
-    val showMusicRow = booleanPreference("showMusicRow", false)
-    val showMysteryRow = booleanPreference("showMysteryRow", false)
-    val showRealityRow = booleanPreference("showRealityRow", false)
-    val showThrillerRow = booleanPreference("showThrillerRow", false)
-    val showWarRow = booleanPreference("showWarRow", false)
-    val showMusicVideosRow = booleanPreference("showMusicVideosRow", false)
-    val showCollectionsRow = booleanPreference("showCollectionsRow", false)
-    val showSuggestedMoviesRow = booleanPreference("showSuggestedMoviesRow", true)
 
-    private val defaultGenreOrder = listOf(
-        "Comedy",
-        "Romance",
-        "Anime",
-        "Animation",
-        "Action",
-        "Sci-Fi & Fantasy",
-        "Documentary",
-        "Drama",
-        "Family",
-        "Horror",
-        "Fantasy",
-        "History",
-        "Music",
-        "Mystery",
-        "Reality",
-        "Thriller",
-        "War"
-    )
-    private val genreRowOrderKey = "genreRowOrder"
+    val genrerow0 = enumPreference("genrerow0", GenreRowType.SUGGESTED_MOVIES)
+    val genrerow1 = enumPreference("genrerow1", GenreRowType.COLLECTIONS)
+    val genrerow2 = enumPreference("genrerow2", GenreRowType.DISCOVER_MOVIES)
+    val genrerow3 = enumPreference("genrerow3", GenreRowType.DISCOVER_SERIES)
+    val genrerow4 = enumPreference("genrerow4", GenreRowType.RECENTLY_RELEASED)
+    val genrerow5 = enumPreference("genrerow5", GenreRowType.WATCH_IT_AGAIN)
+    val genrerow6 = enumPreference("genrerow6", GenreRowType.MUSIC)
+    val genrerow7 = enumPreference("genrerow7", GenreRowType.NONE)
+    val genrerow8 = enumPreference("genrerow8", GenreRowType.NONE)
+    val genrerow9 = enumPreference("genrerow9", GenreRowType.NONE)
+
 
     @JvmField
     val skipBackLength = intPreference("skipBackLength", 10_000)
@@ -82,11 +55,5 @@ class UserSettingPreferences(context: Context) : SharedPreferenceStore(
     val homesection8 = enumPreference("homesection8", HomeSectionType.NONE)
     val homesection9 = enumPreference("homesection9", HomeSectionType.NONE)
 
-    fun getGenreRowOrder(): List<String> {
-        val raw = getString(genreRowOrderKey, defaultGenreOrder.joinToString(","))
-        return raw.split(',').map { it.trim() }.filter { it.isNotEmpty() }
+
     }
-    fun setGenreRowOrder(order: List<String>) {
-        setString(genreRowOrderKey, order.joinToString(","))
-    }
-}
