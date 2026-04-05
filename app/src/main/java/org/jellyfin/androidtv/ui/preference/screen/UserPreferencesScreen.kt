@@ -48,7 +48,7 @@ import org.jellyfin.androidtv.util.UpdateResult
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 
-private const val CURRENT_VERSION = "0.1.1"
+private const val CURRENT_VERSION = "0.2.0"
 
 private fun checkForUpdates(context: Context) {
     val appUpdater = AppUpdater(context)
@@ -432,7 +432,7 @@ fun MainPreferencesScreen(
             PreferenceCard(
 				title = context.getString(R.string.app_version),
 				description = CURRENT_VERSION,
-				icon = R.drawable.dune_logo,
+				icon = R.drawable.rune_logo,
                 onClick = { }
             )
         }

@@ -33,7 +33,7 @@ class AppUpdater(private val context: Context) {
 
     private val CHANNEL_ID = "app_updater_channel"
     private val NOTIFICATION_ID = 1
-    private val GITHUB_RELEASES_URL = "https://api.github.com/repos/Sam42a/DUNE/releases/latest"
+    private val GITHUB_RELEASES_URL = "https://api.github.com/repos/rooZzz/RUNE/releases/latest"
     private val APK_MIME_TYPE = "application/vnd.android.package-archive"
 
     init {
@@ -175,7 +175,7 @@ class AppUpdater(private val context: Context) {
             val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                 ?: throw IOException("Cannot access downloads directory")
 
-            val apkFile = File(downloadsDir, "DUNE_${version}.apk")
+            val apkFile = File(downloadsDir, "RUNE_${version}.apk")
             android.util.Log.d("AppUpdater", "Saving to: ${apkFile.absolutePath}")
             val outputStream = FileOutputStream(apkFile)
 

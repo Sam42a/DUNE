@@ -21,7 +21,7 @@ android {
 		targetSdk = libs.versions.android.targetSdk.get().toInt()
 
 		// Release version
-		applicationId = "dune.enhanced.tv"
+		applicationId = "rune.enhanced.tv"
 		versionName = project.getVersionName()
 		versionCode = getVersionCode(versionName!!)
 	}
@@ -82,13 +82,13 @@ android {
 
 		create("enhanced") {
 			dimension = "variant"
-			applicationId = "Dune.enhanced.tv"
+			applicationId = "rune.enhanced.tv"
 
 			// Set specific version name for enhanced variant
-			versionName = "0.1.1"
+			versionName = "0.2.0"
 
 			// Set app name for the enhanced version
-			resValue("string", "app_name_release", "DUNE")
+			resValue("string", "app_name_release", "RUNE")
 
 			// Add required string resources that are referenced in XML files
 			resValue("string", "app_id", applicationId!!)
@@ -112,9 +112,9 @@ android {
 		variant.outputs.all {
 			val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
 			if (variantName == "enhanced") {
-				output.outputFileName = "Dune.androidtv-0.1.1.apk"
+				output.outputFileName = "Rune.androidtv-0.2.0.apk"
 			} else {
-				output.outputFileName = "Dune.androidtv-${versionName}.apk"
+				output.outputFileName = "Rune.androidtv-${versionName}.apk"
 			}
 		}
 	}
@@ -137,14 +137,14 @@ val versionTxt by tasks.registering {
 // Simple task to build the enhanced version
 tasks.register("buildEnhanced") {
 	group = "build"
-	description = "Builds the enhanced version with package ID: Dune.enhanced.tv"
+	description = "Builds the enhanced version with package ID: rune.enhanced.tv"
 	dependsOn("assembleEnhancedRelease")
 	doLast {
 		println("\nBuilding Enhanced version with:")
-		println("Package ID: Dune.enhanced.tv")
-		println("Version: 0.1.1")
-		println("App Name: DUNE")
-		println("Filename: Dune.androidtv-0.1.1.apk")
+		println("Package ID: rune.enhanced.tv")
+		println("Version: 0.2.0")
+		println("App Name: RUNE")
+		println("Filename: Rune.androidtv-0.2.0.apk")
 		println("The APK will be available in: app/build/outputs/apk/enhanced/release/")
 	}
 }

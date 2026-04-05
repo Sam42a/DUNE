@@ -46,9 +46,9 @@ fun createDeviceProfileReport(
 ) = buildMarkdown {
 	// Header
 	appendLine("---")
-	appendLine("client: Dune for Android TV")
+	appendLine("client: RUNE for Android TV")
 	appendLine("client_version: ${BuildConfig.VERSION_NAME}")
-	appendLine("client_repository: https://github.com/Sam42a/DUNE")
+	appendLine("client_repository: https://github.com/rooZzz/RUNE")
 	appendLine("type: media_capabilities_report")
 	appendLine("format: markdown")
 	appendLine("---")

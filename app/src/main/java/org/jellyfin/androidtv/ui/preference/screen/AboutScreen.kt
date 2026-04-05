@@ -23,7 +23,7 @@ import org.jellyfin.androidtv.util.AppUpdater
 import org.jellyfin.androidtv.util.UpdateResult
 import timber.log.Timber
 
-private const val CURRENT_VERSION = "0.1.1"
+private const val CURRENT_VERSION = "0.2.0"
 
 @Composable
 fun AboutScreenCompose(
@@ -51,7 +51,7 @@ fun AboutScreenCompose(
             PreferenceCard(
                 title = context.getString(R.string.app_version),
                 description = CURRENT_VERSION,
-                icon = R.drawable.dune_logo,
+                icon = R.drawable.rune_logo,
                 onClick = { },
                 modifier = Modifier.focusRequester(firstItemFocusRequester)
             )

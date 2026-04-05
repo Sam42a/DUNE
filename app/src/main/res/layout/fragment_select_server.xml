@@ -50,7 +50,7 @@
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="invisible"
-            tools:text="DUNE-androidtv 1.0.0 debug" />
+            tools:text="RUNE-androidtv 1.0.0 debug" />
 
         <Button
             android:id="@+id/enter_server_address"
